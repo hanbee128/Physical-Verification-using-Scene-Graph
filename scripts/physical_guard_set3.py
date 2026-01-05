@@ -669,7 +669,8 @@ def verify_guard_with_scene_graph(
     object_name: Optional[str],
     receptacle_name: Optional[str],
     controller: Optional[Any] = None,
-    scene_graph: Optional[Dict[str, Any]] = None
+    scene_graph: Optional[Dict[str, Any]] = None,
+    agent_position: Optional[Dict[str, float]] = None
 ) -> Tuple[bool, str]:
     """
     Scene Graph를 직접 확인하여 개별 가드 검증
@@ -698,72 +699,88 @@ def verify_guard_with_scene_graph(
             return False, f"객체 '{object_name}'가 Scene Graph에 존재하지 않음"
         return True, f"객체 '{object_name}' 존재 확인"
     
-    # REACHABLE(agent, object) 검증 - armBase 좌표계 기준
+    # REACHABLE(agent, object) 검증 - armBase 좌표계 기준 (손 위치 기준)
     if "REACHABLE" in guard_upper:
-        if target_obj is None:
-            return False, "타겟 객체가 없음"
+        # PutObject의 경우 receptacle을 타겟으로 사용
+        if "RECEPTACLE" in guard_upper or action_type == "PutObject":
+            check_obj = receptacle_obj if receptacle_obj else target_obj
+            obj_name_for_log = receptacle_name if receptacle_name else object_name
+        else:
+            check_obj = target_obj
+            obj_name_for_log = object_name
         
-        obj_pos = target_obj.get("position", {})
+        if check_obj is None:
+            return False, f"타겟 객체가 없음 ({'receptacle' if ('RECEPTACLE' in guard_upper or action_type == 'PutObject') else 'object'})"
+        
+        obj_pos = check_obj.get("position", {})
         if not obj_pos:
             return False, "객체 위치 정보가 없음"
         
-        agent_pos = agent_node.get("position", {})
+        # Agent 위치: 파라미터로 받은 위치를 우선 사용, 없으면 agent_node에서 가져오기
+        if agent_position is not None:
+            agent_pos = agent_position
+        else:
+            agent_pos = agent_node.get("position", {})
+        
         agent_rot = agent_node.get("rotation", {})
         
         if not agent_pos:
             return False, "Agent 위치 정보가 없음"
         
-        # Agent의 회전 각도 (Y축 회전, 도 단위)
-        agent_y_rotation = agent_rot.get("y", 0.0)
+        # Hand 위치: Agent의 절대 좌표를 Hand 좌표로 사용 (절대 좌표로 직접 비교)
+        hand_x = agent_pos.get("x", 0)
+        hand_y = agent_pos.get("y", 0)
+        hand_z = agent_pos.get("z", 0)
         
-        # World 좌표를 armBase 좌표계로 변환
-        # 객체의 world 좌표에서 agent의 world 좌표를 빼서 상대 좌표 계산
-        dx_world = obj_pos.get("x", 0) - agent_pos.get("x", 0)
-        dy_world = obj_pos.get("y", 0) - agent_pos.get("y", 0)
-        dz_world = obj_pos.get("z", 0) - agent_pos.get("z", 0)
+        # 객체의 절대 좌표
+        obj_x = obj_pos.get("x", 0)
+        obj_y = obj_pos.get("y", 0)
+        obj_z = obj_pos.get("z", 0)
         
-        # Agent의 Y축 회전을 라디안으로 변환
-        rotation_rad = math.radians(agent_y_rotation)
-        cos_y = math.cos(rotation_rad)
-        sin_y = math.sin(rotation_rad)
+        # 손 위치를 기준으로 한 도달 가능한 범위 (절대 좌표 기준)
+        # use_arm_and_armbase.py에서 테스트한 범위 기준:
+        # x 범위: -1 ~ 1 (좌우)
+        # y 범위: -0.35 ~ 1 (상하)
+        # z 범위: 0 ~ 1 (앞뒤)
+        # 손 위치에서 ± 범위로 계산
+        x_range = 1.0  # ±1.0
+        y_range_min = -0.35  # 아래로 -0.35
+        y_range_max = 1.0  # 위로 1.0
+        z_range_min = -1.5  # 뒤로 0 (음수 불가)
+        z_range_max = 0.5  # 앞으로 1.0
         
-        # armBase 좌표계로 변환 (Agent의 forward 방향이 z, right 방향이 x)
-        # Agent가 회전한 상태에서의 로컬 좌표계로 변환
-        x_armbase = dx_world * cos_y + dz_world * sin_y  # right 방향
-        y_armbase = dy_world  # up 방향 (변환 없음)
-        z_armbase = -dx_world * sin_y + dz_world * cos_y  # forward 방향
+        # 손 위치 기준으로 범위 계산 (절대 좌표)
+        x_min = hand_x - x_range
+        x_max = hand_x + x_range
+        y_min = hand_y + y_range_min
+        y_max = hand_y + y_range_max
+        z_min = hand_z + z_range_min
+        z_max = hand_z + z_range_max
         
-        # armBase 좌표계에서 도달 가능한 범위 확인
-        # 초기 위치: (x=0, y=0, z=0.5)
-        # x 범위: 약 -0.5 ~ 0.5 (좌우)
-        # y 범위: 약 -0.5 ~ 0.5 (상하)
-        # z 범위: 0 ~ 0.75 (앞뒤, 최대 0.75m 앞)
+        # 목표 객체가 손 위치 기준 범위 내에 있는지 확인 (절대 좌표로 비교)
+        in_range = (x_min <= obj_x <= x_max and 
+                   y_min <= obj_y <= y_max and 
+                   z_min <= obj_z <= z_max)
         
-        x_min, x_max = -0.5, 0.5
-        y_min, y_max = -0.5, 0.5
-        z_min, z_max = 0.0, 0.75
-        
-        # 범위 내에 있는지 확인
-        in_range = (x_min <= x_armbase <= x_max and 
-                   y_min <= y_armbase <= y_max and 
-                   z_min <= z_armbase <= z_max)
+        # 손에서 객체까지의 거리 계산 (절대 좌표)
+        dx = obj_x - hand_x
+        dy = obj_y - hand_y
+        dz = obj_z - hand_z
+        distance_3d = math.sqrt(dx**2 + dy**2 + dz**2)
         
         if in_range:
-            # 3D 거리 계산 (armBase 좌표계에서)
-            distance_3d = math.sqrt(x_armbase**2 + y_armbase**2 + z_armbase**2)
-            return True, f"armBase 좌표계 범위 내 (x={x_armbase:.3f}, y={y_armbase:.3f}, z={z_armbase:.3f}, 거리={distance_3d:.3f}m)"
+            return True, f"\n손 위치 기준 범위 내 (손 절대좌표: x={hand_x:.3f}, y={hand_y:.3f}, z={hand_z:.3f}, 객체 절대좌표: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m)"
         else:
-            # 범위를 벗어난 경우 거리 계산
-            distance_3d = math.sqrt(x_armbase**2 + y_armbase**2 + z_armbase**2)
+            # 범위를 벗어난 경우
             out_of_range_axis = []
-            if x_armbase < x_min or x_armbase > x_max:
-                out_of_range_axis.append(f"x={x_armbase:.3f} (범위: {x_min}~{x_max})")
-            if y_armbase < y_min or y_armbase > y_max:
-                out_of_range_axis.append(f"y={y_armbase:.3f} (범위: {y_min}~{y_max})")
-            if z_armbase < z_min or z_armbase > z_max:
-                out_of_range_axis.append(f"z={z_armbase:.3f} (범위: {z_min}~{z_max})")
+            if obj_x < x_min or obj_x > x_max:
+                out_of_range_axis.append(f"x={obj_x:.3f} (범위: {x_min:.3f}~{x_max:.3f})")
+            if obj_y < y_min or obj_y > y_max:
+                out_of_range_axis.append(f"y={obj_y:.3f} (범위: {y_min:.3f}~{y_max:.3f})")
+            if obj_z < z_min or obj_z > z_max:
+                out_of_range_axis.append(f"z={obj_z:.3f} (범위: {z_min:.3f}~{z_max:.3f})")
             
-            return False, f"armBase 좌표계 범위 밖 (x={x_armbase:.3f}, y={y_armbase:.3f}, z={z_armbase:.3f}, 거리={distance_3d:.3f}m, 벗어난 축: {', '.join(out_of_range_axis)})"
+            return False, f"\n손 위치 기준 범위 밖 (손 절대좌표: x={hand_x:.3f}, y={hand_y:.3f}, z={hand_z:.3f}, 객체 절대좌표: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m, 벗어난 축: {', '.join(out_of_range_axis)})"
     
     # NAVIGABLE(agent, object) 검증
     if "NAVIGABLE" in guard_upper:
@@ -1112,6 +1129,10 @@ def verify_action_with_scene_graph(
         scene_graph, action_type, object_name, receptacle_name
     )
     
+    # Agent 위치 가져오기 (REACHABLE 검증에 사용)
+    agent_node = scene_graph.get("nodes", {}).get("agent", {})
+    agent_position = agent_node.get("position", {}) if agent_node else None
+    
     # 액션별 기본 가드 설정
     if action_type == "GoToObject":
         guards = ["EXISTS(object)", "NAVIGABLE(agent, object)"]
@@ -1147,7 +1168,7 @@ def verify_action_with_scene_graph(
     
     for guard in guards:
         passed, reason = verify_guard_with_scene_graph(
-            guard, scene_context, action_type, object_name, receptacle_name, controller, scene_graph
+            guard, scene_context, action_type, object_name, receptacle_name, controller, scene_graph, agent_position
         )
         
         if passed:
@@ -1389,7 +1410,8 @@ def update_scene_graph_after_action(
     scene_graph: Dict[str, Any],
     action: Dict[str, Any],
     verification_passed: bool,
-    scene_graph_path: Optional[str] = None
+    scene_graph_path: Optional[str] = None,
+    controller: Optional[Any] = None
 ) -> Dict[str, Any]:
     """
     액션 실행 후 Scene Graph 업데이트 및 JSON 파일 저장
@@ -1417,8 +1439,34 @@ def update_scene_graph_after_action(
     object_nodes = nodes.get("objects", [])
     
     if action_type == "GoToObject":
-        # Agent 위치는 업데이트하지 않음 (실제 실행 없이 검증만 수행)
-        pass
+        # GoToObject 검증 통과 시 NavMesh에서 찾은 가장 가까운 이동 가능 위치로 Agent 좌표 업데이트
+        if object_name:
+            # 목표 객체 찾기
+            target_obj = None
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                if object_name.lower() in obj_type.lower():
+                    target_obj = obj_node
+                    break
+            
+            if target_obj:
+                obj_pos = target_obj.get("position", {})
+                if obj_pos and controller is not None:
+                    # NavMesh에서 목표 객체와 가장 가까운 이동 가능 위치 찾기
+                    closest_pos, distance = find_closest_reachable_position(controller, obj_pos)
+                    
+                    if closest_pos:
+                        # Agent 위치 업데이트
+                        agent_node["position"] = {
+                            "x": closest_pos.get("x", 0),
+                            "y": closest_pos.get("y", 0),
+                            "z": closest_pos.get("z", 0)
+                        }
+                        logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
+                    else:
+                        logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: 이동 가능한 위치를 찾을 수 없음")
+                elif obj_pos and controller is None:
+                    logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: Controller가 없음")
     
     elif action_type == "PickupObject":
         # HOLDS 엣지 추가, IN 엣지 제거
@@ -1873,7 +1921,7 @@ def generate_final_plan_with_physical_verification(
             verified_actions.append(action)
             # Scene Graph 업데이트 및 JSON 파일 저장
             scene_graph = update_scene_graph_after_action(
-                scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path
+                scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
             )
             logger.info(f"  ✓ 검증 통과: {reason}")
             

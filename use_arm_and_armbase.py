@@ -76,24 +76,6 @@ def get_arm_positions(event) -> Dict[str, Dict[str, float]]:
             "z": armbase.get("z", 0)
         }
     
-    # World 위치 (손목의 world 좌표)
-    wrist_world = arm.get("wrist", {})
-    if wrist_world:
-        positions["world"] = {
-            "x": wrist_world.get("x", 0),
-            "y": wrist_world.get("y", 0),
-            "z": wrist_world.get("z", 0)
-        }
-    
-    # Wrist 위치 (로컬 좌표 또는 world 좌표)
-    # wrist는 보통 world와 동일하지만, 명시적으로 추출
-    if wrist_world:
-        positions["wrist"] = {
-            "x": wrist_world.get("x", 0),
-            "y": wrist_world.get("y", 0),
-            "z": wrist_world.get("z", 0)
-        }
-    
     return positions
 
 
@@ -113,6 +95,7 @@ def visualize_arm_movements(
         agentMode="arm",
         scene=scene_name,
         gridSize=grid_size,
+        position = {"x": 1.5, "y": 0, "z": 1.5},
         snapToGrid=False,
         rotateStepDegrees=90,
         visibilityDistance=1.5,
@@ -155,12 +138,13 @@ def visualize_arm_movements(
     for name, pos in initial_positions.items():
         logger.info(f"  {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
     
+    dg = 90
     # 로봇 초기 위치에서 왼쪽으로 90도 회전
-    logger.info("\n로봇을 왼쪽으로 90도 회전 중...")
+    logger.info(f"\n로봇을 왼쪽으로 {dg}도 회전 중...")
     try:
-        event = controller.step(action="RotateLeft", degrees=45)
+        event = controller.step(action="RotateLeft", degrees=dg)
         if event.metadata.get("lastActionSuccess", False):
-            logger.info("✓ 로봇 회전 완료 (왼쪽 90도)")
+            logger.info(f"✓ 로봇 회전 완료 (왼쪽 {dg}도)")
         else:
             logger.warning(f"⚠️ 로봇 회전 실패: {event.metadata.get('errorMessage', 'Unknown error')}")
     except Exception as e:
@@ -212,7 +196,7 @@ def visualize_arm_movements(
                     img = img[:, :, :3]
                 
                 img_display = ax_camera.imshow(img)
-                ax_camera.set_title("Third Party Camera View (에이전트 외부)", fontsize=14, fontweight='bold')
+                ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
                 
                 # 에이전트 시야 이미지도 표시
                 agent_img = event.frame
@@ -226,7 +210,7 @@ def visualize_arm_movements(
                         agent_img_array = agent_img_array[:, :, :3]
                     
                     agent_img_display = ax_agent.imshow(agent_img_array)
-                    ax_agent.set_title("Agent View (에이전트 시야)", fontsize=14, fontweight='bold')
+                    ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
                 
                 fig.canvas.draw()
                 fig.canvas.flush_events()
@@ -244,10 +228,6 @@ def visualize_arm_movements(
     # 초기 위치 추가
     if "armbase" in initial_positions:
         armbase_trajectory.append(initial_positions["armbase"])
-    if "world" in initial_positions:
-        world_trajectory.append(initial_positions["world"])
-    if "wrist" in initial_positions:
-        wrist_trajectory.append(initial_positions["wrist"])
     
     # MoveArmBase 테스트: Y 방향으로만 이동 (MoveArmBase는 y 값만 받음)
     logger.info("\n=== MoveArmBase 테스트 ===")
@@ -297,10 +277,6 @@ def visualize_arm_movements(
                 logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
                 if name == "armbase":
                     armbase_trajectory.append(pos)
-                elif name == "world":
-                    world_trajectory.append(pos)
-                elif name == "wrist":
-                    wrist_trajectory.append(pos)
             
             # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
             try:
@@ -320,7 +296,7 @@ def visualize_arm_movements(
                         # 서드파티 카메라 이미지 업데이트
                         if img_display is None:
                             img_display = ax_camera.imshow(img)
-                            ax_camera.set_title("Third Party Camera View (에이전트 외부)", fontsize=14, fontweight='bold')
+                            ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
                         else:
                             img_display.set_data(img)
                             img_display.set_clim(vmin=img.min(), vmax=img.max())
@@ -338,7 +314,7 @@ def visualize_arm_movements(
                     
                     if agent_img_display is None:
                         agent_img_display = ax_agent.imshow(agent_img_array)
-                        ax_agent.set_title("Agent View (에이전트 시야)", fontsize=14, fontweight='bold')
+                        ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
                     else:
                         agent_img_display.set_data(agent_img_array)
                         agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
@@ -352,72 +328,271 @@ def visualize_arm_movements(
         else:
             logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
     
-    # MoveArm 테스트: wrist, world, armBase 각각 테스트
-    logger.info("\n=== MoveArm 테스트 ===")
+    # MoveArm 테스트: armBase 좌표계에서 x, y, z 각각 최소~최대로 움직이기
+    logger.info("\n=== MoveArm 테스트 (armBase 좌표계) ===")
     
-    # 각 coordinateSpace별 테스트 범위 정의
-    coordinate_spaces = ["wrist", "world", "armBase"]
+    # armBase 좌표계 범위: x: -0.5 ~ 0.5, y: -0.5 ~ 0.5, z: 0 ~ 0.75
+    coord_space = "armBase"
     
-    for coord_space in coordinate_spaces:
+    # 초기 위치로 복귀
+    logger.info("\n초기 위치로 복귀 중...")
+    event = controller.step(
+        action="MoveArm",
+        position={"x": 0, "y": 0, "z": 0.5},
+        speed=0.01,
+        coordinateSpace=coord_space
+    )
+    
+    # X 방향 테스트: 최소(-0.5) ~ 최대(0.5)
+    logger.info(f"\n{'='*80}")
+    logger.info(f"X 방향 테스트: -1 ~ 1")
+    logger.info(f"{'='*80}")
+    x_movements = []
+    for x in np.linspace(-1, 1, 20):
+        x_movements.append({"x": x, "y": 0, "z": 0.5})
+    
+    for i, target_pos in enumerate(x_movements):
+        logger.info(f"\nMoveArm (X 방향) {i+1}/{len(x_movements)}: {target_pos}")
+        event = controller.step(
+            action="MoveArm",
+            position=target_pos,
+            speed=0.01,  # 매우 느린 속도
+            coordinateSpace=coord_space
+        )
+        
+        if event.metadata.get("lastActionSuccess", False):
+            positions = get_arm_positions(event)
+            logger.info(f"  성공!")
+            for name, pos in positions.items():
+                logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
+                if name == "armbase":
+                    armbase_trajectory.append(pos)
+            
+            # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
+            try:
+                # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+                if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                    img_data = event.third_party_camera_frames[0]
+                    if img_data is not None:
+                        if isinstance(img_data, np.ndarray):
+                            img = img_data
+                        else:
+                            img = np.array(img_data)
+                        
+                        # 이미지 형식 확인 및 변환
+                        if len(img.shape) == 3 and img.shape[2] == 4:
+                            img = img[:, :, :3]
+                        
+                        # 서드파티 카메라 이미지 업데이트
+                        if img_display is None:
+                            img_display = ax_camera.imshow(img)
+                            ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+                        else:
+                            img_display.set_data(img)
+                            img_display.set_clim(vmin=img.min(), vmax=img.max())
+                
+                # 에이전트 시야 이미지 업데이트
+                agent_img = event.frame
+                if agent_img is not None:
+                    if isinstance(agent_img, np.ndarray):
+                        agent_img_array = agent_img
+                    else:
+                        agent_img_array = np.array(agent_img)
+                    
+                    if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                        agent_img_array = agent_img_array[:, :, :3]
+                    
+                    if agent_img_display is None:
+                        agent_img_display = ax_agent.imshow(agent_img_array)
+                        ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                    else:
+                        agent_img_display.set_data(agent_img_array)
+                        agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+                
+                # 하나의 figure에 두 개의 subplot이므로 한 번만 업데이트
+                fig.canvas.draw()
+                fig.canvas.flush_events()
+                plt.pause(0.01)  # 화면 업데이트
+            except Exception as e:
+                logger.warning(f"이미지 표시 실패: {e}")
+        else:
+            logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+    
+    logger.info("\nX 방향 테스트 완료. 2초 대기 중...")
+    time.sleep(2)
+    
+    # Y 방향 테스트: 최소(-0.5) ~ 최대(0.5)
+    logger.info(f"\n{'='*80}")
+    logger.info(f"Y 방향 테스트: -0.5 ~ 0.5")
+    logger.info(f"{'='*80}")
+    y_movements = []
+    for y in np.linspace(-0.5, 1, 20):
+        y_movements.append({"x": 0, "y": y, "z": 0.5})
+    
+    for i, target_pos in enumerate(y_movements):
+        logger.info(f"\nMoveArm (Y 방향) {i+1}/{len(y_movements)}: {target_pos}")
+        event = controller.step(
+            action="MoveArm",
+            position=target_pos,
+            speed=0.01,  # 매우 느린 속도
+            coordinateSpace=coord_space
+        )
+        
+        if event.metadata.get("lastActionSuccess", False):
+            positions = get_arm_positions(event)
+            logger.info(f"  성공!")
+            for name, pos in positions.items():
+                logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
+                if name == "armbase":
+                    armbase_trajectory.append(pos)
+            
+            # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
+            try:
+                # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+                if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                    img_data = event.third_party_camera_frames[0]
+                    if img_data is not None:
+                        if isinstance(img_data, np.ndarray):
+                            img = img_data
+                        else:
+                            img = np.array(img_data)
+                        
+                        # 이미지 형식 확인 및 변환
+                        if len(img.shape) == 3 and img.shape[2] == 4:
+                            img = img[:, :, :3]
+                        
+                        # 서드파티 카메라 이미지 업데이트
+                        if img_display is None:
+                            img_display = ax_camera.imshow(img)
+                            ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+                        else:
+                            img_display.set_data(img)
+                            img_display.set_clim(vmin=img.min(), vmax=img.max())
+                
+                # 에이전트 시야 이미지 업데이트
+                agent_img = event.frame
+                if agent_img is not None:
+                    if isinstance(agent_img, np.ndarray):
+                        agent_img_array = agent_img
+                    else:
+                        agent_img_array = np.array(agent_img)
+                    
+                    if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                        agent_img_array = agent_img_array[:, :, :3]
+                    
+                    if agent_img_display is None:
+                        agent_img_display = ax_agent.imshow(agent_img_array)
+                        ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                    else:
+                        agent_img_display.set_data(agent_img_array)
+                        agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+                
+                # 하나의 figure에 두 개의 subplot이므로 한 번만 업데이트
+                fig.canvas.draw()
+                fig.canvas.flush_events()
+                plt.pause(0.01)  # 화면 업데이트
+            except Exception as e:
+                logger.warning(f"이미지 표시 실패: {e}")
+        else:
+            logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+    
+    logger.info("\nY 방향 테스트 완료. 2초 대기 중...")
+    time.sleep(2)
+    
+    # Z 방향 테스트: 최소(0) ~ 최대(0.75)
+    logger.info(f"\n{'='*80}")
+    logger.info(f"Z 방향 테스트: 0 ~ 0.75")
+    logger.info(f"{'='*80}")
+    z_movements = []
+    for z in np.linspace(0, 1, 20):
+        z_movements.append({"x": 0, "y": 0, "z": z})
+    
+    for i, target_pos in enumerate(z_movements):
+        logger.info(f"\nMoveArm (Z 방향) {i+1}/{len(z_movements)}: {target_pos}")
+        event = controller.step(
+            action="MoveArm",
+            position=target_pos,
+            speed=0.01,  # 매우 느린 속도
+            coordinateSpace=coord_space
+        )
+        
+        if event.metadata.get("lastActionSuccess", False):
+            positions = get_arm_positions(event)
+            logger.info(f"  성공!")
+            for name, pos in positions.items():
+                logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
+                if name == "armbase":
+                    armbase_trajectory.append(pos)
+            
+            # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
+            try:
+                # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+                if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                    img_data = event.third_party_camera_frames[0]
+                    if img_data is not None:
+                        if isinstance(img_data, np.ndarray):
+                            img = img_data
+                        else:
+                            img = np.array(img_data)
+                        
+                        # 이미지 형식 확인 및 변환
+                        if len(img.shape) == 3 and img.shape[2] == 4:
+                            img = img[:, :, :3]
+                        
+                        # 서드파티 카메라 이미지 업데이트
+                        if img_display is None:
+                            img_display = ax_camera.imshow(img)
+                            ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+                        else:
+                            img_display.set_data(img)
+                            img_display.set_clim(vmin=img.min(), vmax=img.max())
+                
+                # 에이전트 시야 이미지 업데이트
+                agent_img = event.frame
+                if agent_img is not None:
+                    if isinstance(agent_img, np.ndarray):
+                        agent_img_array = agent_img
+                    else:
+                        agent_img_array = np.array(agent_img)
+                    
+                    if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                        agent_img_array = agent_img_array[:, :, :3]
+                    
+                    if agent_img_display is None:
+                        agent_img_display = ax_agent.imshow(agent_img_array)
+                        ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                    else:
+                        agent_img_display.set_data(agent_img_array)
+                        agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+                
+                # 하나의 figure에 두 개의 subplot이므로 한 번만 업데이트
+                fig.canvas.draw()
+                fig.canvas.flush_events()
+                plt.pause(0.01)  # 화면 업데이트
+            except Exception as e:
+                logger.warning(f"이미지 표시 실패: {e}")
+        else:
+            logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+    
+    logger.info("\nZ 방향 테스트 완료. 2초 대기 중...")
+    time.sleep(2)
+    
+    logger.info("\n=== 모든 테스트 완료 ===")
+    logger.info("서드파티 카메라 뷰와 에이전트 시야 뷰 창이 열려있습니다.")
+    
+
+    repeat_test = input("x, y, z 테스트 반복 : 입력하세요")
+    if repeat_test == "x":
+        # X 방향 테스트: 최소(-0.5) ~ 최대(0.5)
         logger.info(f"\n{'='*80}")
-        logger.info(f"MoveArm 테스트: coordinateSpace = '{coord_space}'")
+        logger.info(f"X 방향 테스트: -0.5 ~ 0.5")
         logger.info(f"{'='*80}")
+        x_movements = []
+        for x in np.linspace(-1, 1, 20):
+            x_movements.append({"x": x, "y": 0, "z": 0.5})
         
-        if coord_space == "armBase":
-            # armBase: 초기 위치 (0, 0, 0.5)에서 시작, 범위 테스트
-            # x: -0.5 ~ 0.5, y: -0.5 ~ 0.5, z: 0 ~ 0.75
-            movements = []
-            # X 방향 테스트
-            for x in np.linspace(-0.5, 0.5, 10):
-                movements.append({"x": x, "y": 0, "z": 0.5})
-            # Y 방향 테스트
-            for y in np.linspace(-0.5, 0.5, 10):
-                movements.append({"x": 0, "y": y, "z": 0.5})
-            # Z 방향 테스트
-            for z in np.linspace(0, 0.75, 10):
-                movements.append({"x": 0, "y": 0, "z": z})
-            # 원점으로 복귀
-            movements.append({"x": 0, "y": 0, "z": 0.5})
-            
-        elif coord_space == "world":
-            # world: 현재 에이전트 위치 기준으로 전역 좌표
-            agent_pos = event.metadata.get("agent", {}).get("position", {})
-            agent_x = agent_pos.get("x", 0)
-            agent_y = agent_pos.get("y", 0.9)
-            agent_z = agent_pos.get("z", 0)
-            
-            movements = []
-            # X 방향 테스트 (에이전트 기준 ±0.5m)
-            for offset in np.linspace(-0.5, 0.5, 10):
-                movements.append({"x": agent_x + offset, "y": agent_y, "z": agent_z})
-            # Y 방향 테스트
-            for offset in np.linspace(-0.3, 0.3, 10):
-                movements.append({"x": agent_x, "y": agent_y + offset, "z": agent_z})
-            # Z 방향 테스트
-            for offset in np.linspace(-0.5, 0.5, 10):
-                movements.append({"x": agent_x, "y": agent_y, "z": agent_z + offset})
-            # 원래 위치로
-            movements.append({"x": agent_x, "y": agent_y, "z": agent_z})
-            
-        elif coord_space == "wrist":
-            # wrist: 현재 손목 위치 기준 상대 이동
-            current_wrist = get_arm_positions(controller.last_event).get("wrist", {"x": 0, "y": 0.9, "z": 0})
-            
-            movements = []
-            # X 방향 상대 이동
-            for offset in np.linspace(-0.2, 0.2, 10):
-                movements.append({"x": offset, "y": 0, "z": 0})
-            # Y 방향 상대 이동
-            for offset in np.linspace(-0.2, 0.2, 10):
-                movements.append({"x": 0, "y": offset, "z": 0})
-            # Z 방향 상대 이동
-            for offset in np.linspace(-0.2, 0.2, 10):
-                movements.append({"x": 0, "y": 0, "z": offset})
-            # 원래 위치로
-            movements.append({"x": 0, "y": 0, "z": 0})
-        
-        for i, target_pos in enumerate(movements):
-            logger.info(f"\nMoveArm ({coord_space}) {i+1}/{len(movements)}: {target_pos}")
+        for i, target_pos in enumerate(x_movements):
+            logger.info(f"\nMoveArm (X 방향) {i+1}/{len(x_movements)}: {target_pos}")
             event = controller.step(
                 action="MoveArm",
                 position=target_pos,
@@ -432,10 +607,6 @@ def visualize_arm_movements(
                     logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
                     if name == "armbase":
                         armbase_trajectory.append(pos)
-                    elif name == "world":
-                        world_trajectory.append(pos)
-                    elif name == "wrist":
-                        wrist_trajectory.append(pos)
                 
                 # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
                 try:
@@ -455,7 +626,7 @@ def visualize_arm_movements(
                             # 서드파티 카메라 이미지 업데이트
                             if img_display is None:
                                 img_display = ax_camera.imshow(img)
-                                ax_camera.set_title("Third Party Camera View (에이전트 외부)", fontsize=14, fontweight='bold')
+                                ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
                             else:
                                 img_display.set_data(img)
                                 img_display.set_clim(vmin=img.min(), vmax=img.max())
@@ -473,7 +644,7 @@ def visualize_arm_movements(
                         
                         if agent_img_display is None:
                             agent_img_display = ax_agent.imshow(agent_img_array)
-                            ax_agent.set_title("Agent View (에이전트 시야)", fontsize=14, fontweight='bold')
+                            ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
                         else:
                             agent_img_display.set_data(agent_img_array)
                             agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
@@ -486,14 +657,171 @@ def visualize_arm_movements(
                     logger.warning(f"이미지 표시 실패: {e}")
             else:
                 logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+        
+        logger.info("\nX 방향 테스트 완료. 2초 대기 중...")
         time.sleep(2)
     
-    logger.info("\n=== 모든 테스트 완료 ===")
-    logger.info("서드파티 카메라 뷰와 에이전트 시야 뷰 창이 열려있습니다.")
+    if repeat_test == "y":
+        # Y 방향 테스트: 최소(-0.5) ~ 최대(0.5)
+        logger.info(f"\n{'='*80}")
+        logger.info(f"Y 방향 테스트: -0.5 ~ 0.5")
+        logger.info(f"{'='*80}")
+        y_movements = []
+        for y in np.linspace(-0.5, 1, 20):
+            y_movements.append({"x": 0, "y": y, "z": 0.5})
+        
+        for i, target_pos in enumerate(y_movements):
+            logger.info(f"\nMoveArm (Y 방향) {i+1}/{len(y_movements)}: {target_pos}")
+            event = controller.step(
+                action="MoveArm",
+                position=target_pos,
+                speed=0.01,  # 매우 느린 속도
+                coordinateSpace=coord_space
+            )
+            
+            if event.metadata.get("lastActionSuccess", False):
+                positions = get_arm_positions(event)
+                logger.info(f"  성공!")
+                for name, pos in positions.items():
+                    logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
+                    if name == "armbase":
+                        armbase_trajectory.append(pos)
+                
+                # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
+                try:
+                    # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+                    if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                        img_data = event.third_party_camera_frames[0]
+                        if img_data is not None:
+                            if isinstance(img_data, np.ndarray):
+                                img = img_data
+                            else:
+                                img = np.array(img_data)
+                            
+                            # 이미지 형식 확인 및 변환
+                            if len(img.shape) == 3 and img.shape[2] == 4:
+                                img = img[:, :, :3]
+                            
+                            # 서드파티 카메라 이미지 업데이트
+                            if img_display is None:
+                                img_display = ax_camera.imshow(img)
+                                ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+                            else:
+                                img_display.set_data(img)
+                                img_display.set_clim(vmin=img.min(), vmax=img.max())
+                    
+                    # 에이전트 시야 이미지 업데이트
+                    agent_img = event.frame
+                    if agent_img is not None:
+                        if isinstance(agent_img, np.ndarray):
+                            agent_img_array = agent_img
+                        else:
+                            agent_img_array = np.array(agent_img)
+                        
+                        if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                            agent_img_array = agent_img_array[:, :, :3]
+                        
+                        if agent_img_display is None:
+                            agent_img_display = ax_agent.imshow(agent_img_array)
+                            ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                        else:
+                            agent_img_display.set_data(agent_img_array)
+                            agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+                    
+                    # 하나의 figure에 두 개의 subplot이므로 한 번만 업데이트
+                    fig.canvas.draw()
+                    fig.canvas.flush_events()
+                    plt.pause(0.01)  # 화면 업데이트
+                except Exception as e:
+                    logger.warning(f"이미지 표시 실패: {e}")
+            else:
+                logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+        
+        logger.info("\nY 방향 테스트 완료. 2초 대기 중...")
+        time.sleep(2)
     
+    if repeat_test == "z":
+        # Z 방향 테스트: 최소(0) ~ 최대(0.75)
+        logger.info(f"\n{'='*80}")
+        logger.info(f"Z 방향 테스트: 0 ~ 0.75")
+        logger.info(f"{'='*80}")
+        z_movements = []
+        for z in np.linspace(0, 1, 20):
+            z_movements.append({"x": 0, "y": 0, "z": z})
+        
+        for i, target_pos in enumerate(z_movements):
+            logger.info(f"\nMoveArm (Z 방향) {i+1}/{len(z_movements)}: {target_pos}")
+            event = controller.step(
+                action="MoveArm",
+                position=target_pos,
+                speed=0.01,  # 매우 느린 속도
+                coordinateSpace=coord_space
+            )
+            
+            if event.metadata.get("lastActionSuccess", False):
+                positions = get_arm_positions(event)
+                logger.info(f"  성공!")
+                for name, pos in positions.items():
+                    logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
+                    if name == "armbase":
+                        armbase_trajectory.append(pos)
+                
+                # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
+                try:
+                    # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+                    if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                        img_data = event.third_party_camera_frames[0]
+                        if img_data is not None:
+                            if isinstance(img_data, np.ndarray):
+                                img = img_data
+                            else:
+                                img = np.array(img_data)
+                            
+                            # 이미지 형식 확인 및 변환
+                            if len(img.shape) == 3 and img.shape[2] == 4:
+                                img = img[:, :, :3]
+                            
+                            # 서드파티 카메라 이미지 업데이트
+                            if img_display is None:
+                                img_display = ax_camera.imshow(img)
+                                ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+                            else:
+                                img_display.set_data(img)
+                                img_display.set_clim(vmin=img.min(), vmax=img.max())
+                    
+                    # 에이전트 시야 이미지 업데이트
+                    agent_img = event.frame
+                    if agent_img is not None:
+                        if isinstance(agent_img, np.ndarray):
+                            agent_img_array = agent_img
+                        else:
+                            agent_img_array = np.array(agent_img)
+                        
+                        if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                            agent_img_array = agent_img_array[:, :, :3]
+                        
+                        if agent_img_display is None:
+                            agent_img_display = ax_agent.imshow(agent_img_array)
+                            ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                        else:
+                            agent_img_display.set_data(agent_img_array)
+                            agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+                    
+                    # 하나의 figure에 두 개의 subplot이므로 한 번만 업데이트
+                    fig.canvas.draw()
+                    fig.canvas.flush_events()
+                    plt.pause(0.01)  # 화면 업데이트
+                except Exception as e:
+                    logger.warning(f"이미지 표시 실패: {e}")
+            else:
+                logger.warning(f"  실패: {event.metadata.get('errorMessage', 'Unknown error')}")
+        
+        logger.info("\nZ 방향 테스트 완료. 2초 대기 중...")
+        time.sleep(2)
+
     # 창을 열어두기 위해 대기
     input("창을 닫으려면 Enter를 누르세요...")
-    
+
     controller.stop()
     logger.info("Controller 종료 완료")
 
