@@ -1,0 +1,5 @@
+{
+"put apple in fridge": "1. Go to apple. \n 2. Pick up the apple. \n 3. Go to Fridge. \n 4. Open the Fridge. \n 5. Put the apple in the Fridge. \n 6. Close the Fridge.",
+"wash the plate": "Explanation: I would go to the plate and pick it up. Then I would go to the sink and put the plate in the sinkbasin. Then I would toggle on the Faucet and clean the plate. Then I would toggle off the Faucet. \n Plan: 1. Go to the Plate. 2. Pick up the Plate. 3. Go to the Sink. 4. Put the Plate in the Sinkbasin. 5. Toggle On the Faucet. 6. Clean the Plate. 7. Toggle Off the Faucet.",
+"slice the bread": "Explanation: I would go to the Knife and pick it up. Then I would go to the Bread and slice the bread. \n Plan: 1. Go to the Knife. 2. Pick up the Knife. 3. Go to the Bread. 4. Slice the Bread."
+}

@@ -1,0 +1,142 @@
+ACTION TEMPLATES:
+
+GoToObject <obj>
+PickupObject <obj>
+PutObject <obj><recp>
+DropHandObject
+ThrowObject 
+PushObject <obj>
+PullObject <obj>
+OpenObject <obj>
+CloseObject <obj>
+TiggleObjectOn <obj>
+ToggleObjectOff <obj>
+SliceObject <obj>
+BreakObject <obj>
+DirtyObject <obj>
+CleanObject <obj>
+FillObjectWithLiquid <obj><liquid>
+EmptyLiquidFromObject <obj>
+UseUpObject <obj>
+done
+
+
+
+
+All OBJECTS and PROPERTIES:
+
+AlarmClock : Pickupable
+Apple : Pickupable, Sliceable
+AppleSliced : Pickupable
+ArmChair : Receptacle
+BaseballBat : Pickupable
+BasketBall : Pickupable
+Bathtub
+BathtubBasin : Receptacle
+Bed : Receptacle, Dirty
+Blinds : Openable
+Book : Openable, Pickupable
+Boots : Pickupable
+Bottle : Pickupable, Fillable, Breakable
+Bowl : Pickupable, Receptacle, Fillable, Dirty
+Box : Openable, Pickupable, Receptacle
+Bread : Pickupable, Sliceable
+BreadSliced : Pickupable, Cookable
+ButterKnife : Pickupable
+Cabinet : Openable, Receptacle
+Candle : Pickupable, On, Off
+Cart : Receptacle
+CD : Pickupable
+CellPhone : Pickupable, On, Off, Breakable
+Chair 
+Cloth : Pickupable, Dirty
+CoffeeMachine : On, Off, Receptacle
+CoffeTable : Receptacle
+CounterTop : Receptacle
+CreditCard : Pickupable
+Cup : Pickupable, Receptacle, Fillable, Dirty, Breakable
+Curtains 
+Desk : Receptacle
+DeskLamp : On, Off
+DiningTable : Receptacle
+DishSponge : Pickupable
+Drawer : Openable, Receptacle
+Dresser : Receptacle
+Egg : Pickupable, Sliceable, Breakable
+EggCracked : Pickupable, Cookable
+Faucet : On, Off
+FloorLamp : On, Off
+Footstool 
+Fork : Pickupable
+Fridge : Openable, Receptacle
+GarbageCan : Receptacle
+HandTowel : Pickupable
+HanTowelHolder : Receptacle
+HousePlant : Fillable
+Kettle : Openable, Pickupable, Fillable
+KeyChain : Pickupable
+Knife : Pickupable
+Ladle : Pickupable
+Laptop : Openable, Pickupable, On, Off, Breakable
+LaundryHamper : Receptacle
+LaundryHamperLid : Openable
+Lettuce : Pickupable, Sliceable
+LettuceSliced : Pickupable
+LightSwitch : On, Off
+Microwave : Openable, On, Off, Receptacle
+Mirror : Breakable, Dirty
+Mug : Pickupable, Receptacle, Fillable, Breakable, Dirty
+Newspaper : Pickupable
+Ottoman : Receptacle
+Painting 
+Pan : Pickupable, Receptacle, Dirty
+PaperTowel : Pickupable, UsedUp
+Pen : Pickupable
+Pencil : Pickupable
+PepperShaker : Pickupable
+Pillow : Pickupable
+Plate : Pickupable, Receptacle, Dirty, Breakable
+Plunger : Pickupable
+Poster
+Pot : Pickupable, Receptacle, Fillable, Dirty
+Potato : Pickupable, Sliceable, Cookable
+PotatoSliced : Pickupable, Cookable
+RemoteControl : Pickupable
+Safe : Openable, Receptacle
+SaltShaker : Pickupable
+ScrubBrush : Pickupable
+Shelf : Receptacle
+ShowerCurtain : Openable
+ShowerDoor : Openable, Breakable
+ShowerGlass : Breakable
+ShowerHead : On, Off
+SideTable : Receptacle
+Sink
+SinkBasin : Receptacle
+SoapBar : Pickupable
+SoapBottle : Pickupable, UsedUp
+Sofa : Receptacle
+Spatula : Pickupable
+Spoon : Pickupable
+SprayBottle : Pickupable
+Statue : Pickupable, Breakable
+StoveBurner : On, Off, Receptacle
+StoveKnob : On, Off
+TeddyBear : Pickupable
+Television : On, Off, Breakable
+TennisRacket : Pickupable
+TissueBox : Pickupable, UsedUp
+Toaster : On, Off, Receptacle
+Toilet : Receptacle
+ToiletPaper : Pickupable, UsedUp
+ToiletPaperHanger : Receptacle
+Tomato : Pickupable, Sliceable
+TomatoSliced : Pickupable
+Towel : Pickupable
+TowelHolder : Receptacle
+TVStand : Receptacle
+Vase : Pickupable, Breakable
+Watch : Pickupable
+WateringCan: Pickupable, Fillable
+Window : Breakable
+WineBottle : Pickupable, Fillable, Breakable
