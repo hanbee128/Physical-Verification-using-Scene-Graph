@@ -242,7 +242,7 @@ class AI2ThorExecutor:
             gridSize=0.25,
             rotateStepDegrees=20,
             visibilityDistance=1.5,
-            fieldOfView=90,
+            fieldOfView=120,
             agentCount=1
         ))
         
@@ -2027,7 +2027,3 @@ def put_tomato_in_microwave():
         print(f"  {status} [{action_type}] {action['line']}")
     
     executor.close()
-
-
-
-

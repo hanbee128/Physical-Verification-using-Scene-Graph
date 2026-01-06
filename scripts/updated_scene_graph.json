@@ -22,8 +22,8 @@
         "z": 0.0
       },
       "cameraHorizon": 0.0,
-      "isHolding": true,
-      "heldObjectId": "Plate|+00.96|+01.65|-02.61",
+      "isHolding": false,
+      "heldObjectId": null,
       "heldObjectPose": {
         "position": {
           "x": -1.380000114440918,
@@ -1847,9 +1847,11 @@
           "y": -0.0013192715123295784,
           "z": 0.02093496359884739
         },
-        "parentReceptacles": [],
+        "parentReceptacles": [
+          "Sink|-01.90|+00.97|-01.50|SinkBasin"
+        ],
         "controlledObjects": null,
-        "isPickedUp": true,
+        "isPickedUp": false,
         "receptacleObjectIds": [],
         "mass": 0.6200000047683716,
         "sliceable": false,
@@ -3278,12 +3280,13 @@
       "targetObjectType": "Cabinet"
     },
     {
-      "edgeType": "HOLDS",
-      "source": "agent_0",
-      "target": "Plate|+00.96|+01.65|-02.61",
-      "sourceType": "Agent",
+      "edgeType": "IN",
+      "source": "Plate|+00.96|+01.65|-02.61",
+      "target": "Sink|-01.90|+00.97|-01.50|SinkBasin",
+      "sourceType": "Object",
       "targetType": "Object",
-      "targetObjectType": "Plate"
+      "sourceObjectType": "Plate",
+      "targetObjectType": "SinkBasin"
     }
   ]
 }

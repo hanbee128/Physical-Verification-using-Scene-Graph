@@ -90,12 +90,20 @@ def visualize_arm_movements(
         scene_name: AI2-THOR 씬 이름
         grid_size: 그리드 크기
     """
+    initial_position = input("초기 위치를 입력하세요 (x, y, z 형식): ")
+    initial_position = initial_position.split(",")
+    initial_position = {
+        "x": float(initial_position[0]),
+        "y": float(initial_position[1]),
+        "z": float(initial_position[2])
+    }
+
     # Controller 초기화 (ManipulaTHOR 모드)
     controller = Controller(
         agentMode="arm",
         scene=scene_name,
         gridSize=grid_size,
-        position = {"x": 1.5, "y": 0, "z": 1.5},
+        position = initial_position,
         snapToGrid=False,
         rotateStepDegrees=90,
         visibilityDistance=1.5,
@@ -111,7 +119,7 @@ def visualize_arm_movements(
 
     controller.step(
         action = "Teleport",
-        position = {"x": 1.5, "y": 0.9, "z": 1.5}
+        position = initial_position
     )
     
     # 서드파티 카메라 추가 (에이전트를 외부에서 볼 수 있음)

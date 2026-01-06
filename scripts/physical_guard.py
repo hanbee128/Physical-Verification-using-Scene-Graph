@@ -36,7 +36,7 @@ from pathlib import Path  # 파일 경로 처리를 위한 모듈
 from typing import Dict, List, Optional, Tuple, Any  # 타입 힌팅을 위한 모듈
 
 # 로컬 모듈 임포트
-from ai2thor_connector import AI2ThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
+from ai2thor_connector2 import ManipulaThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
 
 # Scene Graph Extractor 함수들 임포트
 try:
@@ -613,14 +613,17 @@ def get_relevant_scene_context(
 
 def find_closest_reachable_position(
     controller: Optional[Any],
-    target_pos: Dict[str, float]
+    target_pos: Dict[str, float],
+    agent_pos: Optional[Dict[str, float]] = None
 ) -> Tuple[Optional[Dict[str, float]], float]:
     """
     NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기
+    목표 객체와 정면으로 마주보는 위치를 우선적으로 선택
     
     Args:
         controller: AI2-THOR Controller (None이면 None 반환)
         target_pos: 목표 위치 {"x": float, "y": float, "z": float}
+        agent_pos: 현재 Agent 위치 (None이면 controller에서 가져옴)
         
     Returns:
         (가장 가까운 이동 가능 위치, 거리) 또는 (None, float('inf'))
@@ -636,27 +639,81 @@ def find_closest_reachable_position(
         if not reachable_positions:
             return None, float('inf')
         
-        # 가장 가까운 위치 찾기 (x, z 평면에서 거리 계산)
+        # Agent 위치 가져오기
+        if agent_pos is None:
+            agent_metadata = event.metadata.get("agent", {})
+            agent_pos = agent_metadata.get("position", {})
+            if not agent_pos:
+                # agent_pos가 없으면 기본값 사용
+                agent_pos = {"x": 0, "y": 0, "z": 0}
+        
         target_x = target_pos.get("x", 0)
         target_z = target_pos.get("z", 0)
+        agent_x = agent_pos.get("x", 0)
+        agent_z = agent_pos.get("z", 0)
         
-        closest_pos = None
-        min_distance = float('inf')
+        # 목표 객체를 향한 방향 벡터 (Agent 기준)
+        target_direction_x = target_x - agent_x
+        target_direction_z = target_z - agent_z
+        target_direction_norm = math.sqrt(target_direction_x**2 + target_direction_z**2)
         
+        if target_direction_norm < 0.01:
+            # Agent가 이미 목표 위치에 매우 가까움
+            target_direction_x = 1.0
+            target_direction_z = 0.0
+            target_direction_norm = 1.0
+        
+        # 정규화된 방향 벡터
+        target_dir_x = target_direction_x / target_direction_norm
+        target_dir_z = target_direction_z / target_direction_norm
+        
+        best_pos = None
+        best_score = float('inf')
+        
+        # 각 도달 가능한 위치에 대해 점수 계산 (거리 + 각도 고려)
         for pos in reachable_positions:
             pos_x = pos.get("x", 0)
             pos_z = pos.get("z", 0)
-            distance = ((pos_x - target_x)**2 + (pos_z - target_z)**2) ** 0.5
             
-            if distance < min_distance:
-                min_distance = distance
-                closest_pos = {
+            # 거리 계산 (x, z 평면)
+            distance = math.sqrt((pos_x - target_x)**2 + (pos_z - target_z)**2)
+            
+            # 위치에서 목표 객체를 향한 방향 벡터
+            pos_to_target_x = target_x - pos_x
+            pos_to_target_z = target_z - pos_z
+            pos_to_target_norm = math.sqrt(pos_to_target_x**2 + pos_to_target_z**2)
+            
+            if pos_to_target_norm < 0.01:
+                # 위치가 목표와 거의 같음
+                angle_score = 0.0
+            else:
+                # 정규화된 방향 벡터
+                pos_dir_x = pos_to_target_x / pos_to_target_norm
+                pos_dir_z = pos_to_target_z / pos_to_target_norm
+                
+                # 내적을 사용하여 각도 계산 (1.0 = 같은 방향, -1.0 = 반대 방향)
+                dot_product = target_dir_x * pos_dir_x + target_dir_z * pos_dir_z
+                # 각도 차이 (0~180도)
+                angle_diff = math.acos(max(-1.0, min(1.0, dot_product))) * 180.0 / math.pi
+                # 각도 점수: 0도에 가까울수록 낮은 점수 (우선순위 높음)
+                angle_score = angle_diff
+            # 종합 점수: 거리 + 각도 가중치 (거리 1m = 각도 10도와 동일한 가중치)
+            # 거리가 가까울수록, 각도가 작을수록(정면) 낮은 점수 = 우선순위 높음
+            score = distance + (angle_score / 10.0)
+            
+            if score < best_score:
+                best_score = score
+                best_pos = {
                     "x": pos_x,
                     "y": pos.get("y", 0),
                     "z": pos_z
                 }
         
-        return closest_pos, min_distance
+        if best_pos:
+            final_distance = math.sqrt((best_pos["x"] - target_x)**2 + (best_pos["z"] - target_z)**2)
+            return best_pos, final_distance
+        else:
+            return None, float('inf')
     except Exception as e:
         logger.warning(f"NavMesh에서 이동 가능 위치 찾기 실패: {e}")
         return None, float('inf')
@@ -743,11 +800,11 @@ def verify_guard_with_scene_graph(
         # y 범위: -0.35 ~ 1 (상하)
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
-        x_range = 1.0  # ±1.0
+        x_range = 1.0  # ±1.0 (좌우)
         y_range_min = -0.5  # 아래로 -0.35
         y_range_max = 1.5  # 위로 1.0
-        z_range_min = -1.5  # 뒤로 0 (음수 불가)
-        z_range_max = 0.5  # 앞으로 1.0
+        z_range_min = -1.5 - 0.2  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
+        z_range_max = 0.5 + 0.2 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
         
         # 손 위치 기준으로 범위 계산 (절대 좌표)
         x_min = hand_x - x_range
@@ -791,8 +848,12 @@ def verify_guard_with_scene_graph(
         if not obj_pos:
             return False, "객체 위치 정보가 없음"
         
-        # NavMesh를 사용하여 가장 가까운 이동 가능 위치 찾기
-        closest_pos, distance = find_closest_reachable_position(controller, obj_pos)
+        # Agent 위치 가져오기 (정면으로 마주보는 위치 선택을 위해)
+        agent_node = scene_context.get("agent", {}) if scene_context else {}
+        agent_pos_for_nav = agent_position if agent_position else agent_node.get("position", {})
+        
+        # NavMesh를 사용하여 목표 객체와 정면으로 마주보는 가장 가까운 이동 가능 위치 찾기
+        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, agent_pos_for_nav)
         
         if closest_pos is None:
             return False, "NavMesh 정보를 가져올 수 없음 (Controller 필요)"
@@ -800,7 +861,7 @@ def verify_guard_with_scene_graph(
         # 거리가 1.3m 이내이면 통과
         navigable_threshold = 1.3
         if distance <= navigable_threshold:
-            return True, f"가장 가까운 이동 가능 위치까지 거리: {distance:.2f}m <= {navigable_threshold}m"
+            return True, f"가장 가까운 이동 가능 위치까지 거리: {distance:.2f}m <= {navigable_threshold}m (정면 위치 우선 선택)"
         else:
             return False, f"가장 가까운 이동 가능 위치까지 거리 초과: {distance:.2f}m > {navigable_threshold}m"
     
@@ -1165,6 +1226,7 @@ def verify_action_with_scene_graph(
     failed_guards = []
     all_passed = True
     object_not_exists = False  # EXISTS 가드 실패 플래그
+    target_position = None  # GoToObject 검증 통과 시 이동할 좌표
     
     for guard in guards:
         passed, reason = verify_guard_with_scene_graph(
@@ -1173,6 +1235,18 @@ def verify_action_with_scene_graph(
         
         if passed:
             logger.info(f"    ✓ {guard}: {reason}")
+            
+            # GoToObject의 NAVIGABLE 가드 통과 시 이동할 좌표 저장
+            if action_type == "GoToObject" and "NAVIGABLE" in guard.upper():
+                target_obj = scene_context.get("targetObject")
+                if target_obj and controller:
+                    obj_pos = target_obj.get("position", {})
+                    if obj_pos:
+                        # Agent 위치 전달하여 정면으로 마주보는 위치 선택
+                        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, agent_position)
+                        if closest_pos:
+                            target_position = closest_pos
+                            logger.info(f"    📍 이동할 좌표 (정면 위치): ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
         else:
             logger.warning(f"    ✗ {guard}: {reason}")
             failed_guards.append(guard)
@@ -1316,6 +1390,11 @@ def verify_action_with_scene_graph(
     if all_passed:
         reason = f"모든 가드 통과 ({len(guards)}개)"
         logger.info(f"  ✓ 물리적 검증 통과: {reason}")
+        
+        # GoToObject 검증 통과 시 이동할 좌표를 action에 저장
+        if action_type == "GoToObject" and target_position:
+            action["target_position"] = target_position
+        
         return True, f"PASS: {reason}", [], []
     else:
         reason = f"{len(failed_guards)}개 가드 실패: {', '.join(failed_guards)}"
@@ -1450,23 +1529,48 @@ def update_scene_graph_after_action(
                     break
             
             if target_obj:
-                obj_pos = target_obj.get("position", {})
-                if obj_pos and controller is not None:
-                    # NavMesh에서 목표 객체와 가장 가까운 이동 가능 위치 찾기
-                    closest_pos, distance = find_closest_reachable_position(controller, obj_pos)
-                    
-                    if closest_pos:
-                        # Agent 위치 업데이트
-                        agent_node["position"] = {
-                            "x": closest_pos.get("x", 0),
-                            "y": closest_pos.get("y", 0),
-                            "z": closest_pos.get("z", 0)
-                        }
-                        logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
+                # action에 저장된 target_position 사용 (verify_action_with_scene_graph에서 계산된 좌표)
+                target_position = action.get("target_position")
+                if target_position:
+                    # Agent 위치 업데이트 (검증 시 계산된 좌표 사용)
+                    agent_node["position"] = {
+                        "x": target_position.get("x", 0),
+                        "y": target_position.get("y", 0),
+                        "z": target_position.get("z", 0)
+                    }
+                    # 거리 계산 (객체까지의 거리)
+                    obj_pos = target_obj.get("position", {})
+                    if obj_pos:
+                        distance = math.sqrt(
+                            (target_position.get("x", 0) - obj_pos.get("x", 0))**2 +
+                            (target_position.get("y", 0) - obj_pos.get("y", 0))**2 +
+                            (target_position.get("z", 0) - obj_pos.get("z", 0))**2
+                        )
                     else:
-                        logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: 이동 가능한 위치를 찾을 수 없음")
-                elif obj_pos and controller is None:
-                    logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: Controller가 없음")
+                        distance = 0.0
+                    logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({target_position.get('x', 0):.3f}, {target_position.get('y', 0):.3f}, {target_position.get('z', 0):.3f}) (거리: {distance:.3f}m, 정면 위치)")
+                else:
+                    # target_position이 없으면 fallback으로 다시 계산
+                    obj_pos = target_obj.get("position", {})
+                    if obj_pos and controller is not None:
+                        # 현재 Agent 위치 가져오기 (정면으로 마주보는 위치 선택을 위해)
+                        current_agent_pos = agent_node.get("position", {})
+                        
+                        # NavMesh에서 목표 객체와 정면으로 마주보는 가장 가까운 이동 가능 위치 찾기
+                        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, current_agent_pos)
+                        
+                        if closest_pos:
+                            # Agent 위치 업데이트
+                            agent_node["position"] = {
+                                "x": closest_pos.get("x", 0),
+                                "y": closest_pos.get("y", 0),
+                                "z": closest_pos.get("z", 0)
+                            }
+                            logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m, 정면 위치)")
+                        else:
+                            logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: 이동 가능한 위치를 찾을 수 없음")
+                    elif obj_pos and controller is None:
+                        logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: Controller가 없음")
     
     elif action_type == "PickupObject":
         # HOLDS 엣지 추가, IN 엣지 제거
@@ -2095,6 +2199,12 @@ def generate_final_plan_with_physical_verification(
             elif is_original:
                 action_lines.append(f"\t# [원본 액션]")
             
+            # GoToObject 검증 통과 시 이동할 좌표 주석 추가
+            action_type = action.get("type", "")
+            if action_type == "GoToObject" and action.get("target_position"):
+                target_pos = action.get("target_position")
+                action_lines.append(f"\t# 이동할 좌표: ({target_pos.get('x', 0):.3f}, {target_pos.get('y', 0):.3f}, {target_pos.get('z', 0):.3f})")
+            
             action_lines.append(f"\t{line}")
             step_counter += 1
     
@@ -2270,7 +2380,7 @@ def main():
         print(f"📦 AI2THOR 환경에서 액션과 객체 로드 중 (씬: {args.scene})")
         
         # 객체를 가져오기 위해 AI2THOR 실행자 초기화
-        executor = AI2ThorExecutor(scene=args.scene, headless=True)  # 헤드리스 모드로 실행
+        executor = ManipulaThorExecutor(scene=args.scene, headless=True)  # 헤드리스 모드로 실행
         executor.initialize()  # 환경 초기화
         
         # AI2THOR에서 사용 가능한 객체 목록 가져오기
@@ -2622,13 +2732,13 @@ def main():
         except Exception as e:
             logger.warning(f"⚠️  Controller 종료 실패: {e}")
 
-    # run_eval.py 스크립트 실행
+    # Baseline(ProgPrompt).py 스크립트 실행
     script_dir = Path(__file__).parent
-    run_eval_path = script_dir / "run_eval.py"
-    if run_eval_path.exists():
-        # run_eval.py 실행 명령어 구성
-        cmd = [
-            "python", str(run_eval_path),
+    baseline_progprompt_path = script_dir / "Baseline(ProgPrompt).py"
+    if baseline_progprompt_path.exists():
+        # Baseline(ProgPrompt).py 실행 명령어 구성
+        cmd = [ 
+            "python", str(baseline_progprompt_path),
             "--output-dir", str(Path(args.output_dir).resolve())
         ]
         
@@ -2659,9 +2769,9 @@ def main():
             cmd.extend(["--info-file", str(Path(args.info_file).resolve())])
         
         subprocess.run(cmd, cwd=str(script_dir))
-        print(f"✅ run_eval.py 스크립트 실행 완료")
+        print(f"✅ Baseline(ProgPrompt).py 스크립트 실행 완료")
     else:
-        print(f"⚠️  run_eval.py를 찾을 수 없습니다: {run_eval_path}")
+        print(f"⚠️  Baseline(ProgPrompt).py를 찾을 수 없습니다: {baseline_progprompt_path}")
 
 
 
