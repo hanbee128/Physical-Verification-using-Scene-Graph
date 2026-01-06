@@ -117,10 +117,20 @@ def visualize_arm_movements(
     
     logger.info(f"Controller 초기화 완료: {scene_name}")
 
-    controller.step(
-        action = "Teleport",
-        position = initial_position
+    # Teleport 액션 실행 (Controller 초기화 시 position을 전달했지만, 명시적으로 Teleport 실행)
+    # agentId는 기본값 0 사용 (단일 agent)
+    teleport_result = controller.step(
+        action="Teleport",
+        position=initial_position,
+        agentId=0
     )
+    
+    if teleport_result.metadata.get("lastActionSuccess", False):
+        logger.info(f"✓ Teleport 성공: ({initial_position['x']:.3f}, {initial_position['y']:.3f}, {initial_position['z']:.3f})")
+    else:
+        error_msg = teleport_result.metadata.get("errorMessage", "Unknown error")
+        logger.warning(f"⚠️ Teleport 실패: {error_msg}")
+        logger.info("  Controller 초기화 시 전달된 position을 사용합니다.")
     
     # 서드파티 카메라 추가 (에이전트를 외부에서 볼 수 있음)
     try:

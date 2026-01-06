@@ -36,7 +36,7 @@ from pathlib import Path  # 파일 경로 처리를 위한 모듈
 from typing import Dict, List, Optional, Tuple, Any  # 타입 힌팅을 위한 모듈
 
 # 로컬 모듈 임포트
-from ai2thor_connector2 import ManipulaThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
+from ai2thor_connector_manipulathor import ManipulaThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
 
 # Scene Graph Extractor 함수들 임포트
 try:
@@ -614,8 +614,9 @@ def get_relevant_scene_context(
 def find_closest_reachable_position(
     controller: Optional[Any],
     target_pos: Dict[str, float],
-    agent_pos: Optional[Dict[str, float]] = None
-) -> Tuple[Optional[Dict[str, float]], float]:
+    agent_pos: Optional[Dict[str, float]] = None,
+    return_closest_only: bool = False
+) -> Tuple[Optional[Dict[str, float]], float, Optional[Dict[str, float]]]:
     """
     NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기
     목표 객체와 정면으로 마주보는 위치를 우선적으로 선택
@@ -624,12 +625,14 @@ def find_closest_reachable_position(
         controller: AI2-THOR Controller (None이면 None 반환)
         target_pos: 목표 위치 {"x": float, "y": float, "z": float}
         agent_pos: 현재 Agent 위치 (None이면 controller에서 가져옴)
+        return_closest_only: True이면 거리만 고려한 가장 가까운 위치도 반환
         
     Returns:
-        (가장 가까운 이동 가능 위치, 거리) 또는 (None, float('inf'))
+        (최적 이동 가능 위치, 거리, 거리만 고려한 가장 가까운 위치) 또는 (None, float('inf'), None)
+        return_closest_only가 False이면 세 번째 값은 None
     """
     if controller is None:
-        return None, float('inf')
+        return None, float('inf'), None
     
     try:
         # GetReachablePositions로 이동 가능한 위치들 가져오기
@@ -637,7 +640,7 @@ def find_closest_reachable_position(
         reachable_positions = event.metadata.get("actionReturn", [])
         
         if not reachable_positions:
-            return None, float('inf')
+            return None, float('inf'), None
         
         # Agent 위치 가져오기
         if agent_pos is None:
@@ -669,6 +672,8 @@ def find_closest_reachable_position(
         
         best_pos = None
         best_score = float('inf')
+        closest_by_distance = None  # 거리만 고려한 가장 가까운 위치
+        closest_distance = float('inf')
         
         # 각 도달 가능한 위치에 대해 점수 계산 (거리 + 각도 고려)
         for pos in reachable_positions:
@@ -677,6 +682,15 @@ def find_closest_reachable_position(
             
             # 거리 계산 (x, z 평면)
             distance = math.sqrt((pos_x - target_x)**2 + (pos_z - target_z)**2)
+            
+            # 거리만 고려한 가장 가까운 위치 추적
+            if distance < closest_distance:
+                closest_distance = distance
+                closest_by_distance = {
+                    "x": pos_x,
+                    "y": pos.get("y", 0),
+                    "z": pos_z
+                }
             
             # 위치에서 목표 객체를 향한 방향 벡터
             pos_to_target_x = target_x - pos_x
@@ -711,12 +725,15 @@ def find_closest_reachable_position(
         
         if best_pos:
             final_distance = math.sqrt((best_pos["x"] - target_x)**2 + (best_pos["z"] - target_z)**2)
-            return best_pos, final_distance
+            if return_closest_only:
+                return best_pos, final_distance, closest_by_distance
+            else:
+                return best_pos, final_distance, None
         else:
-            return None, float('inf')
+            return None, float('inf'), None
     except Exception as e:
         logger.warning(f"NavMesh에서 이동 가능 위치 찾기 실패: {e}")
-        return None, float('inf')
+        return None, float('inf'), None
 
 
 def verify_guard_with_scene_graph(
@@ -852,18 +869,49 @@ def verify_guard_with_scene_graph(
         agent_node = scene_context.get("agent", {}) if scene_context else {}
         agent_pos_for_nav = agent_position if agent_position else agent_node.get("position", {})
         
-        # NavMesh를 사용하여 목표 객체와 정면으로 마주보는 가장 가까운 이동 가능 위치 찾기
-        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, agent_pos_for_nav)
+        # NavMesh를 사용하여 목표 객체까지 거리만 고려한 가장 가까운 이동 가능 위치 찾기
+        closest_pos, distance, closest_by_distance = find_closest_reachable_position(
+            controller, obj_pos, agent_pos_for_nav, return_closest_only=True
+        )
         
         if closest_pos is None:
             return False, "NavMesh 정보를 가져올 수 없음 (Controller 필요)"
         
+        # 거리만 고려한 가장 가까운 위치를 사용 (closest_by_distance가 있으면 사용)
+        if closest_by_distance:
+            closest_pos = closest_by_distance
+            # 거리 재계산
+            obj_x = obj_pos.get("x", 0)
+            obj_z = obj_pos.get("z", 0)
+            closest_x = closest_pos.get("x", 0)
+            closest_z = closest_pos.get("z", 0)
+            distance = math.sqrt((closest_x - obj_x)**2 + (closest_z - obj_z)**2)
+        
+        # 목표 객체 위치와 가장 가까운 이동 가능 위치의 실제 거리 계산
+        obj_x = obj_pos.get("x", 0)
+        obj_y = obj_pos.get("y", 0)
+        obj_z = obj_pos.get("z", 0)
+        closest_x = closest_pos.get("x", 0)
+        closest_y = closest_pos.get("y", 0)
+        closest_z = closest_pos.get("z", 0)
+        
+        # 실제 3D 거리 계산 (목표 객체 위치와 이동 가능 위치 사이)
+        actual_distance_3d = math.sqrt(
+            (closest_x - obj_x)**2 + 
+            (closest_y - obj_y)**2 + 
+            (closest_z - obj_z)**2
+        )
+        
+        # 가장 가까운 이동 가능 위치 좌표 정보
+        closest_pos_str = f"({closest_x:.3f}, {closest_y:.3f}, {closest_z:.3f})"
+        obj_pos_str = f"({obj_x:.3f}, {obj_y:.3f}, {obj_z:.3f})"
+        
         # 거리가 1.3m 이내이면 통과
         navigable_threshold = 1.3
         if distance <= navigable_threshold:
-            return True, f"가장 가까운 이동 가능 위치까지 거리: {distance:.2f}m <= {navigable_threshold}m (정면 위치 우선 선택)"
+            return True, f"목표 객체 위치: {obj_pos_str}, 가장 가까운 이동 가능 위치: {closest_pos_str} (NavMesh 거리: {distance:.2f}m, 실제 3D 거리: {actual_distance_3d:.2f}m) <= {navigable_threshold}m"
         else:
-            return False, f"가장 가까운 이동 가능 위치까지 거리 초과: {distance:.2f}m > {navigable_threshold}m"
+            return False, f"목표 객체 위치: {obj_pos_str}, 가장 가까운 이동 가능 위치: {closest_pos_str} (NavMesh 거리: {distance:.2f}m, 실제 3D 거리: {actual_distance_3d:.2f}m) > {navigable_threshold}m"
     
     # HOLDS(agent, object) 검증
     if "HOLDS" in guard_upper and "¬" not in guard_name:
@@ -1242,11 +1290,22 @@ def verify_action_with_scene_graph(
                 if target_obj and controller:
                     obj_pos = target_obj.get("position", {})
                     if obj_pos:
-                        # Agent 위치 전달하여 정면으로 마주보는 위치 선택
-                        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, agent_position)
+                        # Agent 위치 전달하여 거리만 고려한 가장 가까운 위치 선택
+                        closest_pos, distance, closest_by_distance = find_closest_reachable_position(
+                            controller, obj_pos, agent_position, return_closest_only=True
+                        )
+                        # 거리만 고려한 가장 가까운 위치 사용
+                        if closest_by_distance:
+                            closest_pos = closest_by_distance
+                            # 거리 재계산
+                            obj_x = obj_pos.get("x", 0)
+                            obj_z = obj_pos.get("z", 0)
+                            closest_x = closest_pos.get("x", 0)
+                            closest_z = closest_pos.get("z", 0)
+                            distance = math.sqrt((closest_x - obj_x)**2 + (closest_z - obj_z)**2)
                         if closest_pos:
                             target_position = closest_pos
-                            logger.info(f"    📍 이동할 좌표 (정면 위치): ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
+                            logger.info(f"    📍 이동할 좌표 (가장 가까운 위치): ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
         else:
             logger.warning(f"    ✗ {guard}: {reason}")
             failed_guards.append(guard)
@@ -1556,8 +1615,19 @@ def update_scene_graph_after_action(
                         # 현재 Agent 위치 가져오기 (정면으로 마주보는 위치 선택을 위해)
                         current_agent_pos = agent_node.get("position", {})
                         
-                        # NavMesh에서 목표 객체와 정면으로 마주보는 가장 가까운 이동 가능 위치 찾기
-                        closest_pos, distance = find_closest_reachable_position(controller, obj_pos, current_agent_pos)
+                        # NavMesh에서 목표 객체까지 거리만 고려한 가장 가까운 이동 가능 위치 찾기
+                        closest_pos, distance, closest_by_distance = find_closest_reachable_position(
+                            controller, obj_pos, current_agent_pos, return_closest_only=True
+                        )
+                        # 거리만 고려한 가장 가까운 위치 사용
+                        if closest_by_distance:
+                            closest_pos = closest_by_distance
+                            # 거리 재계산
+                            obj_x = obj_pos.get("x", 0)
+                            obj_z = obj_pos.get("z", 0)
+                            closest_x = closest_pos.get("x", 0)
+                            closest_z = closest_pos.get("z", 0)
+                            distance = math.sqrt((closest_x - obj_x)**2 + (closest_z - obj_z)**2)
                         
                         if closest_pos:
                             # Agent 위치 업데이트
@@ -1566,7 +1636,7 @@ def update_scene_graph_after_action(
                                 "y": closest_pos.get("y", 0),
                                 "z": closest_pos.get("z", 0)
                             }
-                            logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m, 정면 위치)")
+                            logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}') → ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m, 가장 가까운 위치)")
                         else:
                             logger.warning(f"  ⚠️ GoToObject('{object_name}') 후 Agent 위치 업데이트 실패: 이동 가능한 위치를 찾을 수 없음")
                     elif obj_pos and controller is None:

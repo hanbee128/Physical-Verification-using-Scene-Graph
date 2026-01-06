@@ -21,7 +21,7 @@ from pathlib import Path  # 파일 경로 처리를 위한 모듈
 from typing import Dict, List, Optional, Tuple  # 타입 힌팅을 위한 모듈
 
 # 로컬 모듈 임포트
-from ai2thor_connector import AI2ThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
+from ai2thor_connector_ithor import AI2ThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
 
 # 외부 라이브러리 임포트
 from openai import OpenAI  # OpenAI 호환 API 클라이언트 (Ollama와 통신)

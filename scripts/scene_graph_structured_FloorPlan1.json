@@ -1240,7 +1240,7 @@
           "z": 100.07095336914062
         },
         "parentReceptacles": [
-          "Fridge|-02.10|+00.00|+01.07"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1320,7 +1320,7 @@
           "Stool|+00.74|+00.00|+00.56",
           "Stool|+00.70|+00.00|-00.51",
           "ShelvingUnit|+01.75|+00.01|-02.56",
-          "Fridge|-02.10|+00.00|+01.07",
+          "Fridge|-02.10|+00.50|+01.07",
           "GarbageCan|-01.94|00.00|+02.03"
         ],
         "mass": 1.0,
@@ -1373,7 +1373,7 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Fridge|-02.10|+00.00|+01.07",
+        "nodeId": "Fridge|-02.10|+00.50|+01.07",
         "objectType": "Fridge",
         "pickupable": false,
         "openable": true,
@@ -1385,7 +1385,7 @@
         "distance": 1.4214049577713013,
         "position": {
           "x": -2.0969998836517334,
-          "y": 0.0,
+          "y": 0.5,
           "z": 1.0720000267028809
         },
         "rotation": {
@@ -3039,7 +3039,7 @@
     {
       "edgeType": "IN",
       "source": "Egg|-02.04|+00.81|+01.24",
-      "target": "Fridge|-02.10|+00.00|+01.07",
+      "target": "Fridge|-02.10|+00.50|+01.07",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "Egg",
@@ -3056,7 +3056,7 @@
     },
     {
       "edgeType": "ON",
-      "source": "Fridge|-02.10|+00.00|+01.07",
+      "source": "Fridge|-02.10|+00.50|+01.07",
       "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
