@@ -728,9 +728,9 @@ def verify_guard_with_scene_graph(
             return False, "Agent 위치 정보가 없음"
         
         # Hand 위치: Agent의 절대 좌표를 Hand 좌표로 사용 (절대 좌표로 직접 비교)
-        hand_x = agent_pos.get("x", 0)
-        hand_y = agent_pos.get("y", 0)
-        hand_z = agent_pos.get("z", 0)
+        hand_x = agent_pos.get("x", 0) - 0.3289999
+        hand_y = agent_pos.get("y", 0) + 0.2250000
+        hand_z = agent_pos.get("z", 0) - 0.5699999
         
         # 객체의 절대 좌표
         obj_x = obj_pos.get("x", 0)
@@ -744,8 +744,8 @@ def verify_guard_with_scene_graph(
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
         x_range = 1.0  # ±1.0
-        y_range_min = -0.35  # 아래로 -0.35
-        y_range_max = 1.0  # 위로 1.0
+        y_range_min = -0.5  # 아래로 -0.35
+        y_range_max = 1.5  # 위로 1.0
         z_range_min = -1.5  # 뒤로 0 (음수 불가)
         z_range_max = 0.5  # 앞으로 1.0
         

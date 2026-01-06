@@ -108,6 +108,11 @@ def visualize_arm_movements(
     )
     
     logger.info(f"Controller 초기화 완료: {scene_name}")
+
+    controller.step(
+        action = "Teleport",
+        position = {"x": 1.5, "y": 0.9, "z": 1.5}
+    )
     
     # 서드파티 카메라 추가 (에이전트를 외부에서 볼 수 있음)
     try:
@@ -233,36 +238,6 @@ def visualize_arm_movements(
     logger.info("\n=== MoveArmBase 테스트 ===")
     # MoveArmBase는 y 값만 받음 (normalizedY=True일 경우 0.0~1.0 범위)
     armbase_movements = [
-        0.0,   # 최하단
-        0.05,  # 5%
-        0.1,   # 10%
-        0.15,  # 15%
-        0.2,   # 20%
-        0.25,  # 25%
-        0.3,   # 30%
-        0.35,  # 35%
-        0.4,   # 40%
-        0.45,  # 45%
-        0.5,   # 50%
-        0.55,  # 55%
-        0.6,   # 60%
-        0.65,  # 65%
-        0.7,   # 70%
-        0.75,  # 75%
-        0.8,   # 80%
-        0.85,  # 85%
-        0.9,   # 90%
-        0.95,  # 95%
-        1.0,   # 최상단
-        0.95,  # 95%
-        0.9,   # 90%
-        0.85,  # 85%
-        0.8,   # 80%
-        0.75,  # 75%
-        0.7,   # 70%
-        0.65,  # 65%
-        0.6,   # 60%
-        0.55,  # 55%
         0.5
     ]
     
@@ -273,6 +248,11 @@ def visualize_arm_movements(
         if event.metadata.get("lastActionSuccess", False):
             positions = get_arm_positions(event)
             logger.info(f"  성공!")
+            logger.info(f" 현재 Agent 좌표: {event.metadata['agent']['position']}")
+            logger.info(f" 현재 손 좌표: {event.metadata['arm']['handSphereCenter']}")
+            logger.info(f" Agent - 손 좌표 차이 (x): {event.metadata['agent']['position']['x'] - event.metadata['arm']['handSphereCenter']['x']}")
+            logger.info(f" Agent - 손 좌표 차이 (y): {event.metadata['agent']['position']['y'] - event.metadata['arm']['handSphereCenter']['y']}")
+            logger.info(f" Agent - 손 좌표 차이 (z): {event.metadata['agent']['position']['z'] - event.metadata['arm']['handSphereCenter']['z']}")
             for name, pos in positions.items():
                 logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
                 if name == "armbase":
@@ -426,7 +406,7 @@ def visualize_arm_movements(
     logger.info(f"Y 방향 테스트: -0.5 ~ 0.5")
     logger.info(f"{'='*80}")
     y_movements = []
-    for y in np.linspace(-0.5, 1, 20):
+    for y in np.linspace(-0.5, 1.5, 20):
         y_movements.append({"x": 0, "y": y, "z": 0.5})
     
     for i, target_pos in enumerate(y_movements):
@@ -504,7 +484,7 @@ def visualize_arm_movements(
     logger.info(f"Z 방향 테스트: 0 ~ 0.75")
     logger.info(f"{'='*80}")
     z_movements = []
-    for z in np.linspace(0, 1, 20):
+    for z in np.linspace(-0.5, 1.5, 20):
         z_movements.append({"x": 0, "y": 0, "z": z})
     
     for i, target_pos in enumerate(z_movements):

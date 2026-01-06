@@ -5,7 +5,7 @@
     "reachThreshold": 1.39,
     "handSphereRadius": 0.5,
     "totalObjects": 77,
-    "totalEdges": 40
+    "totalEdges": 42
   },
   "nodes": {
     "agent": {
@@ -22,9 +22,30 @@
         "z": 0.0
       },
       "cameraHorizon": 0.0,
-      "isHolding": false,
-      "heldObjectId": null,
-      "heldObjectPose": null
+      "isHolding": true,
+      "heldObjectId": "Plate|+00.96|+01.65|-02.61",
+      "heldObjectPose": {
+        "position": {
+          "x": -1.380000114440918,
+          "y": 1.415999174118042,
+          "z": 0.9999999403953552
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 270.0,
+          "z": 0.0
+        },
+        "localPosition": {
+          "x": -0.0,
+          "y": -0.1599999964237213,
+          "z": 0.3799999952316284
+        },
+        "localRotation": {
+          "x": -0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      }
     },
     "objects": [
       {
@@ -88,7 +109,7 @@
           "z": 0.0586041584610939
         },
         "parentReceptacles": [
-          "Sink|-01.90|+00.97|-01.50|SinkBasin"
+          "CounterTop|-00.08|+01.15|00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -209,6 +230,44 @@
         "receptacleObjectIds": null,
         "mass": 0.699999988079071,
         "sliceable": true,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "ButterKnife|-00.41|+01.11|-00.46",
+        "objectType": "ButterKnife",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.5890921354293823,
+        "position": {
+          "x": -0.41180744767189026,
+          "y": 1.1053317785263062,
+          "z": -0.462016224861145
+        },
+        "rotation": {
+          "x": -0.0001556659844936803,
+          "y": 0.0009670493891462684,
+          "z": 269.9984436035156
+        },
+        "parentReceptacles": [
+          "CounterTop|-00.08|+01.15|00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.07999999821186066,
+        "sliceable": false,
         "isSliced": false,
         "breakable": false,
         "isBroken": false,
@@ -350,7 +409,9 @@
         "parentReceptacles": null,
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [],
+        "receptacleObjectIds": [
+          "Plate|+00.96|+01.65|-02.61"
+        ],
         "mass": 0.0,
         "sliceable": false,
         "isSliced": false,
@@ -656,6 +717,7 @@
           "CreditCard|-00.46|+01.10|+00.87",
           "Apple|-00.47|+01.15|+00.48",
           "Bread|-00.52|+01.17|-00.03",
+          "ButterKnife|-00.41|+01.11|-00.46",
           "Tomato|-00.39|+01.14|-00.81"
         ],
         "mass": 0.0,
@@ -2901,7 +2963,16 @@
       "targetObjectType": "CounterTop"
     },
     {
-      "edgeType": "IN",
+      "edgeType": "ON",
+      "source": "Book|+00.15|+01.10|+00.62",
+      "target": "CounterTop|-00.08|+01.15|00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Book",
+      "targetObjectType": "CounterTop"
+    },
+    {
+      "edgeType": "ON",
       "source": "Bottle|+01.54|+00.89|-02.54",
       "target": "Shelf|+01.75|+00.88|-02.56",
       "sourceType": "Object",
@@ -2925,6 +2996,15 @@
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "Bread",
+      "targetObjectType": "CounterTop"
+    },
+    {
+      "edgeType": "ON",
+      "source": "ButterKnife|-00.41|+01.11|-00.46",
+      "target": "CounterTop|-00.08|+01.15|00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "ButterKnife",
       "targetObjectType": "CounterTop"
     },
     {
@@ -2971,6 +3051,24 @@
       "targetType": "Object",
       "sourceObjectType": "Fork",
       "targetObjectType": "Drawer"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Fridge|-02.10|+00.00|+01.07",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Fridge",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "GarbageCan|-01.94|00.00|+02.03",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "GarbageCan",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
@@ -3073,6 +3171,15 @@
     },
     {
       "edgeType": "ON",
+      "source": "ShelvingUnit|+01.75|+00.01|-02.56",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "ShelvingUnit",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
       "source": "SoapBottle|-01.99|+00.90|-02.03",
       "target": "CounterTop|-01.87|+00.95|-01.21",
       "sourceType": "Object",
@@ -3099,13 +3206,31 @@
       "targetObjectType": "Drawer"
     },
     {
-      "edgeType": "IN",
+      "edgeType": "ON",
       "source": "Statue|+01.96|+00.18|-02.54",
       "target": "Shelf|+01.75|+00.17|-02.56",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "Statue",
       "targetObjectType": "Shelf"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Stool|+00.70|+00.00|-00.51",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Stool",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Stool|+00.74|+00.00|+00.56",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Stool",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
@@ -3153,13 +3278,12 @@
       "targetObjectType": "Cabinet"
     },
     {
-      "edgeType": "IN",
-      "source": "Book|+00.15|+01.10|+00.62",
-      "target": "Sink|-01.90|+00.97|-01.50|SinkBasin",
-      "sourceType": "Object",
+      "edgeType": "HOLDS",
+      "source": "agent_0",
+      "target": "Plate|+00.96|+01.65|-02.61",
+      "sourceType": "Agent",
       "targetType": "Object",
-      "sourceObjectType": "Book",
-      "targetObjectType": "SinkBasin"
+      "targetObjectType": "Plate"
     }
   ]
 }
