@@ -2002,15 +2002,15 @@ if __name__ == "__main__":
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-def put_tomato_in_microwave():
-    GoToObject('Egg')
-    OpenObject('Fridge')
-    PickupObject('Egg')
-    CloseObject('Fridge')
+        def put_tomato_in_microwave():
+            GoToObject('Plate')
+            OpenObject('Drawer')
+            PickupObject('Plate')
+            CloseObject('Drawer')
 
-    GoToObject('CounterTop')
+            GoToObject('SinkBasin')
 
-    PutObject('Egg', 'CounterTop')
+            PutObject('Plate', 'SinkBasin')
     """
     
     result = executor.execute_program(program)

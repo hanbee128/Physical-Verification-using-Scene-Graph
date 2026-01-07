@@ -136,15 +136,22 @@ class ManipulaThorExecutor:
         # 비디오 저장 관련
         self.video_writer = None
         self.video_frames = []
-        self.video_width = 1000
+        self.video_width = 3000  # 3분할을 위한 가로 크기 (1000 * 3)
         self.video_height = 1000
         
-        # 실시간 시각화 관련 (Third Party View & Agent View)
+        # 동적 카메라 추적 관련
+        self.last_agent_position = None
+        self.last_agent_rotation = None
+        self.camera_update_threshold = 0.1  # 0.1m 이상 이동하거나 5도 이상 회전하면 카메라 업데이트
+        
+        # 실시간 시각화 관련 (3분할: Top View, Right Side View, Agent View)
         self.show_realtime_view = not headless  # 헤드리스 모드가 아니면 실시간 시각화 활성화
         self.fig = None
-        self.ax_camera = None
+        self.ax_camera_top = None
+        self.ax_camera_right = None
         self.ax_agent = None
-        self.img_display = None
+        self.img_display_top = None
+        self.img_display_right = None
         self.agent_img_display = None
         
         # 이미지 저장 관련
@@ -186,12 +193,12 @@ class ManipulaThorExecutor:
                     frame = agent_event.frame
                     self.video_height, self.video_width = frame.shape[:2]
             else:
-                # 기본값 사용
-                self.video_width = 1000
+                # 기본값 사용 (3분할용)
+                self.video_width = 3000
                 self.video_height = 1000
         except Exception as e:
-            print(f"⚠️ Could not determine video size: {e}, using default 1000x1000")
-            self.video_width = 1000
+            print(f"⚠️ Could not determine video size: {e}, using default 3000x1000 (3분할)")
+            self.video_width = 3000
             self.video_height = 1000
         
         # 비디오 파일명 생성 (타임스탬프 포함)
@@ -224,17 +231,22 @@ class ManipulaThorExecutor:
             # Interactive mode 활성화
             plt.ion()
             
-            # 하나의 창에 두 개의 subplot 생성
-            self.fig = plt.figure(figsize=(20, 8))
-            self.fig.canvas.manager.set_window_title("Agent View & Third Party Camera View")
+            # 하나의 창에 세 개의 subplot 생성 (3분할)
+            self.fig = plt.figure(figsize=(30, 8))
+            self.fig.canvas.manager.set_window_title("Agent View & Third Party Camera Views")
             
-            # 서드파티 카메라 뷰 (왼쪽)
-            self.ax_camera = self.fig.add_subplot(121)
-            self.ax_camera.axis('off')
-            self.ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
+            # Top view 카메라 뷰 (왼쪽)
+            self.ax_camera_top = self.fig.add_subplot(131)
+            self.ax_camera_top.axis('off')
+            self.ax_camera_top.set_title("Top View Camera", fontsize=14, fontweight='bold')
+            
+            # 로봇의 90도 오른쪽 카메라 뷰 (가운데)
+            self.ax_camera_right = self.fig.add_subplot(132)
+            self.ax_camera_right.axis('off')
+            self.ax_camera_right.set_title("Side View", fontsize=14, fontweight='bold')
             
             # 에이전트 시야 뷰 (오른쪽)
-            self.ax_agent = self.fig.add_subplot(122)
+            self.ax_agent = self.fig.add_subplot(133)
             self.ax_agent.axis('off')
             self.ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
             
@@ -251,7 +263,7 @@ class ManipulaThorExecutor:
             traceback.print_exc()
     
     def _update_realtime_visualization(self):
-        """실시간 시각화 업데이트 (Third Party View & Agent View)"""
+        """실시간 시각화 업데이트 (3분할: Top View, Right Side View, Agent View)"""
         if not self.show_realtime_view or not MATPLOTLIB_AVAILABLE or not self.controller or not self.fig:
             return
         
@@ -260,24 +272,43 @@ class ManipulaThorExecutor:
             
             # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
             if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
-                img_data = event.third_party_camera_frames[0]  # 첫 번째 서드파티 카메라 사용
-                if img_data is not None:
-                    if isinstance(img_data, np.ndarray):
-                        img = img_data
-                    else:
-                        img = np.array(img_data)
-                    
-                    # 이미지 형식 확인 및 변환 (RGB 형식이므로 그대로 사용)
-                    if len(img.shape) == 3 and img.shape[2] == 4:
-                        img = img[:, :, :3]
-                    
-                    # 서드파티 카메라 이미지 업데이트
-                    if self.img_display is None:
-                        self.img_display = self.ax_camera.imshow(img)
-                        self.ax_camera.set_title("Third Party Camera View", fontsize=14, fontweight='bold')
-                    else:
-                        self.img_display.set_data(img)
-                        self.img_display.set_clim(vmin=img.min(), vmax=img.max())
+                # Top view 카메라 (첫 번째)
+                if len(event.third_party_camera_frames) > 0:
+                    img_data_top = event.third_party_camera_frames[0]
+                    if img_data_top is not None:
+                        if isinstance(img_data_top, np.ndarray):
+                            img_top = img_data_top
+                        else:
+                            img_top = np.array(img_data_top)
+                        
+                        if len(img_top.shape) == 3 and img_top.shape[2] == 4:
+                            img_top = img_top[:, :, :3]
+                        
+                        if self.img_display_top is None:
+                            self.img_display_top = self.ax_camera_top.imshow(img_top)
+                            self.ax_camera_top.set_title("Top View Camera", fontsize=14, fontweight='bold')
+                        else:
+                            self.img_display_top.set_data(img_top)
+                            self.img_display_top.set_clim(vmin=img_top.min(), vmax=img_top.max())
+                
+                # 로봇의 90도 오른쪽 카메라 (두 번째)
+                if len(event.third_party_camera_frames) > 1:
+                    img_data_right = event.third_party_camera_frames[1]
+                    if img_data_right is not None:
+                        if isinstance(img_data_right, np.ndarray):
+                            img_right = img_data_right
+                        else:
+                            img_right = np.array(img_data_right)
+                        
+                        if len(img_right.shape) == 3 and img_right.shape[2] == 4:
+                            img_right = img_right[:, :, :3]
+                        
+                        if self.img_display_right is None:
+                            self.img_display_right = self.ax_camera_right.imshow(img_right)
+                            self.ax_camera_right.set_title("Side View", fontsize=14, fontweight='bold')
+                        else:
+                            self.img_display_right.set_data(img_right)
+                            self.img_display_right.set_clim(vmin=img_right.min(), vmax=img_right.max())
             
             # 에이전트 시야 이미지 업데이트
             agent_img = event.frame
@@ -305,8 +336,34 @@ class ManipulaThorExecutor:
             # 시각화 업데이트 실패는 조용히 무시 (너무 많은 에러 메시지 방지)
             pass
     
+    def _update_right_side_camera(self):
+        """로봇의 현재 위치를 추적하여 90도 오른쪽 카메라 업데이트"""
+        try:
+            # 에이전트 위치와 회전 가져오기
+            metadata = self.controller.last_event.metadata
+            agent_pos = metadata.get("agent", {}).get("position", {})
+            agent_rot = metadata.get("agent", {}).get("rotation", {})
+            agent_x = agent_pos.get("x", 0)
+            agent_y = agent_pos.get("y", 0.9)
+            agent_z = agent_pos.get("z", 0)
+            agent_rotation_y = agent_rot.get("y", 0)
+            
+            self.controller.step(
+                action="AddThirdPartyCamera",
+                position=dict(x=2.2, y=2, z=2.2),
+                rotation=dict(x=0, y=225, z=0),  # 로봇을 향하도록
+                fieldOfView=90,
+            )
+
+        except Exception as e:
+            # 카메라 업데이트 실패는 조용히 무시 (너무 많은 에러 메시지 방지)
+            pass
+    
     def _capture_frame(self):
-        """현재 프레임을 캡처하여 비디오에 추가 및 실시간 시각화 업데이트"""
+        """현재 프레임을 캡처하여 비디오에 추가 및 실시간 시각화 업데이트 (3분할)"""
+        # 로봇 위치 추적하여 카메라 업데이트
+        self._update_right_side_camera()
+        
         # 실시간 시각화 업데이트
         if self.show_realtime_view:
             self._update_realtime_visualization()
@@ -318,30 +375,95 @@ class ManipulaThorExecutor:
         try:
             event = self.controller.last_event
             
+            # 3개의 뷰 가져오기
+            frame_top = None
+            frame_right = None
+            frame_agent = None
+            
+            # Top view 카메라 (첫 번째 third_party_camera_frames)
+            if hasattr(event, 'third_party_camera_frames') and len(event.third_party_camera_frames) > 0:
+                img_data_top = event.third_party_camera_frames[0]
+                if img_data_top is not None:
+                    if isinstance(img_data_top, np.ndarray):
+                        frame_top = img_data_top.copy()
+                    else:
+                        frame_top = np.array(img_data_top)
+                    # RGBA를 RGB로 변환
+                    if len(frame_top.shape) == 3 and frame_top.shape[2] == 4:
+                        frame_top = cv2.cvtColor(frame_top, cv2.COLOR_RGBA2RGB)
+                    elif len(frame_top.shape) == 3 and frame_top.shape[2] == 3:
+                        # 이미 RGB인 경우
+                        pass
+                    else:
+                        frame_top = None
+            
+            # 로봇의 90도 오른쪽 카메라 (두 번째 third_party_camera_frames)
+            if hasattr(event, 'third_party_camera_frames') and len(event.third_party_camera_frames) > 1:
+                img_data_right = event.third_party_camera_frames[1]
+                if img_data_right is not None:
+                    if isinstance(img_data_right, np.ndarray):
+                        frame_right = img_data_right.copy()
+                    else:
+                        frame_right = np.array(img_data_right)
+                    # RGBA를 RGB로 변환
+                    if len(frame_right.shape) == 3 and frame_right.shape[2] == 4:
+                        frame_right = cv2.cvtColor(frame_right, cv2.COLOR_RGBA2RGB)
+                    elif len(frame_right.shape) == 3 and frame_right.shape[2] == 3:
+                        # 이미 RGB인 경우
+                        pass
+                    else:
+                        frame_right = None
+            
             # Agent view 프레임 가져오기
-            frame = None
             if hasattr(event, 'cv2img') and event.cv2img is not None:
-                frame = event.cv2img.copy()
+                frame_agent = event.cv2img.copy()
             elif hasattr(event, 'frame') and event.frame is not None:
-                frame = event.frame.copy()
+                frame_agent = event.frame.copy()
+                # RGBA를 RGB로 변환
+                if len(frame_agent.shape) == 3 and frame_agent.shape[2] == 4:
+                    frame_agent = cv2.cvtColor(frame_agent, cv2.COLOR_RGBA2RGB)
             elif hasattr(event, 'events') and len(event.events) > self.agent_id:
                 agent_event = event.events[self.agent_id]
                 if hasattr(agent_event, 'cv2img') and agent_event.cv2img is not None:
-                    frame = agent_event.cv2img.copy()
+                    frame_agent = agent_event.cv2img.copy()
                 elif hasattr(agent_event, 'frame') and agent_event.frame is not None:
-                    frame = agent_event.frame.copy()
+                    frame_agent = agent_event.frame.copy()
+                    # RGBA를 RGB로 변환
+                    if len(frame_agent.shape) == 3 and frame_agent.shape[2] == 4:
+                        frame_agent = cv2.cvtColor(frame_agent, cv2.COLOR_RGBA2RGB)
             
-            if frame is not None:
-                # 프레임 크기 조정 (비디오 크기에 맞춤)
-                if frame.shape[:2] != (self.video_height, self.video_width):
-                    frame = cv2.resize(frame, (self.video_width, self.video_height))
+            # 3분할 프레임 합성
+            if frame_top is not None or frame_right is not None or frame_agent is not None:
+                # 각 프레임을 1000x1000으로 리사이즈
+                frame_height = 1000
+                frame_width = 1000
+                
+                if frame_top is not None:
+                    frame_top = cv2.resize(frame_top, (frame_width, frame_height))
+                else:
+                    frame_top = np.zeros((frame_height, frame_width, 3), dtype=np.uint8)
+                
+                if frame_right is not None:
+                    frame_right = cv2.resize(frame_right, (frame_width, frame_height))
+                else:
+                    frame_right = np.zeros((frame_height, frame_width, 3), dtype=np.uint8)
+                
+                if frame_agent is not None:
+                    frame_agent = cv2.resize(frame_agent, (frame_width, frame_height))
+                else:
+                    frame_agent = np.zeros((frame_height, frame_width, 3), dtype=np.uint8)
+                
+                # 가로로 합성 (3분할)
+                combined_frame = np.hstack([frame_top, frame_right, frame_agent])
                 
                 # 비디오에 프레임 추가
                 if self.video_writer and self.video_writer.isOpened():
-                    self.video_writer.write(frame)
-                    self.video_frames.append(frame)
+                    self.video_writer.write(combined_frame)
+                    self.video_frames.append(combined_frame)
         except Exception as e:
             print(f"⚠️ Error capturing frame: {e}")
+            import traceback
+            traceback.print_exc()
     
     def _close_video_writer(self):
         """비디오 writer 종료 및 파일 저장"""
@@ -373,26 +495,10 @@ class ManipulaThorExecutor:
         # Top view camera 추가
         event = self.controller.step(action="GetMapViewCameraProperties")
         self.controller.step(action="AddThirdPartyCamera", **event.metadata["actionReturn"])
+        print(f"  ✓ Top View Camera 추가 완료")
         
-        # 방 구석에서 로봇을 볼 수 있도록 추가 Third Party Camera 추가 (use_arm_and_armbase.py 방식)
-        try:
-            # 에이전트 위치 가져오기
-            agent_pos = self.controller.last_event.metadata.get("agent", {}).get("position", {})
-            agent_x = agent_pos.get("x", 0)
-            agent_y = agent_pos.get("y", 0.9)
-            agent_z = agent_pos.get("z", 0)
-            
-            # 방 구석에서 에이전트를 볼 수 있도록 카메라 위치 설정
-            # 에이전트 앞쪽에서 위에서 보기
-            self.controller.step(
-                action="AddThirdPartyCamera",
-                position=dict(x=agent_x, y=agent_y + 0.5, z=agent_z - 1.5),  # 에이전트 앞쪽에서 위에서 보기
-                rotation=dict(x=15, y=0, z=0),  # 약간 아래를 보도록
-                fieldOfView=90
-            )
-            print(f"  ✓ Third Party Camera 추가 완료 (방 구석 뷰)")
-        except Exception as e:
-            print(f"  ⚠️ Third Party Camera 추가 실패: {e}")
+        # 로봇의 90도 오른쪽에서 Third Party Camera 추가 (초기 위치)
+        self._update_right_side_camera()
         
         # 도달 가능한 위치 가져오기 (NavMesh 기반)
         reachable_positions_ = self.controller.step(action="GetReachablePositions").metadata["actionReturn"]
@@ -1823,27 +1929,38 @@ class ManipulaThorExecutor:
     
     def _calculate_armbase_y_normalized(self, target_y: float, agent_y: float) -> float:
         """
-        목표 y 좌표에 맞춰 MoveArmBase의 normalizedY 값 계산
+        목표 객체의 y 좌표(높이)를 사용하여 MoveArmBase의 normalizedY 값 계산
+        (Heuristic 방식: 객체 메타데이터의 세계 좌표 활용)
+        
+        계산식: 목표 객체의 y 좌표(높이)와 현재 로봇 베이스의 상대적 높이 차이를 계산하여,
+        이를 0.0~1.0 사이의 값으로 매핑(Mapping)합니다.
+        
+        예를 들어, 선반 위에 있는 높은 곳의 객체를 잡아야 할 때는 
+        객체의 y 위치에 비례하여 moveArmBase의 y 값을 높게 설정합니다.
         
         Args:
-            target_y: 목표 객체의 y 좌표 (절대)
-            agent_y: Agent의 y 좌표 (절대)
+            target_y: 목표 객체의 y 좌표 (세계 좌표, 절대값)
+            agent_y: Agent 베이스의 y 좌표 (세계 좌표, 절대값)
             
         Returns:
             normalizedY 값 (0.0~1.0)
         """
-        # armBase의 y 범위는 대략 agent_y 기준 -0.5 ~ +1.5 정도
-        # normalizedY는 0.0~1.0 범위
-        armbase_y_min = agent_y - 0.5
-        armbase_y_max = agent_y + 1.5
-        armbase_y_range = armbase_y_max - armbase_y_min
+        # armBase의 y 범위는 agent_y 기준으로 대략 -0.5m ~ +1.5m 정도
+        # normalizedY는 0.0~1.0 범위로 매핑됨
+        armbase_y_min = agent_y - 0.5  # 최소 높이 (로봇 베이스보다 0.5m 낮음)
+        armbase_y_max = agent_y + 1.5  # 최대 높이 (로봇 베이스보다 1.5m 높음)
+        armbase_y_range = armbase_y_max - armbase_y_min  # 전체 범위: 2.0m
         
         if armbase_y_range <= 0:
-            return 0.5  # 기본값
+            return 0.5  # 기본값 (중간 높이)
         
-        # 목표 y 좌표를 normalized 값으로 변환
-        normalized_y = (target_y - armbase_y_min) / armbase_y_range
-        # 0.0~1.0 범위로 제한
+        # 목표 객체의 y 좌표와 로봇 베이스의 상대적 높이 차이 계산
+        height_difference = target_y - armbase_y_min
+        
+        # 상대적 높이 차이를 0.0~1.0 범위로 매핑
+        normalized_y = height_difference / armbase_y_range
+        
+        # 0.0~1.0 범위로 제한 (선반 위 높은 객체는 1.0에 가깝고, 바닥의 객체는 0.0에 가까움)
         normalized_y = max(0.0, min(1.0, normalized_y))
         
         return normalized_y
@@ -1872,22 +1989,44 @@ class ManipulaThorExecutor:
         time.sleep(0.2)
         self._capture_frame()  # 프레임 캡처
         
-        # 객체의 중심 위치 가져오기
-        obj_center = self._get_object_center(object_id)
-        if not obj_center:
-            print(f"✗ Object '{object_name}' has invalid position")
+        # 객체 메타데이터에서 세계 좌표(World Coordinates) 직접 가져오기
+        # axisAlignedBoundingBox.center를 사용하여 정확한 위치 정보 활용
+        metadata = self.controller.last_event.metadata
+        objects = metadata.get("objects", [])
+        
+        obj_metadata = None
+        for obj in objects:
+            if obj.get("objectId") == object_id:
+                obj_metadata = obj
+                break
+        
+        if not obj_metadata:
+            print(f"✗ Object '{object_name}' metadata not found")
+            return False
+        
+        # 객체의 axisAlignedBoundingBox.center에서 세계 좌표 직접 추출
+        bbox = obj_metadata.get("axisAlignedBoundingBox", {})
+        obj_center = bbox.get("center", {})
+        
+        if not obj_center or not all(key in obj_center for key in ["x", "y", "z"]):
+            print(f"✗ Object '{object_name}' has invalid position in metadata")
             return False
         
         # Agent 위치와 회전 가져오기
-        metadata = self.controller.last_event.metadata
         agent_pos = metadata["agent"]["position"]
         agent_rot = metadata["agent"]["rotation"]["y"]
         
-        # 1. 목표 객체의 y 좌표에 맞춰 MoveArmBase 조정
-        target_y = obj_center["y"]
-        normalized_y = self._calculate_armbase_y_normalized(target_y, agent_pos["y"])
+        # 1. 객체 메타데이터의 세계 좌표 y 값(높이)을 사용하여 MoveArmBase 조정
+        # Heuristic 방식: 목표 객체의 y 좌표와 로봇 베이스의 상대적 높이 차이를 계산
+        target_y = obj_center["y"]  # 객체의 세계 좌표 y 값 (높이)
+        agent_base_y = agent_pos["y"]  # 로봇 베이스의 세계 좌표 y 값
         
-        print(f"  Adjusting armBase height: target_y={target_y:.3f}, normalized_y={normalized_y:.3f}")
+        # 상대적 높이 차이를 0.0~1.0으로 매핑하여 normalizedY 계산
+        normalized_y = self._calculate_armbase_y_normalized(target_y, agent_base_y)
+        
+        print(f"  [Object Metadata] World coordinates: ({obj_center['x']:.3f}, {target_y:.3f}, {obj_center['z']:.3f})")
+        print(f"  [Heuristic Calculation] Agent base y: {agent_base_y:.3f}, Target y: {target_y:.3f}, Height difference: {target_y - agent_base_y:.3f}m")
+        print(f"  [Mapping] normalizedY: {normalized_y:.3f} (0.0=low, 1.0=high)")
         event = self.controller.step(
             action="MoveArmBase",
             y=normalized_y,
@@ -1900,17 +2039,47 @@ class ManipulaThorExecutor:
         if not event.metadata.get('lastActionSuccess', False):
             print(f"  ⚠ MoveArmBase failed: {event.metadata.get('errorMessage', 'Unknown error')}")
         
-        # 2. 목표 객체의 좌표를 armBase 좌표계로 변환하여 MoveArm으로 팔 이동
-        armbase_coords = self._world_to_armbase_coords(obj_center, agent_pos, agent_rot)
+        # 2. 목표 객체와 손의 위치 차이를 계산하여 MoveArm으로 팔 이동
+        # 먼저 현재 손의 위치를 가져옴
+        arm_metadata = metadata.get("arm", {})
+        hand_sphere_center = arm_metadata.get("handSphereCenter", {})
         
-        # armBase 좌표계에서 목표 객체의 정확한 위치로 팔 이동
-        # z는 앞쪽 방향이므로, 목표 객체에 도달할 수 있도록 조정
-        # armBase 좌표계 범위: x: -0.5 ~ 0.5, y: -0.5 ~ 0.5, z: 0 ~ 0.75
-        move_pos = {
-            "x": max(-0.5, min(0.5, armbase_coords["x"])),  # x 범위 제한
-            "y": max(-0.5, min(0.5, armbase_coords["y"])),  # y 범위 제한
-            "z": max(0.05, min(0.75, armbase_coords["z"]))  # z 범위 제한 (최소 0.05m, 최대 0.75m)
-        }
+        if not hand_sphere_center or not all(key in hand_sphere_center for key in ["x", "y", "z"]):
+            print(f"  ⚠ Hand position not available, using object center directly")
+            # 손 위치를 가져올 수 없으면 기존 방식 사용
+            armbase_coords = self._world_to_armbase_coords(obj_center, agent_pos, agent_rot)
+            move_pos = {
+                "x": max(-0.5, min(0.5, armbase_coords["x"])),
+                "y": max(-0.5, min(0.5, armbase_coords["y"])),
+                "z": max(0.05, min(0.75, armbase_coords["z"]))
+            }
+        else:
+            # 목표 객체의 armBase 좌표 계산
+            target_armbase = self._world_to_armbase_coords(obj_center, agent_pos, agent_rot)
+            
+            # 현재 손의 armBase 좌표 계산 (손의 세계 좌표를 armBase 좌표로 변환)
+            hand_armbase = self._world_to_armbase_coords(hand_sphere_center, agent_pos, agent_rot)
+            
+            # 목표 객체와 손의 위치 차이 계산 (armBase 좌표계 기준)
+            diff_x = target_armbase["x"] - hand_armbase["x"]  # x 차이 (왼쪽/오른쪽)
+            diff_z = target_armbase["z"] - hand_armbase["z"]  # z 차이 (앞/뒤)
+            
+            print(f"  [Position Difference] Target armBase: {target_armbase}, Hand armBase: {hand_armbase}")
+            print(f"  [Difference] x_diff: {diff_x:.3f}m, z_diff: {diff_z:.3f}m")
+            
+            # 현재 손 위치에서 차이만큼 이동
+            # armBase 좌표계 범위: x: -0.5 ~ 0.5, y: -0.5 ~ 0.5, z: 0 ~ 0.75
+            new_x = hand_armbase["x"] + diff_x
+            new_z = hand_armbase["z"] + diff_z
+            
+            # 범위 제한
+            move_pos = {
+                "x": max(-0.5, min(0.5, new_x)),  # x 범위 제한
+                "y": hand_armbase["y"],  # y는 MoveArmBase에서 이미 조정했으므로 유지
+                "z": max(0.05, min(0.75, new_z))  # z 범위 제한 (최소 0.05m, 최대 0.75m)
+            }
+            
+            print(f"  [MoveArm] Moving from hand position ({hand_armbase['x']:.3f}, {hand_armbase['z']:.3f}) to ({move_pos['x']:.3f}, {move_pos['z']:.3f})")
         
         print(f"  Moving arm to object: target world={obj_center}, armBase coords={move_pos}")
         event = self.controller.step(
@@ -1925,7 +2094,7 @@ class ManipulaThorExecutor:
         if not event.metadata.get('lastActionSuccess', False):
             print(f"  ⚠ MoveArm failed: {event.metadata.get('errorMessage', 'Unknown error')}")
             # MoveArm 실패 시 재시도: 목표 객체에 더 가까이 이동
-            if armbase_coords["z"] < 0.05:
+            if move_pos["z"] < 0.1:
                 # 목표 객체가 너무 가까우면 약간 앞으로 이동
                 move_pos["z"] = 0.15
                 print(f"  Retrying MoveArm with adjusted z: {move_pos}")
@@ -2485,4 +2654,3 @@ if __name__ == "__main__":
     print(f"  Overall Success Rate: {overall_success_rate:.1f}%")
     
     executor.close()
-
