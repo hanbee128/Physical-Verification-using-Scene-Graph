@@ -1978,9 +1978,28 @@ def generate_failure_comment_with_llm(
         
         comment = response.choices[0].message.content.strip()
         
-        # 주석이 #로 시작하지 않으면 추가
-        if not comment.startswith("#"):
-            comment = "# " + comment
+        # LLM 응답에서 불필요한 설명 텍스트 제거
+        # "Here is the Python code comment..." 같은 부분 제거
+        lines = comment.split("\n")
+        cleaned_lines = []
+        for line in lines:
+            line = line.strip()
+            # 불필요한 설명 텍스트 건너뛰기
+            if any(skip_phrase in line.lower() for skip_phrase in [
+                "here is", "this comment", "explaining why", "python code comment"
+            ]):
+                continue
+            # 주석이 #로 시작하지 않으면 추가
+            if line and not line.startswith("#"):
+                line = "# " + line
+            if line:
+                cleaned_lines.append(line)
+        
+        comment = "\n".join(cleaned_lines) if cleaned_lines else f"# 물리적 검증 실패: {failure_reason}"
+        
+        # 주석이 비어있으면 기본 주석 반환
+        if not comment or comment.strip() == "#":
+            comment = f"# 물리적 검증 실패: {failure_reason}"
         
         return comment
     except Exception as e:
@@ -2306,13 +2325,14 @@ def generate_final_plan_with_physical_verification(
             if is_recovery:
                 failed_guards = action.get("failed_guards", [])
                 recovery_reason = action.get("recovery_reason", action.get("reason", ""))
+                action_lines.append(f"\t# [시스템 생성] 복구 액션")
                 if failed_guards:
                     guards_str = ", ".join(failed_guards)
-                    action_lines.append(f"\t# [복구 액션] 위반한 가드: {guards_str}")
+                    action_lines.append(f"\t# 위반한 가드: {guards_str}")
                 if recovery_reason:
-                    action_lines.append(f"\t# [복구 액션] 이유: {recovery_reason}")
+                    action_lines.append(f"\t# 이유: {recovery_reason}")
             elif is_original:
-                action_lines.append(f"\t# [원본 액션]")
+                action_lines.append(f"\t# [LLM 생성 - 논리적 검증] 원본 액션")
             
             # GoToObject 검증 통과 시 이동할 좌표 주석 추가
             action_type = action.get("type", "")
@@ -2331,8 +2351,8 @@ def generate_final_plan_with_physical_verification(
         
         if line:
             action_lines.append(f"\t# Step {step_counter}")
-            action_lines.append(f"\t# [원본 액션 - 검증 실패]")
-            action_lines.append(f"\t{comment}")
+            action_lines.append(f"\t# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패")
+            action_lines.append(f"\t# [LLM 주석] {comment}")
             action_lines.append(f"\t{line}")
             step_counter += 1
     
@@ -2347,6 +2367,11 @@ def generate_final_plan_with_physical_verification(
     final_plan = f"""def {task_name}():
 \t# Task: {task}
 \t# Generated plan with logical and physical verification
+\t# 
+\t# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+\t# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+\t# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+\t# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
 {actions_code}
 """
     
@@ -2749,8 +2774,13 @@ def main():
                         if in_function:
                             function_body.append(line)
                     
-                    additional_plan_lines.append(f"\t# Additional task: {missing_task_name}")
-                    additional_plan_lines.extend(function_body)
+                    additional_plan_lines.append(f"\t# [LLM 생성 - 누락 Task 보완] Additional task: {missing_task_name}")
+                    # 누락된 task plan의 모든 라인에서 마커 변경
+                    for line in function_body:
+                        # 기존 [LLM 생성 - 논리적 검증] 마커를 [LLM 생성 - 누락 Task 보완]으로 변경
+                        if "[LLM 생성 - 논리적 검증]" in line:
+                            line = line.replace("[LLM 생성 - 논리적 검증]", "[LLM 생성 - 누락 Task 보완]")
+                        additional_plan_lines.append(line)
                 
                 # 기존 plan에 추가
                 if additional_plan_lines:

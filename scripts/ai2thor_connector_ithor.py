@@ -237,7 +237,7 @@ class AI2ThorExecutor:
         # Agent 초기화
         self.controller.step(dict(
             action='Initialize',
-            agentMode="arm",
+            agentMode="default",
             snapGrid=False,
             gridSize=0.25,
             rotateStepDegrees=20,
@@ -2002,15 +2002,38 @@ if __name__ == "__main__":
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-        def put_tomato_in_microwave():
-            GoToObject('Plate')
-            OpenObject('Drawer')
-            PickupObject('Plate')
-            CloseObject('Drawer')
+        def put_tomato_and_apple_in_the_sinkbasin():
+	# Task: Put Tomato and Apple in the SinkBasin
+	# Generated plan with logical and physical verification
+	# Step 1
+	# [원본 액션]
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 2
+	# [원본 액션]
+	PickupObject('Tomato')
+	# Step 3
+	# [원본 액션]
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('SinkBasin')
+	# Step 4
+	# [원본 액션]
+	PutObject('Tomato', 'SinkBasin')
+	# Step 5
+	# [원본 액션]
+	# 이동할 좌표: (-1.000, 0.901, 0.500)
+	GoToObject('Apple')
+	# Step 6
+	# [원본 액션]
+	PickupObject('Apple')
+	# Step 7
+	# [원본 액션]
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('SinkBasin')
+	# Step 8
+	# [원본 액션]
+	PutObject('Apple', 'SinkBasin')
 
-            GoToObject('SinkBasin')
-
-            PutObject('Plate', 'SinkBasin')
     """
     
     result = executor.execute_program(program)
