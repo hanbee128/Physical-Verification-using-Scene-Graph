@@ -71,7 +71,7 @@
           "z": 0.02027934230864048
         },
         "parentReceptacles": [
-          "CounterTop|-00.08|+01.15|00.00"
+          "Sink|-01.90|+00.97|-01.50|SinkBasin"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -392,7 +392,7 @@
         "openable": true,
         "receptacle": true,
         "toggleable": false,
-        "isOpen": true,
+        "isOpen": false,
         "isToggled": false,
         "visible": false,
         "distance": 4.021317958831787,
@@ -420,7 +420,7 @@
         "cookable": false,
         "isCooked": false,
         "temperature": "RoomTemp",
-        "openness": 1.0
+        "openness": 0.0
       },
       {
         "nodeType": "Object",
@@ -1385,7 +1385,7 @@
         "distance": 1.4214049577713013,
         "position": {
           "x": -2.0969998836517334,
-          "y": 0.5,
+          "y": 0.8,
           "z": 1.0720000267028809
         },
         "rotation": {
@@ -1848,7 +1848,7 @@
           "z": 0.02093496359884739
         },
         "parentReceptacles": [
-          "Sink|-01.90|+00.97|-01.50|SinkBasin"
+          "Cabinet|+00.72|+02.02|-02.46"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2787,7 +2787,7 @@
           "z": 0.08418001979589462
         },
         "parentReceptacles": [
-          "CounterTop|-00.08|+01.15|00.00"
+          "Sink|-01.90|+00.97|-01.50|SinkBasin"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -3145,6 +3145,15 @@
       "targetObjectType": "CounterTop"
     },
     {
+      "edgeType": "IN",
+      "source": "Plate|+00.96|+01.65|-02.61",
+      "target": "Cabinet|+00.72|+02.02|-02.46",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Plate",
+      "targetObjectType": "Cabinet"
+    },
+    {
       "edgeType": "ON",
       "source": "Pot|-01.22|+00.90|-02.36",
       "target": "CounterTop|-01.87|+00.95|-01.21",
@@ -3281,11 +3290,20 @@
     },
     {
       "edgeType": "IN",
-      "source": "Plate|+00.96|+01.65|-02.61",
+      "source": "Tomato|-00.39|+01.14|-00.81",
       "target": "Sink|-01.90|+00.97|-01.50|SinkBasin",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Plate",
+      "sourceObjectType": "Tomato",
+      "targetObjectType": "SinkBasin"
+    },
+    {
+      "edgeType": "IN",
+      "source": "Apple|-00.47|+01.15|+00.48",
+      "target": "Sink|-01.90|+00.97|-01.50|SinkBasin",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Apple",
       "targetObjectType": "SinkBasin"
     }
   ]

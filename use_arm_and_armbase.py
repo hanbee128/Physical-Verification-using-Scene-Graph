@@ -177,6 +177,7 @@ def visualize_arm_movements(
     armbase_trajectory = []
     world_trajectory = []
     wrist_trajectory = []
+    hand_trajectory = []  # 손의 위치 추적
     
     # 서드파티 카메라 및 에이전트 시야 실시간 표시 설정 (하나의 창에 두 개로 분할)
     plt.ion()  # Interactive mode 활성화
@@ -252,6 +253,17 @@ def visualize_arm_movements(
     if "armbase" in initial_positions:
         armbase_trajectory.append(initial_positions["armbase"])
     
+    # 초기 손의 위치 저장
+    initial_event = controller.last_event
+    if initial_event.metadata.get("arm", {}).get("handSphereCenter"):
+        initial_hand_pos = initial_event.metadata["arm"]["handSphereCenter"]
+        hand_trajectory.append({
+            "x": initial_hand_pos.get("x", 0),
+            "y": initial_hand_pos.get("y", 0),
+            "z": initial_hand_pos.get("z", 0)
+        })
+        logger.info(f"초기 손 위치: ({initial_hand_pos.get('x', 0):.3f}, {initial_hand_pos.get('y', 0):.3f}, {initial_hand_pos.get('z', 0):.3f})")
+    
     # MoveArmBase 테스트: Y 방향으로만 이동 (MoveArmBase는 y 값만 받음)
     logger.info("\n=== MoveArmBase 테스트 ===")
     # MoveArmBase는 y 값만 받음 (normalizedY=True일 경우 0.0~1.0 범위)
@@ -275,6 +287,15 @@ def visualize_arm_movements(
                 logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
                 if name == "armbase":
                     armbase_trajectory.append(pos)
+            
+            # 손의 위치 저장
+            if event.metadata.get("arm", {}).get("handSphereCenter"):
+                hand_pos = event.metadata["arm"]["handSphereCenter"]
+                hand_trajectory.append({
+                    "x": hand_pos.get("x", 0),
+                    "y": hand_pos.get("y", 0),
+                    "z": hand_pos.get("z", 0)
+                })
             
             # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
             try:
@@ -366,6 +387,15 @@ def visualize_arm_movements(
                 if name == "armbase":
                     armbase_trajectory.append(pos)
             
+            # 손의 위치 저장
+            if event.metadata.get("arm", {}).get("handSphereCenter"):
+                hand_pos = event.metadata["arm"]["handSphereCenter"]
+                hand_trajectory.append({
+                    "x": hand_pos.get("x", 0),
+                    "y": hand_pos.get("y", 0),
+                    "z": hand_pos.get("z", 0)
+                })
+            
             # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
             try:
                 # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
@@ -443,6 +473,15 @@ def visualize_arm_movements(
                 logger.info(f"    {name}: ({pos['x']:.3f}, {pos['y']:.3f}, {pos['z']:.3f})")
                 if name == "armbase":
                     armbase_trajectory.append(pos)
+            
+            # 손의 위치 저장
+            if event.metadata.get("arm", {}).get("handSphereCenter"):
+                hand_pos = event.metadata["arm"]["handSphereCenter"]
+                hand_trajectory.append({
+                    "x": hand_pos.get("x", 0),
+                    "y": hand_pos.get("y", 0),
+                    "z": hand_pos.get("z", 0)
+                })
             
             # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
             try:
@@ -522,6 +561,15 @@ def visualize_arm_movements(
                 if name == "armbase":
                     armbase_trajectory.append(pos)
             
+            # 손의 위치 저장
+            if event.metadata.get("arm", {}).get("handSphereCenter"):
+                hand_pos = event.metadata["arm"]["handSphereCenter"]
+                hand_trajectory.append({
+                    "x": hand_pos.get("x", 0),
+                    "y": hand_pos.get("y", 0),
+                    "z": hand_pos.get("z", 0)
+                })
+            
             # 서드파티 카메라 및 에이전트 시야 이미지 실시간 표시
             try:
                 # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
@@ -578,7 +626,6 @@ def visualize_arm_movements(
     logger.info("\n=== 모든 테스트 완료 ===")
     logger.info("서드파티 카메라 뷰와 에이전트 시야 뷰 창이 열려있습니다.")
     
-
     repeat_test = input("x, y, z 테스트 반복 : 입력하세요")
     if repeat_test == "x":
         # X 방향 테스트: 최소(-0.5) ~ 최대(0.5)
@@ -816,6 +863,26 @@ def visualize_arm_movements(
         
         logger.info("\nZ 방향 테스트 완료. 2초 대기 중...")
         time.sleep(2)
+
+    # 최종 결과 출력
+    logger.info(f"\n{'='*80}")
+    logger.info("=== 최종 결과 출력 ===")
+    logger.info(f"{'='*80}")
+    
+    # 현재 agent 위치
+    final_event = controller.last_event
+    final_agent_pos = final_event.metadata.get("agent", {}).get("position", {})
+    logger.info(f"\n현재 Agent 위치:")
+    logger.info(f"  x: {final_agent_pos.get('x', 0):.6f}")
+    logger.info(f"  y: {final_agent_pos.get('y', 0):.6f}")
+    logger.info(f"  z: {final_agent_pos.get('z', 0):.6f}")
+    
+    # 각 실행 시 손의 위치들
+    logger.info(f"\n각 실행 시 손의 위치 (총 {len(hand_trajectory)}개):")
+    for i, hand_pos in enumerate(hand_trajectory):
+        logger.info(f"  [{i+1:3d}] x: {hand_pos['x']:10.6f}, y: {hand_pos['y']:10.6f}, z: {hand_pos['z']:10.6f}")
+    
+    logger.info(f"\n{'='*80}")
 
     # 창을 열어두기 위해 대기
     input("창을 닫으려면 Enter를 누르세요...")

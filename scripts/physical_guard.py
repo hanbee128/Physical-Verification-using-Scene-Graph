@@ -802,9 +802,9 @@ def verify_guard_with_scene_graph(
             return False, "Agent 위치 정보가 없음"
         
         # Hand 위치: Agent의 절대 좌표를 Hand 좌표로 사용 (절대 좌표로 직접 비교)
-        hand_x = agent_pos.get("x", 0) - 0.3289999
-        hand_y = agent_pos.get("y", 0) + 0.2250000
-        hand_z = agent_pos.get("z", 0) - 0.5699999
+        agent_x = agent_pos.get("x", 0) # - 0.3289999
+        agent_y = agent_pos.get("y", 0) # + 0.2250000
+        agent_z = agent_pos.get("z", 0) # - 0.5699999
         
         # 객체의 절대 좌표
         obj_x = obj_pos.get("x", 0)
@@ -817,19 +817,20 @@ def verify_guard_with_scene_graph(
         # y 범위: -0.35 ~ 1 (상하)
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
-        x_range = 1.0  # ±1.0 (좌우)
-        y_range_min = -0.5  # 아래로 -0.35
-        y_range_max = 1.5  # 위로 1.0
-        z_range_min = -1.5 - 0.2  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
-        z_range_max = 0.5 + 0.2 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
+        x_range_min = -0.952 -0.5  #
+        x_range_max = 0.293 + 0.5 #
+        y_range_min = -0.275     # 아래로 -0.35
+        y_range_max = 0.853  # 위로 1.0
+        z_range_min = -1.120 - 0.5  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
+        z_range_max = 0.146 + 0.5 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
         
         # 손 위치 기준으로 범위 계산 (절대 좌표)
-        x_min = hand_x - x_range
-        x_max = hand_x + x_range
-        y_min = hand_y + y_range_min
-        y_max = hand_y + y_range_max
-        z_min = hand_z + z_range_min
-        z_max = hand_z + z_range_max
+        x_min = agent_x + x_range_min
+        x_max = agent_x + x_range_max
+        y_min = agent_y + y_range_min
+        y_max = agent_y + y_range_max
+        z_min = agent_z + z_range_min
+        z_max = agent_z + z_range_max
         
         # 목표 객체가 손 위치 기준 범위 내에 있는지 확인 (절대 좌표로 비교)
         in_range = (x_min <= obj_x <= x_max and 
@@ -837,13 +838,13 @@ def verify_guard_with_scene_graph(
                    z_min <= obj_z <= z_max)
         
         # 손에서 객체까지의 거리 계산 (절대 좌표)
-        dx = obj_x - hand_x
-        dy = obj_y - hand_y
-        dz = obj_z - hand_z
+        dx = obj_x - agent_x
+        dy = obj_y - agent_y
+        dz = obj_z - agent_z
         distance_3d = math.sqrt(dx**2 + dy**2 + dz**2)
         
         if in_range:
-            return True, f"\n손 위치 기준 범위 내 (손 절대좌표: x={hand_x:.3f}, y={hand_y:.3f}, z={hand_z:.3f}, 객체 절대좌표: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m)"
+            return True, f"\n Agent 위치 기준 범위 내 (agent 위치: x={agent_x:.3f}, y={agent_y:.3f}, z={agent_z:.3f}, 객체 위치: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m)"
         else:
             # 범위를 벗어난 경우
             out_of_range_axis = []
@@ -854,7 +855,7 @@ def verify_guard_with_scene_graph(
             if obj_z < z_min or obj_z > z_max:
                 out_of_range_axis.append(f"z={obj_z:.3f} (범위: {z_min:.3f}~{z_max:.3f})")
             
-            return False, f"\n손 위치 기준 범위 밖 (손 절대좌표: x={hand_x:.3f}, y={hand_y:.3f}, z={hand_z:.3f}, 객체 절대좌표: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m, 벗어난 축: {', '.join(out_of_range_axis)})"
+            return False, f"\n Agent 위치 기준 범위 밖 (agent 위치: x={agent_x:.3f}, y={agent_y:.3f}, z={agent_z:.3f}, 객체 위치: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m, 벗어난 축: {', '.join(out_of_range_axis)})"
     
     # NAVIGABLE(agent, object) 검증
     if "NAVIGABLE" in guard_upper:
@@ -1396,22 +1397,7 @@ def verify_action_with_scene_graph(
                 
                 
         
-        # PickupObject: REACHABLE(agent, object) 실패 → GoToObject 추가
-        if action_type == "PickupObject" and "REACHABLE(agent, object)" in failed_guards:
-            # 목표 객체 찾기
-            if object_name and target_obj:
-                goto_recovery = {
-                    "type": "GoToObject",
-                    "args": {"o": object_name},
-                    "line": f"GoToObject('{object_name}')",
-                    "reason": f"객체 '{object_name}'로 이동 (PickupObject를 위해)",
-                    "is_original": False,
-                    "is_recovery": True,
-                    "failed_guards": ["REACHABLE(agent, object)"],
-                    "recovery_reason": f"PickupObject를 위해 객체 '{object_name}'로 이동 (거리 초과)"
-                }
-                recovery_actions.append(goto_recovery)
-                logger.info(f"    → 복구 액션 생성: GoToObject('{object_name}')")
+        # REACHABLE 가드 실패 시 복구 불가능 - 검증 종료 처리 (아래에서 처리)
         
         # PutObject: OPENED(receptacle) 실패 → 수용체 열기
         elif action_type == "PutObject" and "OPENED(receptacle)" in failed_guards:
@@ -2091,6 +2077,37 @@ def generate_final_plan_with_physical_verification(
                 "error": "OBJECT_NOT_EXISTS"
             }
         
+        # REACHABLE 가드 실패 시 (물체가 닿지 않은 거리에 있음) 검증 종료
+        if any("REACHABLE" in guard for guard in failed_guards):
+            action_type = action.get("type", "")
+            action_args = action.get("args", {})
+            object_name = action_args.get("o") or action_args.get("r") or "알 수 없음"
+            error_message = f"액션 '{action_type}'의 대상 객체 '{object_name}'가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없음"
+            logger.error(f"\n{'='*80}")
+            logger.error(f"❌ 검증 중단: REACHABLE 가드 위반")
+            logger.error(f"   {error_message}")
+            logger.error(f"   실패한 가드: {', '.join([g for g in failed_guards if 'REACHABLE' in g])}")
+            logger.error(f"{'='*80}")
+            print(f"\n{'='*80}")
+            print(f"❌ 검증 중단: REACHABLE 가드 위반")
+            print(f"   {error_message}")
+            print(f"   실패한 가드: {', '.join([g for g in failed_guards if 'REACHABLE' in g])}")
+            print(f"{'='*80}")
+            # 검증 종료 - 빈 plan 반환
+            return "", {
+                "total_actions": len(plan_actions),
+                "passed_actions": len(verified_actions),
+                "failed_actions": 1,
+                "failed_actions_list": [{
+                    "action": action,
+                    "reason": error_message,
+                    "failed_guards": [g for g in failed_guards if 'REACHABLE' in g],
+                    "recovery_actions": []
+                }],
+                "updated_scene_graph": scene_graph,
+                "error": "REACHABLE_VIOLATION"
+            }
+        
         if passed:
             verified_actions.append(action)
             # Scene Graph 업데이트 및 JSON 파일 저장
@@ -2188,10 +2205,38 @@ def generate_final_plan_with_physical_verification(
             if recovery_actions:
                 logger.info(f"  → 복구 액션 {len(recovery_actions)}개를 원래 액션 이전에 삽입")
                 
+                # 복구 액션 중 OpenObject가 있는지 확인하고, 있다면 원래 액션 이후에 CloseObject 추가
+                open_object_recoveries = []
+                for recovery_action in recovery_actions:
+                    if recovery_action.get("type") == "OpenObject":
+                        open_object_recoveries.append(recovery_action)
+                
                 # 복구 액션들을 plan_actions에 현재 위치에 삽입 (역순으로 삽입하여 순서 유지)
                 for j, recovery_action in enumerate(reversed(recovery_actions)):
                     plan_actions.insert(i, recovery_action)
                     logger.info(f"    → 복구 액션 삽입: {recovery_action.get('line', '')}")
+                
+                # OpenObject 복구 액션이 있으면 원래 액션 이후에 CloseObject 추가
+                if open_object_recoveries:
+                    # 원래 액션의 위치는 i + len(recovery_actions) (복구 액션 삽입 후)
+                    # 원래 액션 이후에 CloseObject 추가 (역순으로 삽입하여 순서 유지)
+                    for open_object_recovery in reversed(open_object_recoveries):
+                        open_obj_id = open_object_recovery.get("nodeId") or open_object_recovery.get("args", {}).get("o")
+                        if open_obj_id:
+                            close_action = {
+                                "type": "CloseObject",
+                                "args": {"o": open_obj_id},
+                                "line": f"CloseObject('{open_obj_id}')",
+                                "nodeId": open_obj_id,
+                                "reason": f"복구 액션으로 열린 수용체 '{open_obj_id}' 닫기",
+                                "is_original": False,
+                                "is_recovery": True,
+                                "failed_guards": [],
+                                "recovery_reason": f"복구 액션 OpenObject('{open_obj_id}') 이후 자동 닫기"
+                            }
+                            # 원래 액션 이후 위치에 CloseObject 삽입
+                            plan_actions.insert(i + len(recovery_actions) + 1, close_action)
+                            logger.info(f"  → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('{open_obj_id}')")
                 
                 # 복구 액션부터 다시 검증하도록 인덱스 유지 (i는 그대로, continue로 루프 재시작)
                 logger.info(f"  → 복구 액션부터 다시 검증 시작")
