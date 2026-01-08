@@ -2343,7 +2343,7 @@ def generate_final_plan_with_physical_verification(
             action_lines.append(f"\t{line}")
             step_counter += 1
     
-    # 실패한 액션들 추가 (주석 포함)
+    # 실패한 액션들 추가 (주석 포함 및 주석처리)
     for failed_info in failed_actions_with_comments:
         action = failed_info["action"]
         comment = failed_info["comment"]
@@ -2353,7 +2353,8 @@ def generate_final_plan_with_physical_verification(
             action_lines.append(f"\t# Step {step_counter}")
             action_lines.append(f"\t# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패")
             action_lines.append(f"\t# [LLM 주석] {comment}")
-            action_lines.append(f"\t{line}")
+            # 실패한 액션을 주석처리
+            action_lines.append(f"\t# {line}")
             step_counter += 1
     
     actions_code = "\n".join(action_lines)
