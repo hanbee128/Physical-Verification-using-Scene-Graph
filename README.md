@@ -20,6 +20,10 @@
 - `PutObject(object, receptacle)`: 객체를 수용체에 놓기
 - `OpenObject(object)`: 객체 열기
 - `CloseObject(object)`: 객체 닫기
+- `ToggleObjectOn(object)`: 객체 켜기
+- `ToggleObjectOff(object)`: 객체 끄기
+- `SliceObject(object)`: 객체 자르기
+- `BreakObject(object)`: 객체 깨뜨리기
 
 ### 3. 물리적 가드(Guard) 검증
 
@@ -30,12 +34,17 @@
 - `NAVIGABLE(agent, object)`: NavMesh를 통해 객체까지 이동 가능한 경로가 있는지 확인 (거리 1.3m 이내)
 
 #### PickupObject
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
 - `pickupable(object)`: 객체가 pickupable 속성을 가지고 있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 - `¬HOLDS(agent, *)`: Agent가 현재 아무 객체도 들고 있지 않은지 확인
 - `¬IN(object, closed_receptacle)`: 객체가 닫힌 수용체 안에 있지 않은지 확인
 
 #### PutObject
+- `EXISTS(object)`: 객체 존재 확인
+- `EXISTS(receptacle)`: 수용체 존재 확인
+- `Proximity(agent, receptacle)`: Agent와 수용체 간 거리가 2m 이내인지 확인
 - `HOLDS(agent, object)`: Agent가 목표 객체를 들고 있는지 확인
 - `receptacle(receptacle)`: 수용체가 receptacle 타입인지 확인
 - `REACHABLE(agent, receptacle)`: Agent의 손 위치 기준으로 수용체가 도달 가능한 범위 내에 있는지 확인
@@ -43,35 +52,83 @@
 - `OPENED(receptacle)`: 수용체가 열려있는지 확인 (openable인 경우에만)
 
 #### OpenObject
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
 - `openable(object)`: 객체가 openable 속성을 가지고 있는지 확인
 - `¬OPENED(object)`: 객체가 이미 열려있지 않은지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 
 #### CloseObject
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
 - `openable(object)`: 객체가 openable 속성을 가지고 있는지 확인
 - `OPENED(object)`: 객체가 열려있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 
-### 4. REACHABLE 검증 상세
+#### ToggleObjectOn
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `toggleable(object)`: 객체가 toggleable 속성을 가지고 있는지 확인
+- `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
+- `¬isToggled(object)`: 객체가 이미 켜져있지 않은지 확인
+- `¬IN(object, closed_receptacle)`: 객체가 닫힌 수용체 안에 있지 않은지 확인
 
-`REACHABLE` 가드는 Agent의 손 위치를 기준으로 객체가 도달 가능한 범위 내에 있는지 확인합니다.
+#### ToggleObjectOff
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `toggleable(object)`: 객체가 toggleable 속성을 가지고 있는지 확인
+- `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
+- `isToggled(object)`: 객체가 켜져있는지 확인
 
-#### 손 위치 계산
-- Agent의 절대 좌표를 기준으로 손 위치 계산 (Agent 위치를 손 위치로 직접 사용)
-- Agent 위치 = 손 위치 (절대 좌표 기준)
+#### SliceObject
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `sliceable(object)`: 객체가 sliceable 속성을 가지고 있는지 확인
+- `¬isSliced(object)`: 객체가 이미 잘려있지 않은지 확인
+- `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
+- `HOLDS(agent, 'Knife')`: Agent가 'Knife'를 들고 있는지 확인 (ButterKnife 제외)
+- `¬IN(object, closed_receptacle)`: 객체가 닫힌 수용체 안에 있지 않은지 확인
 
-#### 도달 가능 범위
-- `x` 범위: Agent 위치 기준 -1.452m ~ +0.793m (좌우)
-- `y` 범위: Agent 위치 기준 -0.275m ~ +0.853m (상하)
-- `z` 범위: Agent 위치 기준 -1.620m ~ +0.646m (앞뒤)
+#### BreakObject
+- `EXISTS(object)`: 객체 존재 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `breakable(object)`: 객체가 breakable 속성을 가지고 있는지 확인
+- `¬isBroken(object)`: 객체가 이미 깨져있지 않은지 확인
+- `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
+- `¬IN(object, closed_receptacle)`: 객체가 닫힌 수용체 안에 있지 않은지 확인
 
-이 범위는 `use_arm_and_armbase.py`에서 테스트한 실제 로봇팔 도달 범위를 기반으로 설정되었습니다.
+### 4. 주요 가드 검증 상세
 
-**중요**: REACHABLE 가드 위반 시 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
+#### Proximity 가드
+- **목적**: Agent와 목표 객체 간 거리가 2m 이내인지 확인
+- **계산 방식**: Agent 위치와 객체 위치 간 3D 유클리드 거리 계산
+- **복구 액션**: 실패 시 NavMesh 상에서 목표 객체를 정면으로 보는 가장 가까운 위치로 이동하는 `GoToObject` 액션 추가
+
+#### REACHABLE 가드
+- **목적**: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
+- **손 위치 계산**: Agent의 절대 좌표를 기준으로 손 위치 계산 (Agent 위치 = 손 위치)
+- **도달 가능 범위**:
+  - `x` 범위: Agent 위치 기준 -1.452m ~ +0.793m (좌우)
+  - `y` 범위: Agent 위치 기준 -0.275m ~ +0.853m (상하)
+  - `z` 범위: Agent 위치 기준 -1.620m ~ +0.646m (앞뒤)
+- **중요**: REACHABLE 가드 위반 시 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
+
+#### NAVIGABLE 가드
+- **목적**: NavMesh를 통해 객체까지 이동 가능한 경로가 있는지 확인
+- **기준**: 목표 객체 위치와 가장 가까운 이동 가능 위치 간 거리 1.3m 이내
+
+#### HOLDS 가드
+- **HOLDS(agent, object)**: Agent가 특정 객체를 들고 있는지 확인
+- **HOLDS(agent, 'Knife')**: Agent가 정확히 'Knife'를 들고 있는지 확인 (ButterKnife는 제외)
+- **¬HOLDS(agent, *)**: Agent가 아무 객체도 들고 있지 않은지 확인
 
 ### 5. 복구 액션 자동 생성
 
 검증 실패 시 다음 복구 액션들이 자동으로 생성됩니다:
+
+#### Proximity 가드 실패 시
+- NavMesh 상에서 목표 객체를 정면으로 보는 가장 가까운 위치로 이동하는 `GoToObject` 액션 추가
+- `target_position` 필드에 계산된 위치 저장
 
 #### PickupObject 실패 시
 - `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
@@ -80,6 +137,13 @@
 #### PutObject 실패 시
 - `HOLDS(agent, object)` 실패 → `GoToObject` + `PickupObject` 액션 추가
 - `OPENED(receptacle)` 실패 → 수용체를 여는 `OpenObject` 액션 추가
+
+#### SliceObject 실패 시
+- `HOLDS(agent, 'Knife')` 실패 → `GoToObject('Knife')` + `PickupObject('Knife')` 액션 추가
+- `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
+
+#### ToggleObjectOn, BreakObject 실패 시
+- `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
 
 #### PickupObject 성공 후
 - 부모 수용체가 열려있으면 자동으로 `CloseObject` 액션 추가
@@ -112,21 +176,43 @@
 #### CloseObject
 - Object 노드의 `isOpen=False`, `openness=0.0` 설정
 
-### 7. Task 완료 검증
+#### ToggleObjectOn
+- Object 노드의 `isToggled=True` 설정
+
+#### ToggleObjectOff
+- Object 노드의 `isToggled=False` 설정
+
+#### SliceObject
+- Object 노드의 `isSliced=True` 설정
+
+#### BreakObject
+- Object 노드의 `isBroken=True` 설정
+
+### 7. 객체 매칭 로직
+
+#### 정확한 매칭 우선
+- 객체 타입이 정확히 일치하는 경우 우선 선택
+- nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭 우선
+
+#### 특수 케이스 처리
+- **Knife vs ButterKnife**: `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭 (ButterKnife 제외)
+- **정확한 매칭 없음**: 정확한 매칭이 없으면 부분 매칭 사용 (단, Knife는 정확한 매칭만 사용)
+
+### 8. Task 완료 검증
 
 모든 액션이 통과하지 못한 경우, LLM을 사용하여 자연어 목표와 최종 플랜을 비교하여 누락된 작업을 찾습니다.
 
 - 누락된 작업이 발견되면 자동으로 해당 작업에 대한 플랜을 생성하고 기존 플랜에 추가
 - 누락된 task plan은 `[LLM 생성 - 누락 Task 보완]` 마커로 표시됨
 
-### 8. 검증 종료 조건
+### 9. 검증 종료 조건
 
 다음 조건에서 물리적 검증이 즉시 종료됩니다:
 
 - **EXISTS 가드 실패**: 객체가 Scene Graph에 존재하지 않는 경우
 - **REACHABLE 가드 실패**: 물체가 agent의 손이 닿지 않는 거리에 있는 경우
 
-### 9. Plan 출력 형식
+### 10. Plan 출력 형식
 
 최종 플랜은 다음 마커로 구분되어 출력됩니다:
 
@@ -137,7 +223,7 @@
 
 **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 출력됩니다.
 
-### 10. Baseline 비교 평가
+### 11. Baseline 비교 평가
 
 `evaluation.py`를 사용하여 Baseline(ProgPrompt)와 Physical Guard 결과를 비교할 수 있습니다.
 
@@ -146,12 +232,15 @@
 2. **Action Pass Rate (액션 통과율)**: 물리적 검증 통과율
 3. **Recovery Action Effectiveness (복구 액션 효과성)**: 복구 액션 성공률
 4. **Plan Executability (계획 실행 가능성)**: 실행 가능한 계획 비율
+5. **Scene Graph 비교**: Baseline과 Physical Guard의 최종 Scene Graph 비교 (IN 엣지, heldObjectId 등)
 
 **사용 방법:**
 ```bash
 python scripts/evaluation.py \
     --baseline-json results/ai2thor_progprompt_*.json \
     --physical-guard-txt results/physical_guard_set3_result_*.txt \
+    --baseline-scene-graph scripts/baseline_updated_scene_graph.json \
+    --physical-guard-scene-graph scripts/updated_scene_graph.json \
     --output results/evaluation_comparison.txt
 ```
 
@@ -208,11 +297,15 @@ python scripts/physical_guard.py --scene-number 1 --model llama3.1 --tasks "put 
 
 ### 평가 비교 파일
 - 경로: `results/evaluation_comparison_{timestamp}.txt`
-- 내용: Baseline과 Physical Guard 결과 비교 평가 지표
+- 내용: Baseline과 Physical Guard 결과 비교 평가 지표 및 Scene Graph 비교
 
 ### Scene Graph 업데이트 파일
 - 경로: `scripts/updated_scene_graph.json`
 - 각 액션 실행 후 Scene Graph 상태가 업데이트되어 저장됨
+
+### Baseline Scene Graph 파일
+- 경로: `scripts/baseline_updated_scene_graph.json`
+- Baseline(ProgPrompt).py 실행 시 생성되는 Scene Graph 파일
 
 ## Scene Graph 파일 구조
 
@@ -235,8 +328,14 @@ Scene Graph는 다음 구조를 가집니다:
         "pickupable": bool,
         "openable": bool,
         "receptacle": bool,
+        "toggleable": bool,
+        "sliceable": bool,
+        "breakable": bool,
         "isOpen": bool,
         "openness": float,
+        "isToggled": bool,
+        "isSliced": bool,
+        "isBroken": bool,
         "isPickedUp": bool,
         "parentReceptacles": [string]
       }
@@ -258,6 +357,7 @@ Scene Graph는 다음 구조를 가집니다:
 2. **액션별 검증**: 각 액션에 대해 Scene Graph 기반 물리적 검증 수행
 3. **검증 종료 조건 확인**: EXISTS 또는 REACHABLE 가드 실패 시 즉시 검증 종료
 4. **복구 액션 생성**: 검증 실패 시 자동으로 복구 액션 생성 및 삽입
+   - Proximity 가드 실패 시 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject 추가
    - 복구 액션으로 `OpenObject` 추가 시, 원래 액션 이후에 `CloseObject` 자동 추가
 5. **Scene Graph 업데이트**: 검증 통과한 액션 실행 후 Scene Graph 상태 업데이트
 6. **최종 플랜 생성**: 통과한 액션과 실패한 액션(주석처리)을 포함한 최종 플랜 생성
@@ -273,14 +373,17 @@ Scene Graph는 다음 구조를 가집니다:
 ### `load_scene_graph(scene_graph_path)`
 Scene Graph JSON 파일 로드
 
+### `find_target_object(scene_graph, object_name)`
+Scene Graph에서 목표 객체 찾기 (정확한 매칭 우선, Knife vs ButterKnife 구분)
+
 ### `get_relevant_scene_context(scene_graph, action_type, object_name, receptacle_name)`
 Scene Graph에서 관련 노드와 엣지 정보 추출
 
 ### `find_closest_reachable_position(controller, target_pos)`
-NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기
+NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기 (정면 위치 우선)
 
 ### `verify_guard_with_scene_graph(guard_name, scene_context, ...)`
-개별 가드 검증 (EXISTS, REACHABLE, HOLDS, IN, OPENED, PICKUPABLE, RECEPTACLE, OPENABLE, NAVIGABLE)
+개별 가드 검증 (EXISTS, REACHABLE, HOLDS, IN, OPENED, PICKUPABLE, RECEPTACLE, OPENABLE, NAVIGABLE, Proximity, toggleable, isToggled, sliceable, isSliced, breakable, isBroken)
 
 ### `verify_action_with_scene_graph(action, scene_graph, controller)`
 액션의 모든 가드 검증 및 복구 액션 생성
@@ -298,12 +401,14 @@ LLM을 사용하여 자연어 목표와 최종 플랜을 비교하여 누락된 
 LLM을 사용하여 물리적 검증 실패 이유를 분석하고 주석 생성
 
 ### `evaluation.py`
-Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
+Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산 및 Scene Graph 비교
 
 ## 의존성
 
 - `ai2thor`: AI2-THOR 시뮬레이터
 - `openai`: OpenAI 호환 API 클라이언트 (Ollama와 통신)
+- `scipy`: 3D 좌표 변환 (scipy.spatial.transform.Rotation)
+- `numpy`: 수치 계산
 - `scene_graph_extractor`: Scene Graph 추출 모듈 (선택사항)
 - `ai2thor_connector`: AI2-THOR 실행 커넥터
 
@@ -321,6 +426,8 @@ Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
 
 4. **최대 검증 횟수**: 무한 루프 방지를 위해 최대 검증 횟수는 20회로 제한됩니다.
 
+5. **정보 소스**: 대부분의 정보는 Scene Graph structured JSON 파일에서 가져오며, NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
+
 ## 로그 출력
 
 스크립트는 다음 정보를 로그로 출력합니다:
@@ -330,6 +437,7 @@ Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
 - 복구 액션 생성 정보
 - Scene Graph 업데이트 정보
 - Task 완료 검증 결과
+- Agent 및 객체 위치 정보
 
 ## 예시 출력
 
@@ -366,13 +474,15 @@ Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
 
 ## 참고
 
-- 초기 로봇팔 자세: armBase 좌표계에서 `(x=0, y=0, z=0.5)`
-- MoveArmBase 초기 y 값: normalized `0.5` (0~1 범위에서 중간 높이)
-- REACHABLE 검증은 Agent의 손 위치를 기준으로 절대 좌표로 비교합니다.
+- **정보 소스**: 대부분의 정보는 Scene Graph structured JSON 파일에서 가져오며, NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
+- **REACHABLE 검증**: Agent의 손 위치를 기준으로 절대 좌표로 비교합니다.
 - **REACHABLE 가드 위반 시**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
+- **Proximity 가드**: Agent와 목표 객체 간 거리가 2m를 초과하면 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject가 자동 추가됩니다.
 - **복구 액션 OpenObject**: 복구 액션으로 수용체를 열면, 원래 액션 실행 후 자동으로 닫힙니다.
 - **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 실행되지 않습니다.
 - **Plan 마커**: LLM이 생성한 부분과 시스템이 생성한 부분이 명확히 구분되어 출력됩니다.
+- **Knife vs ButterKnife**: `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭되며, ButterKnife는 제외됩니다.
+- **객체 매칭**: nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭이 우선됩니다.
 
 ## 평가 지표
 
@@ -386,16 +496,21 @@ Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
    - `passed_actions / total_actions * 100`
 
 3. **Recovery Action Effectiveness**: 복구 액션 효과성
-   - `recovery_actions / failed_actions * 100`
+   - `recovery_actions / total_actions * 100`
 
 4. **Plan Executability**: 계획 실행 가능성
    - `(total_actions - failed_actions) / total_actions * 100`
+
+5. **Scene Graph 비교**: Baseline과 Physical Guard의 최종 Scene Graph 비교
+   - IN 엣지 비교 (객체가 수용체 안에 있는지)
+   - Agent의 최종 heldObjectId 비교
 
 ```bash
 # 직접 실행
 python scripts/evaluation.py \
     --baseline-json results/ai2thor_progprompt_20260108-101853.json \
     --physical-guard-txt results/physical_guard_set3_result_Put_Tomato_and_Apple_and_Potato_in_Fridge_20260108-101831.txt \
+    --baseline-scene-graph scripts/baseline_updated_scene_graph.json \
+    --physical-guard-scene-graph scripts/updated_scene_graph.json \
     --output results/evaluation_comparison.txt
-
 ```
