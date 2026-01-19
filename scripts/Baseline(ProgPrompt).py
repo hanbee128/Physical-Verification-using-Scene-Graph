@@ -13,18 +13,29 @@ ProgPrompt 스타일의 AI2-THOR FloorPlan1 플래너 (Ollama llama3 사용).
 # 표준 라이브러리 임포트
 import argparse  # 명령줄 인자 파싱을 위한 모듈
 import json  # JSON 파일 읽기/쓰기를 위한 모듈
+import logging  # 로깅을 위한 모듈
+import math  # 수학 함수 (삼각함수 등)
 import os  # 운영체제 관련 기능 (디렉토리 생성 등)
 import random  # 랜덤 시드 설정을 위한 모듈
+import re  # 정규표현식을 위한 모듈
+import shutil  # 파일 복사를 위한 모듈
 import textwrap  # 텍스트 들여쓰기 및 포맷팅을 위한 모듈
 from datetime import datetime  # 타임스탬프 생성을 위한 날짜/시간 모듈
 from pathlib import Path  # 파일 경로 처리를 위한 모듈
-from typing import Dict, List, Optional, Tuple  # 타입 힌팅을 위한 모듈
+from typing import Dict, List, Optional, Tuple, Any  # 타입 힌팅을 위한 모듈
 
 # 로컬 모듈 임포트
 from ai2thor_connector_ithor import AI2ThorExecutor  # AI2-THOR 환경 실행을 위한 커넥터
 
 # 외부 라이브러리 임포트
 from openai import OpenAI  # OpenAI 호환 API 클라이언트 (Ollama와 통신)
+
+# 로깅 설정
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def parse_info_txt(info_file_path: str) -> Tuple[List[str], List[str]]:
@@ -439,6 +450,347 @@ def generate_program(
     return response.choices[0].message.content.strip()
 
 
+# ============================================================================
+# Scene Graph 업데이트 함수들 (Baseline용)
+# ============================================================================
+
+def parse_program_to_actions(program_code: str) -> List[Dict[str, Any]]:
+    """
+    프로그램 코드를 파싱하여 액션 리스트로 변환
+    
+    Args:
+        program_code: 프로그램 코드 (def 형태)
+        
+    Returns:
+        액션 리스트 [{"type": str, "args": dict, "line": str}, ...]
+    """
+    lines = program_code.split("\n")
+    plan = []
+    
+    for line in lines:
+        line = line.strip()
+        
+        if line.startswith("def "):
+            continue
+        
+        # assert, else:, 주석 제거
+        if line.startswith("assert") or line.startswith("else:") or line.startswith("#"):
+            continue
+        
+        # 액션 파싱
+        match = re.match(r'(\w+)\(([^)]*)\)', line)
+        if not match:
+            continue
+        
+        action = match.group(1)
+        params = match.group(2)
+        
+        if not params:
+            continue
+        
+        params = [p.strip().strip("'\"") for p in params.split(",")]
+        
+        # 액션 타입 정규화
+        action_type = action
+        if action == "GoTo":
+            action_type = "GoToObject"
+        elif action == "Pickup":
+            action_type = "PickupObject"
+        elif action == "Put":
+            action_type = "PutObject"
+        elif action == "Open":
+            action_type = "OpenObject"
+        elif action == "Close":
+            action_type = "CloseObject"
+        elif action == "ToggleOn":
+            action_type = "ToggleObjectOn"
+        elif action == "ToggleOff":
+            action_type = "ToggleObjectOff"
+        elif action == "Slice":
+            action_type = "SliceObject"
+        elif action == "Break":
+            action_type = "BreakObject"
+        
+        if len(params) == 1:
+            plan.append({
+                "type": action_type,
+                "args": {"o": params[0]},
+                "line": line
+            })
+        elif len(params) == 2:
+            plan.append({
+                "type": action_type,
+                "args": {"o": params[0], "r": params[1]},
+                "line": line
+            })
+    
+    return plan
+
+
+def load_scene_graph(scene_graph_path: str) -> Dict[str, Any]:
+    """Scene Graph JSON 파일 로드"""
+    try:
+        with open(scene_graph_path, "r", encoding="utf-8") as f:
+            scene_graph = json.load(f)
+        logger.info(f"Scene Graph 로드 완료: {scene_graph_path}")
+        return scene_graph
+    except Exception as e:
+        logger.error(f"Scene Graph 로드 실패: {e}")
+        return {"nodes": {"agent": {}, "objects": []}, "edges": []}
+
+
+def save_scene_graph_to_file(scene_graph: Dict[str, Any], scene_graph_path: str):
+    """Scene Graph를 JSON 파일에 저장"""
+    try:
+        with open(scene_graph_path, "w", encoding="utf-8") as f:
+            json.dump(scene_graph, f, indent=2, ensure_ascii=False)
+        logger.debug(f"Scene Graph 저장 완료: {scene_graph_path}")
+    except Exception as e:
+        logger.error(f"Scene Graph 저장 실패: {e}")
+
+
+def update_scene_graph_after_action(
+    scene_graph: Dict[str, Any],
+    action: Dict[str, Any],
+    scene_graph_path: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    액션 실행 후 Scene Graph 업데이트 및 JSON 파일 저장 (Baseline용 - 검증 없이 실행)
+    
+    Args:
+        scene_graph: 현재 Scene Graph
+        action: 실행된 액션
+        scene_graph_path: Scene Graph JSON 파일 경로 (None이면 저장 안 함)
+        
+    Returns:
+        업데이트된 Scene Graph
+    """
+    action_type = action.get("type", "")
+    args = action.get("args", {})
+    object_name = args.get("o")
+    receptacle_name = args.get("r")
+    
+    nodes = scene_graph.get("nodes", {})
+    edges = scene_graph.get("edges", [])
+    agent_node = nodes.get("agent", {})
+    object_nodes = nodes.get("objects", [])
+    
+    if action_type == "GoToObject":
+        # GoToObject: Agent 위치를 객체 근처로 업데이트 (간단한 추정)
+        if object_name:
+            target_obj = None
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                if object_name.lower() in obj_type.lower():
+                    target_obj = obj_node
+                    break
+            
+            if target_obj:
+                obj_pos = target_obj.get("position", {})
+                if obj_pos:
+                    # 객체 위치 근처로 Agent 위치 업데이트 (간단한 추정)
+                    agent_node["position"] = {
+                        "x": obj_pos.get("x", 0) - 0.5,  # 객체 앞 0.5m
+                        "y": obj_pos.get("y", 0),
+                        "z": obj_pos.get("z", 0) - 0.5
+                    }
+                    logger.info(f"  ✓ Agent 위치 업데이트: GoToObject('{object_name}')")
+    
+    elif action_type == "PickupObject":
+        # HOLDS 엣지 추가, IN 엣지 제거
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                if object_name.lower() in obj_type.lower():
+                    obj_id = obj_node.get("nodeId", "")
+                    
+                    # HOLDS 엣지 추가
+                    holds_edge = {
+                        "edgeType": "HOLDS",
+                        "source": "agent_0",
+                        "target": obj_id,
+                        "sourceType": "Agent",
+                        "targetType": "Object",
+                        "targetObjectType": obj_type
+                    }
+                    if holds_edge not in edges:
+                        edges.append(holds_edge)
+                    
+                    # IN 엣지 제거
+                    edges = [e for e in edges if not (
+                        e.get("edgeType") == "IN" and e.get("source") == obj_id
+                    )]
+                    
+                    # Agent 노드 업데이트
+                    agent_node["isHolding"] = True
+                    agent_node["heldObjectId"] = obj_id
+                    
+                    # Object 노드 업데이트
+                    obj_node["isPickedUp"] = True
+                    if "parentReceptacles" in obj_node:
+                        obj_node["parentReceptacles"] = []
+                    break
+    
+    elif action_type == "PutObject":
+        # HOLDS 엣지 제거, IN 엣지 추가
+        if object_name and receptacle_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                if object_name.lower() in obj_type.lower():
+                    obj_id = obj_node.get("nodeId", "")
+                    
+                    # HOLDS 엣지 제거
+                    edges = [e for e in edges if not (
+                        e.get("edgeType") == "HOLDS" and e.get("target") == obj_id
+                    )]
+                    
+                    # 수용체 찾기
+                    for recp_node in object_nodes:
+                        recp_type = recp_node.get("objectType", "")
+                        if receptacle_name.lower() in recp_type.lower():
+                            recp_id = recp_node.get("nodeId", "")
+                            
+                            # IN 엣지 추가
+                            in_edge = {
+                                "edgeType": "IN",
+                                "source": obj_id,
+                                "target": recp_id,
+                                "sourceType": "Object",
+                                "targetType": "Object",
+                                "sourceObjectType": obj_type,
+                                "targetObjectType": recp_type
+                            }
+                            if in_edge not in edges:
+                                edges.append(in_edge)
+                            
+                            # Object 노드 업데이트
+                            obj_node["isPickedUp"] = False
+                            if "parentReceptacles" not in obj_node:
+                                obj_node["parentReceptacles"] = []
+                            if recp_id not in obj_node["parentReceptacles"]:
+                                obj_node["parentReceptacles"].append(recp_id)
+                            break
+                    
+                    # Agent 노드 업데이트
+                    agent_node["isHolding"] = False
+                    agent_node["heldObjectId"] = None
+                    break
+    
+    elif action_type == "OpenObject":
+        # Object 노드의 isOpen 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isOpen"] = True
+                    obj_node["openness"] = 1.0
+                    logger.debug(f"  → OpenObject: '{object_name}'의 isOpen=True, openness=1.0으로 업데이트됨")
+                    break
+    
+    elif action_type == "CloseObject":
+        # Object 노드의 isOpen 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isOpen"] = False
+                    obj_node["openness"] = 0.0
+                    logger.debug(f"  → CloseObject: '{object_name}'의 isOpen=False, openness=0.0으로 업데이트됨")
+                    break
+    
+    elif action_type == "ToggleObjectOn":
+        # Object 노드의 isToggled 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isToggled"] = True
+                    logger.debug(f"  → ToggleObjectOn: '{object_name}'의 isToggled=True로 업데이트됨")
+                    break
+    
+    elif action_type == "ToggleObjectOff":
+        # Object 노드의 isToggled 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isToggled"] = False
+                    logger.debug(f"  → ToggleObjectOff: '{object_name}'의 isToggled=False로 업데이트됨")
+                    break
+    
+    elif action_type == "SliceObject":
+        # Object 노드의 isSliced 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isSliced"] = True
+                    logger.debug(f"  → SliceObject: '{object_name}'의 isSliced=True로 업데이트됨")
+                    break
+    
+    elif action_type == "BreakObject":
+        # Object 노드의 isBroken 업데이트
+        if object_name:
+            for obj_node in object_nodes:
+                obj_type = obj_node.get("objectType", "")
+                obj_id = obj_node.get("nodeId", "")
+                if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                    obj_node["isBroken"] = True
+                    logger.debug(f"  → BreakObject: '{object_name}'의 isBroken=True로 업데이트됨")
+                    break
+    
+    # 업데이트된 Scene Graph 반환
+    scene_graph["nodes"]["agent"] = agent_node
+    scene_graph["nodes"]["objects"] = object_nodes
+    scene_graph["edges"] = edges
+    
+    # JSON 파일에 저장
+    if scene_graph_path:
+        save_scene_graph_to_file(scene_graph, scene_graph_path)
+        logger.info(f"  💾 Scene Graph JSON 파일 업데이트 완료: {scene_graph_path}")
+    
+    return scene_graph
+
+
+def update_scene_graph_from_plan(
+    scene_graph: Dict[str, Any],
+    program_code: str,
+    scene_graph_path: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Plan 코드를 파싱하여 각 액션을 실행하고 Scene Graph 업데이트
+    
+    Args:
+        scene_graph: 현재 Scene Graph
+        program_code: 프로그램 코드
+        scene_graph_path: Scene Graph JSON 파일 경로
+        
+    Returns:
+        업데이트된 Scene Graph
+    """
+    # Plan 파싱
+    actions = parse_program_to_actions(program_code)
+    logger.info(f"  📋 {len(actions)}개의 액션 파싱 완료")
+    
+    # 각 액션 실행 및 Scene Graph 업데이트
+    for i, action in enumerate(actions):
+        action_type = action.get("type", "")
+        action_line = action.get("line", "")
+        logger.info(f"  [{i+1}/{len(actions)}] {action_line}")
+        
+        # Scene Graph 업데이트 (검증 없이 실행)
+        scene_graph = update_scene_graph_after_action(
+            scene_graph, action, scene_graph_path
+        )
+    
+    return scene_graph
+
+
 def main():
     """
     메인 함수: 명령줄 인자를 파싱하고, 작업 목록을 로드하며, 
@@ -525,6 +877,18 @@ def main():
         default=None,
         help="AI2THOR 객체와 액션을 지정된 경로의 info.txt 파일로 내보냅니다.",
     )
+    parser.add_argument(
+        "--scene-graph",
+        type=str,
+        default=None,
+        help="Scene Graph JSON 파일 경로 (물리적 검증용). 지정하지 않으면 scene 번호 입력 시 자동 생성.",
+    )
+    parser.add_argument(
+        "--scene-number",
+        type=int,
+        default=None,
+        help="FloorPlan 번호 (예: 1, 201, 301, 401). --scene-graph가 지정되지 않으면 이 번호로 자동 경로 생성.",
+    )
 
     # 명령줄 인자 파싱
     args = parser.parse_args()
@@ -602,6 +966,34 @@ def main():
     
     # JSON 출력 파일 경로 생성
     output_path = Path(args.output_dir) / f"ai2thor_progprompt_{timestamp}.json"
+    
+    # Scene Graph 경로 결정
+    scene_graph_path = None
+    baseline_updated_scene_graph_path = None
+    
+    if args.scene_number is not None or args.scene_graph is not None:
+        if args.scene_graph:
+            # 명령줄에서 직접 지정된 경우
+            scene_graph_path = Path(args.scene_graph)
+        else:
+            # Scene 번호에 따라 자동 생성
+            scene_number = args.scene_number
+            scene_graph_path = Path(f"scripts/scene_graph_structured_FloorPlan{scene_number}.json")
+            print(f"🔍 FloorPlan {scene_number}의 Scene Graph 사용: {scene_graph_path}")
+        
+        # 상대 경로인 경우 절대 경로로 변환
+        if not scene_graph_path.is_absolute():
+            scene_graph_path = Path(__file__).parent.parent / scene_graph_path
+        
+        # Scene Graph 파일 존재 확인
+        if not scene_graph_path.exists():
+            print(f"⚠️  Scene Graph 파일을 찾을 수 없습니다: {scene_graph_path.absolute()}")
+            print(f"   Scene Graph 업데이트를 건너뜁니다.")
+            scene_graph_path = None
+        else:
+            # Baseline용 업데이트된 Scene Graph 파일 경로 생성
+            baseline_updated_scene_graph_path = scene_graph_path.parent / "baseline_updated_scene_graph.json"
+            print(f"📋 Baseline용 Scene Graph 업데이트 파일: {baseline_updated_scene_graph_path}")
 
     # 각 작업에 대한 프로그램 생성
     plan_dict: Dict[str, str] = {}  # 작업명: 프로그램 코드 딕셔너리
@@ -627,6 +1019,23 @@ def main():
         # 생성된 프로그램 출력 (콘솔 확인용)
         print(program)
         print("-" * 80)  # 구분선
+        
+        # Scene Graph 업데이트 (Baseline용)
+        if scene_graph_path and baseline_updated_scene_graph_path:
+            # 각 task 시작 전에 원본 Scene Graph를 baseline_updated_scene_graph.json으로 복사 (원본으로 리셋)
+            shutil.copy2(str(scene_graph_path), str(baseline_updated_scene_graph_path))
+            logger.info(f"원본 Scene Graph를 {baseline_updated_scene_graph_path}로 복사 완료 (task 시작 전 리셋)")
+            
+            # 업데이트된 Scene Graph 로드
+            scene_graph = load_scene_graph(str(baseline_updated_scene_graph_path))
+            logger.info(f"업데이트된 Scene Graph 로드 완료: {baseline_updated_scene_graph_path}")
+            
+            # Plan을 실행하여 Scene Graph 업데이트
+            logger.info(f"📋 Plan 실행 및 Scene Graph 업데이트 중: '{task}'")
+            scene_graph = update_scene_graph_from_plan(
+                scene_graph, program, str(baseline_updated_scene_graph_path)
+            )
+            logger.info(f"✓ Scene Graph 업데이트 완료: '{task}'")
 
     # JSON 파일로 계획 저장
     with open(output_path, "w", encoding="utf-8") as f:

@@ -71,7 +71,7 @@
           "z": 0.02027934230864048
         },
         "parentReceptacles": [
-          "CounterTop|-00.08|+01.15|00.00"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1924,7 +1924,7 @@
           "z": -0.0005083804135210812
         },
         "parentReceptacles": [
-          "Fridge|-02.10|+00.50|+01.07"
+          "CounterTop|-01.87|+00.95|-01.21"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -3290,11 +3290,11 @@
     },
     {
       "edgeType": "IN",
-      "source": "Potato|-01.66|+00.93|-02.15",
+      "source": "Apple|-00.47|+01.15|+00.48",
       "target": "Fridge|-02.10|+00.50|+01.07",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Potato",
+      "sourceObjectType": "Apple",
       "targetObjectType": "Fridge"
     }
   ]

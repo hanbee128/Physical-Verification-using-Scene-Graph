@@ -32,29 +32,57 @@ def load_scene_graph(scene_graph_path: str) -> Dict[str, Any]:
 
 def find_target_object(scene_graph: Dict[str, Any], object_name: str) -> List[Dict[str, Any]]:
     """
-    목표 객체 이름으로 Scene Graph에서 객체 찾기 (부분 매칭)
+    목표 객체 이름으로 Scene Graph에서 객체 찾기 (정확한 매칭 우선, 부분 매칭 fallback)
     
     Args:
         scene_graph: Scene Graph 딕셔너리
-        object_name: 찾을 객체 이름 (예: "Apple", "Fridge")
+        object_name: 찾을 객체 이름 (예: "Apple", "Fridge", "Knife")
         
     Returns:
-        매칭된 객체 노드 리스트
+        매칭된 객체 노드 리스트 (정확한 매칭이 우선)
     """
     object_nodes = scene_graph.get("nodes", {}).get("objects", [])
-    matched_objects = []
+    exact_matches = []
+    partial_matches = []
     
     object_name_lower = object_name.lower()
+    
+    # 제외할 객체 타입 리스트 (예: 'Knife'를 찾을 때 'ButterKnife'는 제외)
+    exclude_types = []
+    if object_name_lower == "knife":
+        exclude_types = ["butterknife"]
     
     for obj_node in object_nodes:
         obj_type = obj_node.get("objectType", "")
         obj_id = obj_node.get("nodeId", "")
+        obj_type_lower = obj_type.lower()
+        obj_id_lower = obj_id.lower()
         
-        # 객체 타입 또는 nodeId에 이름이 포함되어 있는지 확인
-        if object_name_lower in obj_type.lower() or object_name_lower in obj_id.lower():
-            matched_objects.append(obj_node)
+        # 제외할 타입인지 확인 (부분 문자열 포함 여부 확인)
+        # "knife"를 찾을 때 "butterknife"는 무조건 제외
+        if object_name_lower == "knife":
+            if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                continue
+        
+        # 정확한 매칭 우선 (타입이 정확히 일치)
+        if obj_type_lower == object_name_lower:
+            exact_matches.append(obj_node)
+        # nodeId에서도 정확한 매칭 확인 (nodeId가 "Knife|..." 형식인 경우)
+        elif obj_id_lower.startswith(object_name_lower + "|") or obj_id_lower == object_name_lower:
+            exact_matches.append(obj_node)
+        # 정확한 매칭이 없으면 부분 매칭 (단, 제외 타입은 이미 필터링됨)
+        elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+            # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외 (이중 체크)
+            if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                continue
+            partial_matches.append(obj_node)
     
-    return matched_objects
+    # "Knife"를 찾을 때는 정확한 매칭만 반환 (부분 매칭 반환 안 함)
+    if object_name_lower == "knife":
+        return exact_matches
+    
+    # 정확한 매칭이 있으면 그것만 반환, 없으면 부분 매칭 반환
+    return exact_matches if exact_matches else partial_matches
 
 
 def get_related_edges(scene_graph: Dict[str, Any], object_node: Dict[str, Any]) -> List[Dict[str, Any]]:

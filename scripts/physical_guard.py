@@ -142,7 +142,7 @@ AI2THOR_ACTIONS = [
 # FloorPlan1 씬에서 사용 가능한 기본 객체 목록 (info.txt에서 추출)
 DEFAULT_FLOORPLAN1_OBJECTS = [
     "AlarmClock", "Apple", "AppleSliced", "ArmChair", "BaseballBat", "BasketBall", "Bathtub", "BathtubBasin",
-    "Bed", "Blinds", "Book", "Boots", "Bottle", "Bowl", "Box", "Bread", "BreadSliced", "ButterKnife",
+    "Bed", "Blinds", "Book", "Boots", "Bottle", "Bowl", "Box", "Bread", "BreadSliced",
     "Cabinet", "Candle", "Cart", "CD", "CellPhone", "Chair", "Cloth", "CoffeeMachine", "CoffeTable",
     "CounterTop", "CreditCard", "Cup", "Curtains", "Desk", "DeskLamp", "DiningTable", "DishSponge",
     "Drawer", "Dresser", "Egg", "EggCracked", "Faucet", "FloorLamp", "Footstool", "Fork", "Fridge",
@@ -189,26 +189,62 @@ DEFAULT_EXAMPLES = {
         \tCloseObject('Fridge')
         """
     ),
-    # 예제 2: 토마토를 냉장고에 넣기
-    "put_tomato_in_fridge": textwrap.dedent(
+    # 예제 2: 빵 자르기
+    "slice_bread": textwrap.dedent(
         """\
-        def put_tomato_in_fridge():
-        \t# Step 1: Grab the tomato
-        \tGoToObject('Tomato')
-        \tassert('close' to 'Tomato')
-        \t\telse: GoToObject('Tomato')
-        \tPickupObject('Tomato')
-        \t# Step 2: Move to fridge, ensure it is open
-        \tGoToObject('Fridge')
-        \tassert('Fridge' is 'closed')
-        \t\telse: CloseObject('Fridge')
-        \tOpenObject('Fridge')
-        \t# Step 3: Store tomato and close door
-        \tassert('Tomato' in 'hands')
-        \t\telse: GoToObject('Tomato')
-        \t\telse: PickupObject('Tomato')
-        \tPutObject('Tomato', 'Fridge')
-        \tCloseObject('Fridge')
+        def slice_bread():
+        \t# Step 1: Retrieve the knife
+        \tGoToObject('Knife')
+        \tassert('close' to 'Knife')
+        \t\telse: GoToObject('Knife')
+        \tPickupObject('Knife')
+        \t# Step 2: Locate the bread loaf
+        \tGoToObject('Bread')
+        \t# Step 3: Slice the bread with precondition checks
+        \tassert('Knife' in 'hands')
+        \t\telse: GoToObject('Knife')
+        \t\telse: PickupObject('Knife')
+        \tassert('close' to 'Bread')
+        \t\telse: GoToObject('Bread')
+        \tSliceObject('Bread')
+        """
+    ),
+    # 예제 3: 머그잔 씻기
+    "wash_mug": textwrap.dedent(
+        """\
+        def wash_mug():
+        \t# Step 1: Find and pick up the mug
+        \tGoToObject('Mug')
+        \tassert('close' to 'Mug')
+        \t\telse: GoToObject('Mug')
+        \tPickupObject('Mug')
+        \t# Step 2: Move to the sink and drop the mug inside
+        \tGoToObject('Sink')
+        \tassert('close' to 'Sink')
+        \t\telse: GoToObject('Sink')
+        \tPutObject('Mug', 'Sink')
+        \t# Step 3: Turn on the faucet and clean
+        \tGoToObject('Faucet')
+        \tassert('Faucet' is 'off')
+        \t\telse: ToggleObjectOff('Faucet')
+        \tToggleObjectOn('Faucet')
+        \tGoToObject('Mug')
+        \tCleanObject('Mug')
+        \t# Step 4: Turn off the faucet
+        \tGoToObject('Faucet')
+        \tToggleObjectOff('Faucet')
+        """
+    ),
+    # 예제 4: Mug를 깨뜨리기
+    "break_mug": textwrap.dedent(
+        """\
+        def break_mug():
+        \t# Step 1: Find and pick up the mug
+        \tGoToObject('Mug')
+        \tassert('close' to 'Mug')
+        \t\telse: GoToObject('Mug')
+        \tPickupObject('Mug')
+        \tBreakObject('Mug')
         """
     ),
 }
@@ -487,6 +523,15 @@ def parse_program_to_actions(program_code: str) -> List[Dict[str, Any]]:
             action_type = "OpenObject"
         elif action == "Close":
             action_type = "CloseObject"
+        elif action == "ToggleOn":
+            action_type = "ToggleObjectOn"
+        elif action == "ToggleOff":
+            action_type = "ToggleObjectOff"
+        elif action == "Slice":
+            action_type = "SliceObject"
+        elif action == "Break":
+            action_type = "BreakObject"
+
         
         if len(params) == 1:
             plan.append({
@@ -548,35 +593,84 @@ def get_relevant_scene_context(
     target_object_node = None
     receptacle_object_node = None
     
-    for obj_node in object_nodes:
-        obj_type = obj_node.get("objectType", "")
-        obj_id = obj_node.get("nodeId", "")
+    # 정확한 매칭과 부분 매칭을 분리하여 수집
+    exact_matches = []
+    partial_matches = []
+    
+    if object_name:
+        object_name_lower = object_name.lower()
         
-        if object_name:
+        for obj_node in object_nodes:
+            obj_type = obj_node.get("objectType", "")
+            obj_id = obj_node.get("nodeId", "")
+            obj_type_lower = obj_type.lower()
+            
             # nodeId 형식인지 확인 (예: "Drawer|-01.56|+00.84|-00.20")
             if "|" in object_name and len(object_name.split("|")) >= 4:
                 # nodeId 형식이면 정확히 일치하는지 확인
                 if obj_id == object_name:
-                    target_object_node = obj_node
-                    relevant_objects.append(obj_node)
+                    exact_matches.append(obj_node)
             else:
-                # 일반 이름 형식이면 타입으로 매칭
-                if object_name.lower() in obj_type.lower():
-                    target_object_node = obj_node
-                    relevant_objects.append(obj_node)
+                # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                if object_name_lower == "knife":
+                    if "butter" in obj_type_lower or "butter" in obj_id.lower():
+                        continue
+                
+                # 정확한 매칭 우선 (예: "Knife"는 "Knife"와만 매칭)
+                if obj_type_lower == object_name_lower:
+                    exact_matches.append(obj_node)
+                # 정확한 매칭이 없으면 부분 매칭 시도
+                elif object_name_lower in obj_type_lower:
+                    # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외 (이중 체크)
+                    if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id.lower()):
+                        continue
+                    partial_matches.append(obj_node)
         
-        if receptacle_name:
+        # "Knife"를 찾을 때는 정확한 매칭만 사용 (부분 매칭 사용 안 함)
+        if object_name_lower == "knife":
+            if exact_matches:
+                target_object_node = exact_matches[0]  # 첫 번째 정확한 매칭 사용
+                relevant_objects.extend(exact_matches)
+            # 정확한 매칭이 없으면 None (ButterKnife는 선택 안 함)
+        else:
+            # 정확한 매칭이 있으면 그것만 사용, 없으면 부분 매칭 사용
+            if exact_matches:
+                target_object_node = exact_matches[0]  # 첫 번째 정확한 매칭 사용
+                relevant_objects.extend(exact_matches)
+            elif partial_matches:
+                target_object_node = partial_matches[0]  # 첫 번째 부분 매칭 사용
+                relevant_objects.extend(partial_matches)
+    
+    # 수용체 찾기 (별도 처리)
+    if receptacle_name:
+        receptacle_exact_matches = []
+        receptacle_partial_matches = []
+        receptacle_name_lower = receptacle_name.lower()
+        
+        for obj_node in object_nodes:
+            obj_type = obj_node.get("objectType", "")
+            obj_id = obj_node.get("nodeId", "")
+            obj_type_lower = obj_type.lower()
+            
             # nodeId 형식인지 확인
             if "|" in receptacle_name and len(receptacle_name.split("|")) >= 4:
                 # nodeId 형식이면 정확히 일치하는지 확인
                 if obj_id == receptacle_name:
-                    receptacle_object_node = obj_node
-                    relevant_objects.append(obj_node)
+                    receptacle_exact_matches.append(obj_node)
             else:
                 # 일반 이름 형식이면 타입으로 매칭
-                if receptacle_name.lower() in obj_type.lower():
-                    receptacle_object_node = obj_node
-                    relevant_objects.append(obj_node)
+                if obj_type_lower == receptacle_name_lower:
+                    receptacle_exact_matches.append(obj_node)
+                elif receptacle_name_lower in obj_type_lower:
+                    receptacle_partial_matches.append(obj_node)
+        
+        # 정확한 매칭이 있으면 그것만 사용, 없으면 부분 매칭 사용
+        if receptacle_exact_matches:
+            receptacle_object_node = receptacle_exact_matches[0]
+            relevant_objects.extend(receptacle_exact_matches)
+        elif receptacle_partial_matches:
+            receptacle_object_node = receptacle_partial_matches[0]
+            relevant_objects.extend(receptacle_partial_matches)
     
     # 관련 엣지 찾기
     relevant_edges = []
@@ -857,6 +951,53 @@ def verify_guard_with_scene_graph(
             
             return False, f"\n Agent 위치 기준 범위 밖 (agent 위치: x={agent_x:.3f}, y={agent_y:.3f}, z={agent_z:.3f}, 객체 위치: x={obj_x:.3f}, y={obj_y:.3f}, z={obj_z:.3f}, 거리={distance_3d:.3f}m, 벗어난 축: {', '.join(out_of_range_axis)})"
     
+    # Proximity(agent, object) 검증 - agent와 목표 객체 간 거리가 2m 이내인지 확인
+    if "PROXIMITY" in guard_upper:
+        # PutObject의 경우 receptacle을 타겟으로 사용
+        if action_type == "PutObject":
+            check_obj = receptacle_obj if receptacle_obj else target_obj
+            obj_name_for_log = receptacle_name if receptacle_name else object_name
+        else:
+            check_obj = target_obj
+            obj_name_for_log = object_name
+        
+        if check_obj is None:
+            return False, f"타겟 객체가 없음 ({'receptacle' if action_type == 'PutObject' else 'object'})"
+        
+        obj_pos = check_obj.get("position", {})
+        if not obj_pos:
+            return False, "객체 위치 정보가 없음"
+        
+        # Agent 위치: 파라미터로 받은 위치를 우선 사용, 없으면 agent_node에서 가져오기
+        if agent_position is not None:
+            agent_pos = agent_position
+        else:
+            agent_pos = agent_node.get("position", {})
+        
+        if not agent_pos:
+            return False, "Agent 위치 정보가 없음"
+        
+        # Agent와 객체 간 거리 계산 (3D 유클리드 거리)
+        agent_x = agent_pos.get("x", 0)
+        agent_y = agent_pos.get("y", 0)
+        agent_z = agent_pos.get("z", 0)
+        
+        obj_x = obj_pos.get("x", 0)
+        obj_y = obj_pos.get("y", 0)
+        obj_z = obj_pos.get("z", 0)
+        
+        dx = obj_x - agent_x
+        dy = obj_y - agent_y
+        dz = obj_z - agent_z
+        distance = math.sqrt(dx**2 + dy**2 + dz**2)
+        
+        # 2m 이내이면 통과
+        proximity_threshold = 2.0
+        if distance <= proximity_threshold:
+            return True, f"Agent와 객체 간 거리: {distance:.3f}m <= {proximity_threshold}m (agent 위치: ({agent_x:.3f}, {agent_y:.3f}, {agent_z:.3f}), 객체 위치: ({obj_x:.3f}, {obj_y:.3f}, {obj_z:.3f}))"
+        else:
+            return False, f"Agent와 객체 간 거리: {distance:.3f}m > {proximity_threshold}m (agent 위치: ({agent_x:.3f}, {agent_y:.3f}, {agent_z:.3f}), 객체 위치: ({obj_x:.3f}, {obj_y:.3f}, {obj_z:.3f}))"
+    
     # NAVIGABLE(agent, object) 검증
     if "NAVIGABLE" in guard_upper:
         if target_obj is None:
@@ -913,6 +1054,103 @@ def verify_guard_with_scene_graph(
             return True, f"목표 객체 위치: {obj_pos_str}, 가장 가까운 이동 가능 위치: {closest_pos_str} (NavMesh 거리: {distance:.2f}m, 실제 3D 거리: {actual_distance_3d:.2f}m) <= {navigable_threshold}m"
         else:
             return False, f"목표 객체 위치: {obj_pos_str}, 가장 가까운 이동 가능 위치: {closest_pos_str} (NavMesh 거리: {distance:.2f}m, 실제 3D 거리: {actual_distance_3d:.2f}m) > {navigable_threshold}m"
+    
+    # HOLDS(agent, 'Knife') 검증 (특정 객체를 들고 있는지 확인) - HOLDS(agent, object)보다 먼저 확인
+    if "HOLDS" in guard_upper and "'" in guard_name:
+        # guard_name에서 객체 이름 추출 (예: "HOLDS(agent, 'Knife')")
+        import re
+        match = re.search(r"'([^']+)'", guard_name)
+        if match:
+            required_object_name = match.group(1)
+            
+            # 제외할 객체 타입 리스트 (예: 'Knife'를 찾을 때 'ButterKnife'는 제외)
+            exclude_types = []
+            if required_object_name.lower() == "knife":
+                exclude_types = ["butterknife"]
+            
+            # scene_graph를 우선적으로 사용 (업데이트된 정보 반영)
+            if scene_graph:
+                # Agent 노드에서 직접 확인
+                agent_node_updated = scene_graph.get("nodes", {}).get("agent", {})
+                if agent_node_updated.get("isHolding", False):
+                    held_object_id = agent_node_updated.get("heldObjectId")
+                    if held_object_id:
+                        # heldObjectId에서 객체 타입 추출
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            if obj_node.get("nodeId") == held_object_id:
+                                obj_type = obj_node.get("objectType", "")
+                                obj_type_lower = obj_type.lower()
+                                required_name_lower = required_object_name.lower()
+                                
+                                # 제외할 타입인지 확인
+                                if any(exclude.lower() in obj_type_lower for exclude in exclude_types):
+                                    break
+                                
+                                # 정확한 타입 매칭 또는 정확한 타입으로 시작하는지 확인
+                                if obj_type_lower == required_name_lower or obj_type_lower.startswith(required_name_lower + "|"):
+                                    return True, f"Agent가 '{required_object_name}'를 들고 있음 (업데이트된 Scene Graph)"
+                                break
+                
+                # HOLDS 엣지 확인
+                edges = scene_graph.get("edges", [])
+                for edge in edges:
+                    if edge.get("edgeType") == "HOLDS":
+                        held_obj_id = edge.get("target")
+                        if held_obj_id:
+                            object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                            for obj_node in object_nodes:
+                                if obj_node.get("nodeId") == held_obj_id:
+                                    obj_type = obj_node.get("objectType", "")
+                                    obj_type_lower = obj_type.lower()
+                                    required_name_lower = required_object_name.lower()
+                                    
+                                    # 제외할 타입인지 확인
+                                    if any(exclude.lower() in obj_type_lower for exclude in exclude_types):
+                                        break
+                                    
+                                    # 정확한 타입 매칭 또는 정확한 타입으로 시작하는지 확인
+                                    if obj_type_lower == required_name_lower or obj_type_lower.startswith(required_name_lower + "|"):
+                                        return True, f"Agent가 '{required_object_name}'를 들고 있음 (HOLDS 엣지)"
+                                    break
+            
+            # scene_graph에서 확인 실패 시 scene_context 사용 (fallback)
+            holds_edges = [e for e in relevant_edges if e.get("edgeType") == "HOLDS"]
+            if holds_edges:
+                held_obj_id = holds_edges[0].get("target")
+                # 실제로 들고 있는 객체의 타입 확인
+                held_obj_type = None
+                if scene_graph:
+                    object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == held_obj_id:
+                            held_obj_type = obj_node.get("objectType", "")
+                            break
+                
+                if held_obj_type:
+                    return False, f"Agent가 '{required_object_name}'를 들고 있지 않음 (현재 '{held_obj_type}'를 들고 있음)"
+                else:
+                    return False, f"Agent가 '{required_object_name}'를 들고 있지 않음 (다른 객체를 들고 있음)"
+            
+            # Agent 노드의 isHolding 확인
+            if agent_node.get("isHolding", False):
+                held_object_id = agent_node.get("heldObjectId")
+                if held_object_id:
+                    # 실제로 들고 있는 객체의 타입 확인
+                    held_obj_type = None
+                    if scene_graph:
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            if obj_node.get("nodeId") == held_object_id:
+                                held_obj_type = obj_node.get("objectType", "")
+                                break
+                    
+                    if held_obj_type:
+                        return False, f"Agent가 '{required_object_name}'를 들고 있지 않음 (현재 '{held_obj_type}'를 들고 있음)"
+                    else:
+                        return False, f"Agent가 '{required_object_name}'를 들고 있지 않음 (다른 객체를 들고 있음)"
+            
+            return False, f"Agent가 '{required_object_name}'를 들고 있지 않음"
     
     # HOLDS(agent, object) 검증
     if "HOLDS" in guard_upper and "¬" not in guard_name:
@@ -1126,6 +1364,83 @@ def verify_guard_with_scene_graph(
         else:
             return False, "객체가 openable이 아님"
     
+    # toggleable(object) 검증
+    if "TOGGLEABLE" in guard_upper:
+        if target_obj is None:
+            return False, "타겟 객체가 없음"
+        
+        is_toggleable = target_obj.get("toggleable", False)
+        if is_toggleable:
+            return True, "객체가 toggleable임"
+        else:
+            return False, "객체가 toggleable이 아님"
+    
+    # isToggled(object) 검증
+    if "ISTOGGLED" in guard_upper and "¬" not in guard_name:
+        if target_obj is None:
+            return False, "타겟 객체가 없음"
+        
+        is_toggled = target_obj.get("isToggled", False)
+        if is_toggled:
+            return True, "객체가 켜져있음"
+        else:
+            return False, "객체가 꺼져있음"
+    
+    # ¬isToggled(object) 검증
+    if "ISTOGGLED" in guard_upper and "¬" in guard_name:
+        if target_obj is None:
+            return True, "타겟 객체가 없지만 전제조건이므로 통과"
+        
+        is_toggled = target_obj.get("isToggled", False)
+        if not is_toggled:
+            return True, "객체가 꺼져있음"
+        else:
+            return False, "객체가 이미 켜져있음"
+    
+    # sliceable(object) 검증
+    if "SLICEABLE" in guard_upper:
+        if target_obj is None:
+            return False, "타겟 객체가 없음"
+        
+        is_sliceable = target_obj.get("sliceable", False)
+        if is_sliceable:
+            return True, "객체가 sliceable임"
+        else:
+            return False, "객체가 sliceable이 아님"
+    
+    # ¬isSliced(object) 검증
+    if "ISSLICED" in guard_upper and "¬" in guard_name:
+        if target_obj is None:
+            return True, "타겟 객체가 없지만 전제조건이므로 통과"
+        
+        is_sliced = target_obj.get("isSliced", False)
+        if not is_sliced:
+            return True, "객체가 아직 자르지 않음"
+        else:
+            return False, "객체가 이미 잘림"
+    
+    # breakable(object) 검증
+    if "BREAKABLE" in guard_upper:
+        if target_obj is None:
+            return False, "타겟 객체가 없음"
+        
+        is_breakable = target_obj.get("breakable", False)
+        if is_breakable:
+            return True, "객체가 breakable임"
+        else:
+            return False, "객체가 breakable이 아님"
+    
+    # ¬isBroken(object) 검증
+    if "ISBROKEN" in guard_upper and "¬" in guard_name:
+        if target_obj is None:
+            return True, "타겟 객체가 없지만 전제조건이므로 통과"
+        
+        is_broken = target_obj.get("isBroken", False)
+        if not is_broken:
+            return True, "객체가 아직 깨지지 않음"
+        else:
+            return False, "객체가 이미 깨짐"
+    
     # 알 수 없는 가드
     return False, f"알 수 없는 가드 타입: {guard_name}"
 
@@ -1247,11 +1562,12 @@ def verify_action_with_scene_graph(
     if action_type == "GoToObject":
         guards = ["EXISTS(object)", "NAVIGABLE(agent, object)"]
     elif action_type == "PickupObject":
-        guards = ["pickupable(object)", 
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "pickupable(object)", 
                  "REACHABLE(agent, object)", "¬HOLDS(agent, *)", "¬IN(object, closed_receptacle)"]
     elif action_type == "PutObject":
         # 수용체의 openable 여부 확인하여 OPENED 가드 추가 여부 결정
-        guards = ["HOLDS(agent, object)", "receptacle(receptacle)",
+        guards = ["EXISTS(object)", "EXISTS(receptacle)", "Proximity(agent, receptacle)", 
+                 "HOLDS(agent, object)", "receptacle(receptacle)",
                  "REACHABLE(agent, receptacle)", "openable(receptacle)"]
         # openable이 True인 경우에만 OPENED 검증 추가
         if receptacle_name and find_target_object:
@@ -1261,11 +1577,23 @@ def verify_action_with_scene_graph(
                 if recp_obj.get("openable", False):
                     guards.append("OPENED(receptacle)")
     elif action_type == "OpenObject":
-        guards = ["openable(object)", "¬OPENED(object)", 
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "openable(object)", "¬OPENED(object)", 
                  "REACHABLE(agent, object)"]
     elif action_type == "CloseObject":
-        guards = ["openable(object)", "OPENED(object)",
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "openable(object)", "OPENED(object)",
                  "REACHABLE(agent, object)"]
+    elif action_type == "ToggleObjectOn":
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "toggleable(object)", 
+        "REACHABLE(agent, object)", "¬isToggled(object)", "¬IN(object, closed_receptacle)"]
+    elif action_type == "ToggleObjectOff":
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "toggleable(object)", 
+        "REACHABLE(agent, object)", "isToggled(object)"]
+    elif action_type == "SliceObject":
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "sliceable(object)", 
+        "¬isSliced(object)", "REACHABLE(agent, object)", "HOLDS(agent, 'Knife')", "¬IN(object, closed_receptacle)"]
+    elif action_type == "BreakObject":
+        guards = ["EXISTS(object)", "Proximity(agent, object)", "breakable(object)", 
+        "¬isBroken(object)", "REACHABLE(agent, object)", "¬IN(object, closed_receptacle)"]
     else:
         guards = ["EXISTS(object)"]
     
@@ -1323,6 +1651,7 @@ def verify_action_with_scene_graph(
     if not all_passed:
         # 타겟 객체 노드 가져오기 (복구 액션 생성에 필요)
         target_obj = scene_context.get("targetObject")
+        receptacle_obj = scene_context.get("receptacleObject")
         
         # PickupObject: ¬IN(object, closed_receptacle) 실패 → 부모 수용체 열기
         if action_type == "PickupObject" and "¬IN(object, closed_receptacle)" in failed_guards:
@@ -1397,7 +1726,126 @@ def verify_action_with_scene_graph(
                 
                 
         
+        # Proximity 가드 실패 → GoToObject 추가
+        if "Proximity" in failed_guards:
+            # 목표 객체 찾기
+            target_for_proximity = None
+            target_name_for_proximity = None
+            
+            if action_type == "PutObject":
+                # PutObject의 경우 receptacle을 타겟으로 사용
+                target_for_proximity = receptacle_obj if receptacle_obj else target_obj
+                target_name_for_proximity = receptacle_name if receptacle_name else object_name
+            else:
+                target_for_proximity = target_obj
+                target_name_for_proximity = object_name
+            
+            if target_for_proximity and target_name_for_proximity:
+                goto_proximity_recovery = {
+                    "type": "GoToObject",
+                    "args": {"o": target_name_for_proximity},
+                    "line": f"GoToObject('{target_name_for_proximity}')",
+                    "reason": f"객체 '{target_name_for_proximity}'로 이동 (Proximity 가드 위반)",
+                    "is_original": False,
+                    "is_recovery": True,
+                    "failed_guards": ["Proximity"],
+                    "recovery_reason": f"Agent와 객체 '{target_name_for_proximity}' 간 거리가 2m를 초과하여 이동 필요"
+                }
+                recovery_actions.append(goto_proximity_recovery)
+                logger.info(f"    → 복구 액션 생성: GoToObject('{target_name_for_proximity}') (Proximity 가드 위반)")
+        
         # REACHABLE 가드 실패 시 복구 불가능 - 검증 종료 처리 (아래에서 처리)
+        
+        # SliceObject: HOLDS(agent, 'Knife') 실패 → Knife로 이동하고 집기
+        if action_type == "SliceObject" and "HOLDS(agent, 'Knife')" in failed_guards:
+            # Knife로 이동하고 집기
+            goto_knife_recovery = {
+                "type": "GoToObject",
+                "args": {"o": "Knife"},
+                "line": "GoToObject('Knife')",
+                "reason": "Knife로 이동 (SliceObject를 위해)",
+                "is_original": False,
+                "is_recovery": True,
+                "failed_guards": ["HOLDS(agent, 'Knife')"],
+                "recovery_reason": "SliceObject를 위해 Knife로 이동"
+            }
+            recovery_actions.append(goto_knife_recovery)
+            logger.info(f"    → 복구 액션 생성: GoToObject('Knife')")
+            
+            pickup_knife_recovery = {
+                "type": "PickupObject",
+                "args": {"o": "Knife"},
+                "line": "PickupObject('Knife')",
+                "reason": "Knife 집기 (SliceObject를 위해)",
+                "is_original": False,
+                "is_recovery": True,
+                "failed_guards": ["HOLDS(agent, 'Knife')"],
+                "recovery_reason": "SliceObject를 위해 Knife 집기"
+            }
+            recovery_actions.append(pickup_knife_recovery)
+            logger.info(f"    → 복구 액션 생성: PickupObject('Knife')")
+        
+        # SliceObject, BreakObject: ¬IN(object, closed_receptacle) 실패 → 부모 수용체 열기
+        if action_type in ["SliceObject", "BreakObject"] and "¬IN(object, closed_receptacle)" in failed_guards:
+            # 부모 수용체 찾기
+            if target_obj:
+                parent_receptacles = target_obj.get("parentReceptacles", [])
+                for recp_id in parent_receptacles:
+                    # 수용체 노드 찾기
+                    recp_node = None
+                    if scene_graph:
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            if obj_node.get("nodeId") == recp_id:
+                                recp_node = obj_node
+                                break
+                    
+                    if recp_node and recp_node.get("openable", False) and not recp_node.get("isOpen", False):
+                        recovery_action = {
+                            "type": "OpenObject",
+                            "args": {"o": recp_id},
+                            "line": f"OpenObject('{recp_id}')",
+                            "nodeId": recp_id,
+                            "reason": f"부모 수용체 '{recp_id}' 열기 (객체 '{object_name}' 접근을 위해)",
+                            "is_original": False,
+                            "is_recovery": True,
+                            "failed_guards": ["¬IN(object, closed_receptacle)"],
+                            "recovery_reason": f"닫힌 수용체 '{recp_id}' 내부 객체 접근을 위해 수용체 열기"
+                        }
+                        recovery_actions.append(recovery_action)
+                        logger.info(f"    → 복구 액션 생성: OpenObject('{recp_id}')")
+                        break  # 첫 번째 닫힌 수용체만 처리
+        
+        # ToggleObjectOn: ¬IN(object, closed_receptacle) 실패 → 부모 수용체 열기
+        if action_type == "ToggleObjectOn" and "¬IN(object, closed_receptacle)" in failed_guards:
+            # 부모 수용체 찾기
+            if target_obj:
+                parent_receptacles = target_obj.get("parentReceptacles", [])
+                for recp_id in parent_receptacles:
+                    # 수용체 노드 찾기
+                    recp_node = None
+                    if scene_graph:
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            if obj_node.get("nodeId") == recp_id:
+                                recp_node = obj_node
+                                break
+                    
+                    if recp_node and recp_node.get("openable", False) and not recp_node.get("isOpen", False):
+                        recovery_action = {
+                            "type": "OpenObject",
+                            "args": {"o": recp_id},
+                            "line": f"OpenObject('{recp_id}')",
+                            "nodeId": recp_id,
+                            "reason": f"부모 수용체 '{recp_id}' 열기 (객체 '{object_name}' 접근을 위해)",
+                            "is_original": False,
+                            "is_recovery": True,
+                            "failed_guards": ["¬IN(object, closed_receptacle)"],
+                            "recovery_reason": f"닫힌 수용체 '{recp_id}' 내부 객체 접근을 위해 수용체 열기"
+                        }
+                        recovery_actions.append(recovery_action)
+                        logger.info(f"    → 복구 액션 생성: OpenObject('{recp_id}')")
+                        break  # 첫 번째 닫힌 수용체만 처리
         
         # PutObject: OPENED(receptacle) 실패 → 수용체 열기
         elif action_type == "PutObject" and "OPENED(receptacle)" in failed_guards:
@@ -1565,13 +2013,49 @@ def update_scene_graph_after_action(
     if action_type == "GoToObject":
         # GoToObject 검증 통과 시 NavMesh에서 찾은 가장 가까운 이동 가능 위치로 Agent 좌표 업데이트
         if object_name:
-            # 목표 객체 찾기
+            # find_target_object를 사용하여 정확한 객체 찾기
             target_obj = None
-            for obj_node in object_nodes:
-                obj_type = obj_node.get("objectType", "")
-                if object_name.lower() in obj_type.lower():
-                    target_obj = obj_node
-                    break
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj is None:
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
+                    obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
+                        break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
             
             if target_obj:
                 # action에 저장된 target_position 사용 (verify_action_with_scene_graph에서 계산된 좌표)
@@ -1631,82 +2115,210 @@ def update_scene_graph_after_action(
     elif action_type == "PickupObject":
         # HOLDS 엣지 추가, IN 엣지 제거
         if object_name:
-            for obj_node in object_nodes:
-                obj_type = obj_node.get("objectType", "")
-                if object_name.lower() in obj_type.lower():
+            # find_target_object를 사용하여 정확한 객체 찾기 (정확한 매칭 우선)
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    # 첫 번째 매칭된 객체의 nodeId로 object_nodes에서 찾기
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_matches = []
+                partial_matches = []
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
                     obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
                     
-                    # HOLDS 엣지 추가
-                    holds_edge = {
-                        "edgeType": "HOLDS",
-                        "source": "agent_0",
-                        "target": obj_id,
-                        "sourceType": "Agent",
-                        "targetType": "Object",
-                        "targetObjectType": obj_type
-                    }
-                    if holds_edge not in edges:
-                        edges.append(holds_edge)
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id.lower():
+                            continue
                     
-                    # IN 엣지 제거
-                    edges = [e for e in edges if not (
-                        e.get("edgeType") == "IN" and e.get("source") == obj_id
-                    )]
-                    
-                    # Agent 노드 업데이트
-                    agent_node["isHolding"] = True
-                    agent_node["heldObjectId"] = obj_id
-                    
-                    # Object 노드 업데이트
-                    obj_node["isPickedUp"] = True
-                    if "parentReceptacles" in obj_node:
-                        obj_node["parentReceptacles"] = []
-                    break
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower:
+                        exact_matches.append(obj_node)
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id.lower()):
+                            continue
+                        partial_matches.append(obj_node)
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                if object_name_lower == "knife":
+                    if exact_matches:
+                        target_obj_node = exact_matches[0]
+                else:
+                    # 정확한 매칭이 있으면 그것만 사용, 없으면 부분 매칭 사용
+                    if exact_matches:
+                        target_obj_node = exact_matches[0]
+                    elif partial_matches:
+                        target_obj_node = partial_matches[0]
+            
+            # 찾은 객체로 Scene Graph 업데이트
+            if target_obj_node:
+                obj_id = target_obj_node.get("nodeId", "")
+                obj_type = target_obj_node.get("objectType", "")
+                
+                # HOLDS 엣지 추가
+                holds_edge = {
+                    "edgeType": "HOLDS",
+                    "source": "agent_0",
+                    "target": obj_id,
+                    "sourceType": "Agent",
+                    "targetType": "Object",
+                    "targetObjectType": obj_type
+                }
+                if holds_edge not in edges:
+                    edges.append(holds_edge)
+                
+                # IN 엣지 제거
+                edges = [e for e in edges if not (
+                    e.get("edgeType") == "IN" and e.get("source") == obj_id
+                )]
+                
+                # Agent 노드 업데이트
+                agent_node["isHolding"] = True
+                agent_node["heldObjectId"] = obj_id
+                
+                # Object 노드 업데이트
+                target_obj_node["isPickedUp"] = True
+                if "parentReceptacles" in target_obj_node:
+                    target_obj_node["parentReceptacles"] = []
+                
+                logger.info(f"  → PickupObject: '{object_name}' (nodeId: {obj_id}, type: {obj_type}) 업데이트 완료")
+            else:
+                logger.warning(f"  → PickupObject: '{object_name}'를 Scene Graph에서 찾을 수 없음")
     
     elif action_type == "PutObject":
         # HOLDS 엣지 제거, IN 엣지 추가
         if object_name and receptacle_name:
-            for obj_node in object_nodes:
-                obj_type = obj_node.get("objectType", "")
-                if object_name.lower() in obj_type.lower():
+            # find_target_object를 사용하여 정확한 객체 찾기 (정확한 매칭 우선)
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    # 첫 번째 매칭된 객체의 nodeId로 object_nodes에서 찾기
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_matches = []
+                partial_matches = []
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
                     obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
                     
-                    # HOLDS 엣지 제거
-                    edges = [e for e in edges if not (
-                        e.get("edgeType") == "HOLDS" and e.get("target") == obj_id
-                    )]
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id.lower():
+                            continue
                     
-                    # 수용체 찾기
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower:
+                        exact_matches.append(obj_node)
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id.lower()):
+                            continue
+                        partial_matches.append(obj_node)
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                if object_name_lower == "knife":
+                    if exact_matches:
+                        target_obj_node = exact_matches[0]
+                else:
+                    # 정확한 매칭이 있으면 그것만 사용, 없으면 부분 매칭 사용
+                    if exact_matches:
+                        target_obj_node = exact_matches[0]
+                    elif partial_matches:
+                        target_obj_node = partial_matches[0]
+            
+            if target_obj_node:
+                obj_id = target_obj_node.get("nodeId", "")
+                obj_type = target_obj_node.get("objectType", "")
+                
+                # HOLDS 엣지 제거
+                edges = [e for e in edges if not (
+                    e.get("edgeType") == "HOLDS" and e.get("target") == obj_id
+                )]
+                
+                # 수용체 찾기 (find_target_object 사용)
+                recp_obj_node = None
+                if find_target_object:
+                    matched_receptacles = find_target_object(scene_graph, receptacle_name)
+                    if matched_receptacles:
+                        matched_recp = matched_receptacles[0]
+                        matched_recp_node_id = matched_recp.get("nodeId")
+                        for recp_node in object_nodes:
+                            if recp_node.get("nodeId") == matched_recp_node_id:
+                                recp_obj_node = recp_node
+                                break
+                
+                # find_target_object가 없거나 실패한 경우 직접 찾기
+                if recp_obj_node is None:
+                    receptacle_name_lower = receptacle_name.lower()
                     for recp_node in object_nodes:
                         recp_type = recp_node.get("objectType", "")
-                        if receptacle_name.lower() in recp_type.lower():
-                            recp_id = recp_node.get("nodeId", "")
-                            
-                            # IN 엣지 추가
-                            in_edge = {
-                                "edgeType": "IN",
-                                "source": obj_id,
-                                "target": recp_id,
-                                "sourceType": "Object",
-                                "targetType": "Object",
-                                "sourceObjectType": obj_type,
-                                "targetObjectType": recp_type
-                            }
-                            if in_edge not in edges:
-                                edges.append(in_edge)
-                            
-                            # Object 노드 업데이트
-                            obj_node["isPickedUp"] = False
-                            if "parentReceptacles" not in obj_node:
-                                obj_node["parentReceptacles"] = []
-                            if recp_id not in obj_node["parentReceptacles"]:
-                                obj_node["parentReceptacles"].append(recp_id)
+                        if recp_type.lower() == receptacle_name_lower:
+                            recp_obj_node = recp_node
                             break
+                        elif receptacle_name_lower in recp_type.lower():
+                            recp_obj_node = recp_node
+                            break
+                
+                if recp_obj_node:
+                    recp_id = recp_obj_node.get("nodeId", "")
+                    recp_type = recp_obj_node.get("objectType", "")
+                    
+                    # IN 엣지 추가
+                    in_edge = {
+                        "edgeType": "IN",
+                        "source": obj_id,
+                        "target": recp_id,
+                        "sourceType": "Object",
+                        "targetType": "Object",
+                        "sourceObjectType": obj_type,
+                        "targetObjectType": recp_type
+                    }
+                    if in_edge not in edges:
+                        edges.append(in_edge)
+                    
+                    # Object 노드 업데이트
+                    target_obj_node["isPickedUp"] = False
+                    if "parentReceptacles" not in target_obj_node:
+                        target_obj_node["parentReceptacles"] = []
+                    if recp_id not in target_obj_node["parentReceptacles"]:
+                        target_obj_node["parentReceptacles"].append(recp_id)
                     
                     # Agent 노드 업데이트
                     agent_node["isHolding"] = False
                     agent_node["heldObjectId"] = None
-                    break
+                    
+                    logger.info(f"  → PutObject: '{object_name}' (nodeId: {obj_id}) → '{receptacle_name}' (nodeId: {recp_id}) 업데이트 완료")
+                else:
+                    logger.warning(f"  → PutObject: 수용체 '{receptacle_name}'를 Scene Graph에서 찾을 수 없음")
+            else:
+                logger.warning(f"  → PutObject: 객체 '{object_name}'를 Scene Graph에서 찾을 수 없음")
     
     elif action_type == "OpenObject":
         # Object 노드의 isOpen 업데이트
@@ -1764,15 +2376,41 @@ def update_scene_graph_after_action(
                         else:
                             logger.warning(f"  → OpenObject: '{object_name}'를 Scene Graph에서 찾을 수 없음")
                     else:
-                        # find_target_object가 없는 경우 기존 방식 사용
+                        # find_target_object가 없는 경우 정확한 매칭 우선으로 직접 찾기
+                        object_name_lower = object_name.lower()
+                        exact_match = None
+                        partial_match = None
+                        
                         for obj_node in object_nodes:
                             obj_type = obj_node.get("objectType", "")
                             obj_id = obj_node.get("nodeId", "")
-                            if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
-                                obj_node["isOpen"] = True
-                                obj_node["openness"] = 1.0
-                                logger.debug(f"  → OpenObject: '{object_name}'의 isOpen=True, openness=1.0으로 업데이트됨")
+                            obj_type_lower = obj_type.lower()
+                            obj_id_lower = obj_id.lower()
+                            
+                            # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                            if object_name_lower == "knife":
+                                if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                                    continue
+                            
+                            # 정확한 매칭 우선
+                            if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                                exact_match = obj_node
                                 break
+                            # 정확한 매칭이 없으면 부분 매칭
+                            elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                                # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                                if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                                    continue
+                                if partial_match is None:
+                                    partial_match = obj_node
+                        
+                        # "Knife"를 찾을 때는 정확한 매칭만 사용
+                        target_obj = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+                        
+                        if target_obj:
+                            target_obj["isOpen"] = True
+                            target_obj["openness"] = 1.0
+                            logger.debug(f"  → OpenObject: '{object_name}' (nodeId: {target_obj.get('nodeId', 'N/A')})의 isOpen=True, openness=1.0으로 업데이트됨")
     
     elif action_type == "CloseObject":
         # Object 노드의 isOpen 업데이트
@@ -1797,15 +2435,253 @@ def update_scene_graph_after_action(
                 else:
                     logger.warning(f"  → CloseObject: '{object_name}'를 Scene Graph에서 찾을 수 없음")
             else:
-                # find_target_object가 없는 경우 기존 방식 사용
+                # find_target_object가 없는 경우 정확한 매칭 우선으로 직접 찾기
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
                 for obj_node in object_nodes:
                     obj_type = obj_node.get("objectType", "")
                     obj_id = obj_node.get("nodeId", "")
-                    if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
-                        obj_node["isOpen"] = False
-                        obj_node["openness"] = 0.0
-                        logger.debug(f"  → CloseObject: '{object_name}'의 isOpen=False, openness=0.0으로 업데이트됨")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
                         break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+                
+                if target_obj:
+                    target_obj["isOpen"] = False
+                    target_obj["openness"] = 0.0
+                    logger.debug(f"  → CloseObject: '{object_name}' (nodeId: {target_obj.get('nodeId', 'N/A')})의 isOpen=False, openness=0.0으로 업데이트됨")
+    
+    elif action_type == "ToggleObjectOn":
+        # Object 노드의 isToggled 업데이트
+        if object_name:
+            # find_target_object를 사용하여 정확한 객체 찾기
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
+                    obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
+                        break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj_node = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+            
+            if target_obj_node:
+                target_obj_node["isToggled"] = True
+                logger.info(f"  → ToggleObjectOn: '{object_name}' (nodeId: {target_obj_node.get('nodeId', 'N/A')})의 isToggled=True로 업데이트됨")
+            else:
+                logger.warning(f"  → ToggleObjectOn: '{object_name}'를 Scene Graph에서 찾을 수 없음")
+    
+    elif action_type == "ToggleObjectOff":
+        # Object 노드의 isToggled 업데이트
+        if object_name:
+            # find_target_object를 사용하여 정확한 객체 찾기
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
+                    obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
+                        break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj_node = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+            
+            if target_obj_node:
+                target_obj_node["isToggled"] = False
+                logger.info(f"  → ToggleObjectOff: '{object_name}' (nodeId: {target_obj_node.get('nodeId', 'N/A')})의 isToggled=False로 업데이트됨")
+            else:
+                logger.warning(f"  → ToggleObjectOff: '{object_name}'를 Scene Graph에서 찾을 수 없음")
+    
+    elif action_type == "SliceObject":
+        # Object 노드의 isSliced 업데이트
+        if object_name:
+            # find_target_object를 사용하여 정확한 객체 찾기
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
+                    obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
+                        break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj_node = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+            
+            if target_obj_node:
+                target_obj_node["isSliced"] = True
+                logger.info(f"  → SliceObject: '{object_name}' (nodeId: {target_obj_node.get('nodeId', 'N/A')})의 isSliced=True로 업데이트됨")
+            else:
+                logger.warning(f"  → SliceObject: '{object_name}'를 Scene Graph에서 찾을 수 없음")
+    
+    elif action_type == "BreakObject":
+        # Object 노드의 isBroken 업데이트
+        if object_name:
+            # find_target_object를 사용하여 정확한 객체 찾기
+            target_obj_node = None
+            if find_target_object:
+                matched_objects = find_target_object(scene_graph, object_name)
+                if matched_objects:
+                    matched_obj = matched_objects[0]
+                    matched_node_id = matched_obj.get("nodeId")
+                    for obj_node in object_nodes:
+                        if obj_node.get("nodeId") == matched_node_id:
+                            target_obj_node = obj_node
+                            break
+            
+            # find_target_object가 없거나 실패한 경우, 정확한 매칭 우선으로 직접 찾기
+            if target_obj_node is None:
+                object_name_lower = object_name.lower()
+                exact_match = None
+                partial_match = None
+                
+                for obj_node in object_nodes:
+                    obj_type = obj_node.get("objectType", "")
+                    obj_id = obj_node.get("nodeId", "")
+                    obj_type_lower = obj_type.lower()
+                    obj_id_lower = obj_id.lower()
+                    
+                    # "Knife"를 찾을 때 "ButterKnife"는 무조건 제외
+                    if object_name_lower == "knife":
+                        if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                            continue
+                    
+                    # 정확한 매칭 우선
+                    if obj_type_lower == object_name_lower or obj_id_lower == object_name_lower:
+                        exact_match = obj_node
+                        break
+                    # 정확한 매칭이 없으면 부분 매칭
+                    elif object_name_lower in obj_type_lower or object_name_lower in obj_id_lower:
+                        # 추가 확인: "knife"를 찾을 때 "butterknife"는 제외
+                        if object_name_lower == "knife" and ("butter" in obj_type_lower or "butter" in obj_id_lower):
+                            continue
+                        if partial_match is None:
+                            partial_match = obj_node
+                
+                # "Knife"를 찾을 때는 정확한 매칭만 사용
+                target_obj_node = exact_match if (object_name_lower == "knife" and exact_match) else (exact_match if exact_match else partial_match)
+            
+            if target_obj_node:
+                target_obj_node["isBroken"] = True
+                logger.info(f"  → BreakObject: '{object_name}' (nodeId: {target_obj_node.get('nodeId', 'N/A')})의 isBroken=True로 업데이트됨")
+            else:
+                logger.warning(f"  → BreakObject: '{object_name}'를 Scene Graph에서 찾을 수 없음")
     
     # 업데이트된 Scene Graph 반환
     scene_graph["nodes"]["agent"] = agent_node
@@ -2916,6 +3792,49 @@ def main():
         
         subprocess.run(cmd, cwd=str(script_dir))
         print(f"✅ Baseline(ProgPrompt).py 스크립트 실행 완료")
+        
+        # Baseline 실행 후 평가 스크립트 실행
+        evaluation_path = script_dir / "evaluation.py"
+        if evaluation_path.exists():
+            print(f"\n📊 Baseline과 Physical Guard 결과 비교 평가 중...")
+            
+            # Baseline JSON 파일 찾기 (가장 최근 파일)
+            baseline_json_files = sorted(
+                Path(args.output_dir).glob("ai2thor_progprompt_*.json"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True
+            )
+            
+            if baseline_json_files:
+                baseline_json = baseline_json_files[0]  # 가장 최근 파일
+                physical_guard_txt = txt_output_path
+                
+                # 평가 결과 저장 경로
+                eval_output_path = Path(args.output_dir) / f"evaluation_comparison_{timestamp}.txt"
+                
+                eval_cmd = [
+                    "python", str(evaluation_path),
+                    "--baseline-json", str(baseline_json.resolve()),
+                    "--physical-guard-txt", str(physical_guard_txt.resolve()),
+                    "--output", str(eval_output_path.resolve())
+                ]
+                
+                # Scene Graph 파일 경로 추가 (존재하는 경우)
+                baseline_sg_path = Path(__file__).parent / "baseline_updated_scene_graph.json"
+                pg_sg_path = Path(__file__).parent / "updated_scene_graph.json"
+                
+                if baseline_sg_path.exists() and pg_sg_path.exists():
+                    eval_cmd.extend([
+                        "--baseline-scene-graph", str(baseline_sg_path.resolve()),
+                        "--physical-guard-scene-graph", str(pg_sg_path.resolve())
+                    ])
+                
+                subprocess.run(eval_cmd, cwd=str(script_dir))
+                print(f"✅ 평가 결과가 {eval_output_path}에 저장되었습니다.")
+            else:
+                print(f"⚠️  Baseline JSON 파일을 찾을 수 없습니다.")
+        else:
+            print(f"⚠️  evaluation.py를 찾을 수 없습니다: {evaluation_path}")
     else:
         print(f"⚠️  Baseline(ProgPrompt).py를 찾을 수 없습니다: {baseline_progprompt_path}")
 

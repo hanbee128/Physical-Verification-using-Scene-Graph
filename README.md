@@ -2,7 +2,7 @@
 
 ## 개요
 
-`physical_guard_set3.py`는 논리적 검증을 마친 AI2-THOR 플랜을 물리적 검증하는 스크립트입니다. Scene Graph를 활용하여 각 액션의 물리적 사전 조건을 검증하고, 실패한 경우 복구 액션을 자동으로 생성하여 최종 실행 가능한 플랜을 생성합니다.
+`physical_guard.py`는 논리적 검증을 마친 AI2-THOR 플랜을 물리적 검증하는 스크립트입니다. Scene Graph를 활용하여 각 액션의 물리적 사전 조건을 검증하고, 실패한 경우 복구 액션을 자동으로 생성하여 최종 실행 가능한 플랜을 생성합니다.
 
 ## 주요 기능
 
@@ -57,19 +57,17 @@
 `REACHABLE` 가드는 Agent의 손 위치를 기준으로 객체가 도달 가능한 범위 내에 있는지 확인합니다.
 
 #### 손 위치 계산
-- Agent의 절대 좌표를 기준으로 손 위치 계산:
-  ```python
-  hand_x = agent_x - 0.3289999
-  hand_y = agent_y + 0.2250000
-  hand_z = agent_z - 0.5699999
-  ```
+- Agent의 절대 좌표를 기준으로 손 위치 계산 (Agent 위치를 손 위치로 직접 사용)
+- Agent 위치 = 손 위치 (절대 좌표 기준)
 
 #### 도달 가능 범위
-- `x` 범위: ±1.0m (좌우)
-- `y` 범위: -0.5m ~ +1.5m (상하)
-- `z` 범위: -1.5m ~ +0.5m (앞뒤)
+- `x` 범위: Agent 위치 기준 -1.452m ~ +0.793m (좌우)
+- `y` 범위: Agent 위치 기준 -0.275m ~ +0.853m (상하)
+- `z` 범위: Agent 위치 기준 -1.620m ~ +0.646m (앞뒤)
 
 이 범위는 `use_arm_and_armbase.py`에서 테스트한 실제 로봇팔 도달 범위를 기반으로 설정되었습니다.
+
+**중요**: REACHABLE 가드 위반 시 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
 
 ### 5. 복구 액션 자동 생성
 
@@ -77,7 +75,7 @@
 
 #### PickupObject 실패 시
 - `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
-- `REACHABLE(agent, object)` 실패 → 객체로 이동하는 `GoToObject` 액션 추가
+- `REACHABLE(agent, object)` 실패 → **검증 종료** (물체가 닿지 않는 거리에 있어 계획 생성 불가)
 
 #### PutObject 실패 시
 - `HOLDS(agent, object)` 실패 → `GoToObject` + `PickupObject` 액션 추가
@@ -85,6 +83,9 @@
 
 #### PickupObject 성공 후
 - 부모 수용체가 열려있으면 자동으로 `CloseObject` 액션 추가
+
+#### 복구 액션으로 OpenObject 추가 시
+- 복구 액션으로 `OpenObject`가 추가되면, 원래 액션 이후에 자동으로 `CloseObject` 액션 추가
 
 ### 6. Scene Graph 업데이트
 
@@ -116,13 +117,52 @@
 모든 액션이 통과하지 못한 경우, LLM을 사용하여 자연어 목표와 최종 플랜을 비교하여 누락된 작업을 찾습니다.
 
 - 누락된 작업이 발견되면 자동으로 해당 작업에 대한 플랜을 생성하고 기존 플랜에 추가
+- 누락된 task plan은 `[LLM 생성 - 누락 Task 보완]` 마커로 표시됨
+
+### 8. 검증 종료 조건
+
+다음 조건에서 물리적 검증이 즉시 종료됩니다:
+
+- **EXISTS 가드 실패**: 객체가 Scene Graph에 존재하지 않는 경우
+- **REACHABLE 가드 실패**: 물체가 agent의 손이 닿지 않는 거리에 있는 경우
+
+### 9. Plan 출력 형식
+
+최종 플랜은 다음 마커로 구분되어 출력됩니다:
+
+- `[LLM 생성 - 논리적 검증]`: LLM이 논리적 검증 단계에서 생성한 원본 액션
+- `[LLM 생성 - 누락 Task 보완]`: LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+- `[시스템 생성]`: 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+- `[LLM 주석]`: LLM이 실패한 액션에 대해 생성한 설명 주석
+
+**실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 출력됩니다.
+
+### 10. Baseline 비교 평가
+
+`evaluation.py`를 사용하여 Baseline(ProgPrompt)와 Physical Guard 결과를 비교할 수 있습니다.
+
+**평가 지표:**
+1. **Task Success Rate (작업 성공률)**: 작업 완료율
+2. **Action Pass Rate (액션 통과율)**: 물리적 검증 통과율
+3. **Recovery Action Effectiveness (복구 액션 효과성)**: 복구 액션 성공률
+4. **Plan Executability (계획 실행 가능성)**: 실행 가능한 계획 비율
+
+**사용 방법:**
+```bash
+python scripts/evaluation.py \
+    --baseline-json results/ai2thor_progprompt_*.json \
+    --physical-guard-txt results/physical_guard_set3_result_*.txt \
+    --output results/evaluation_comparison.txt
+```
+
+`physical_guard.py` 실행 시 Baseline 실행 후 자동으로 평가가 수행됩니다.
 
 ## 사용 방법
 
 ### 기본 사용법
 
 ```bash
-python scripts/physical_guard_set3.py --tasks "put apple in fridge"
+python scripts/physical_guard.py --scene-number 1 --tasks "put apple in fridge"
 ```
 
 ### 주요 옵션
@@ -140,16 +180,16 @@ python scripts/physical_guard_set3.py --tasks "put apple in fridge"
 
 ```bash
 # Scene 번호 1 사용
-python scripts/physical_guard_set3.py --scene-number 1 --tasks "put apple in fridge"
+python scripts/physical_guard.py --scene-number 1 --tasks "put apple in fridge"
 
 # 여러 작업 처리
-python scripts/physical_guard_set3.py --scene-number 1 --tasks "put apple in fridge" "put tomato in fridge"
+python scripts/physical_guard.py --scene-number 1 --tasks "put apple in fridge" "put tomato in fridge"
 
 # 작업 파일 사용
-python scripts/physical_guard_set3.py --scene-number 1 --task-file tasks.json
+python scripts/physical_guard.py --scene-number 1 --task-file tasks.json
 
 # 다른 모델 사용
-python scripts/physical_guard_set3.py --scene-number 1 --model llama3.1 --tasks "put apple in fridge"
+python scripts/physical_guard.py --scene-number 1 --model llama3.1 --tasks "put apple in fridge"
 ```
 
 ## 출력 파일
@@ -161,10 +201,14 @@ python scripts/physical_guard_set3.py --scene-number 1 --model llama3.1 --tasks 
 ### 텍스트 파일
 - 경로: `results/physical_guard_set3_result_{task_name}_{timestamp}.txt`
 - 내용:
-  - 작업별 프로그램 코드
+  - 작업별 프로그램 코드 (LLM 생성/시스템 생성 구분 표시)
   - 물리적 검증 요약 (통과/실패 액션 수)
-  - 실패한 액션 목록 및 이유
+  - 실패한 액션 목록 및 이유 (주석처리됨)
   - Task 완료 검증 결과
+
+### 평가 비교 파일
+- 경로: `results/evaluation_comparison_{timestamp}.txt`
+- 내용: Baseline과 Physical Guard 결과 비교 평가 지표
 
 ### Scene Graph 업데이트 파일
 - 경로: `scripts/updated_scene_graph.json`
@@ -212,10 +256,14 @@ Scene Graph는 다음 구조를 가집니다:
 
 1. **프로그램 파싱**: LLM이 생성한 프로그램 코드를 액션 리스트로 파싱
 2. **액션별 검증**: 각 액션에 대해 Scene Graph 기반 물리적 검증 수행
-3. **복구 액션 생성**: 검증 실패 시 자동으로 복구 액션 생성 및 삽입
-4. **Scene Graph 업데이트**: 검증 통과한 액션 실행 후 Scene Graph 상태 업데이트
-5. **최종 플랜 생성**: 통과한 액션과 실패한 액션(주석 포함)을 포함한 최종 플랜 생성
-6. **Task 완료 검증**: LLM을 사용하여 누락된 작업 확인 및 추가 플랜 생성
+3. **검증 종료 조건 확인**: EXISTS 또는 REACHABLE 가드 실패 시 즉시 검증 종료
+4. **복구 액션 생성**: 검증 실패 시 자동으로 복구 액션 생성 및 삽입
+   - 복구 액션으로 `OpenObject` 추가 시, 원래 액션 이후에 `CloseObject` 자동 추가
+5. **Scene Graph 업데이트**: 검증 통과한 액션 실행 후 Scene Graph 상태 업데이트
+6. **최종 플랜 생성**: 통과한 액션과 실패한 액션(주석처리)을 포함한 최종 플랜 생성
+   - LLM 생성/시스템 생성 구분 표시
+7. **Task 완료 검증**: LLM을 사용하여 누락된 작업 확인 및 추가 플랜 생성
+8. **Baseline 비교 평가**: Baseline 실행 후 자동으로 평가 수행
 
 ## 주요 함수
 
@@ -242,6 +290,15 @@ NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기
 
 ### `generate_final_plan_with_physical_verification(task, initial_program, scene_graph, ...)`
 논리적 검증된 플랜을 물리적 검증하여 최종 플랜 생성
+
+### `verify_task_completion_with_llm(client, model, task, final_plan)`
+LLM을 사용하여 자연어 목표와 최종 플랜을 비교하여 누락된 작업 확인
+
+### `generate_failure_comment_with_llm(client, model, action, failed_guards, failure_reason)`
+LLM을 사용하여 물리적 검증 실패 이유를 분석하고 주석 생성
+
+### `evaluation.py`
+Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산
 
 ## 의존성
 
@@ -312,4 +369,33 @@ NavMesh에서 목표 위치까지 가장 가까운 이동 가능 위치 찾기
 - 초기 로봇팔 자세: armBase 좌표계에서 `(x=0, y=0, z=0.5)`
 - MoveArmBase 초기 y 값: normalized `0.5` (0~1 범위에서 중간 높이)
 - REACHABLE 검증은 Agent의 손 위치를 기준으로 절대 좌표로 비교합니다.
+- **REACHABLE 가드 위반 시**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
+- **복구 액션 OpenObject**: 복구 액션으로 수용체를 열면, 원래 액션 실행 후 자동으로 닫힙니다.
+- **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 실행되지 않습니다.
+- **Plan 마커**: LLM이 생성한 부분과 시스템이 생성한 부분이 명확히 구분되어 출력됩니다.
 
+## 평가 지표
+
+`evaluation.py`를 통해 다음 지표들을 계산할 수 있습니다:
+
+1. **Task Success Rate**: 작업 완료율
+   - Physical Guard: `successful_tasks / tasks_with_result * 100`
+   - Baseline: 물리적 검증 없음 (N/A)
+
+2. **Action Pass Rate**: 액션 통과율
+   - `passed_actions / total_actions * 100`
+
+3. **Recovery Action Effectiveness**: 복구 액션 효과성
+   - `recovery_actions / failed_actions * 100`
+
+4. **Plan Executability**: 계획 실행 가능성
+   - `(total_actions - failed_actions) / total_actions * 100`
+
+```bash
+# 직접 실행
+python scripts/evaluation.py \
+    --baseline-json results/ai2thor_progprompt_20260108-101853.json \
+    --physical-guard-txt results/physical_guard_set3_result_Put_Tomato_and_Apple_and_Potato_in_Fridge_20260108-101831.txt \
+    --output results/evaluation_comparison.txt
+
+```
