@@ -71,7 +71,7 @@
           "z": 0.03979013115167618
         },
         "parentReceptacles": [
-          "Fridge|-01.76|+00.00|00.00"
+          "Fridge|-01.76|+00.60|00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1389,7 +1389,7 @@
         "receptacleObjectIds": [
           "Chair|00.00|+00.00|+01.24",
           "GarbageCan|-01.80|+00.01|+01.33",
-          "Fridge|-01.76|+00.00|00.00",
+          "Fridge|-01.76|+00.60|00.00",
           "Cabinet|+00.41|+00.48|+00.45"
         ],
         "mass": 1.0,
@@ -1442,7 +1442,7 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Fridge|-01.76|+00.00|00.00",
+        "nodeId": "Fridge|-01.76|+00.60|00.00",
         "objectType": "Fridge",
         "pickupable": false,
         "openable": true,
@@ -1656,7 +1656,7 @@
           "z": 0.027578674256801605
         },
         "parentReceptacles": [
-          "Fridge|-01.76|+00.00|00.00"
+          "Fridge|-01.76|+00.60|00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2835,7 +2835,7 @@
     {
       "edgeType": "IN",
       "source": "Apple|-01.65|+00.81|+00.07",
-      "target": "Fridge|-01.76|+00.00|00.00",
+      "target": "Fridge|-01.76|+00.60|00.00",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "Apple",
@@ -2980,7 +2980,7 @@
     },
     {
       "edgeType": "IN",
-      "source": "Fridge|-01.76|+00.00|00.00",
+      "source": "Fridge|-01.76|+00.60|00.00",
       "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
@@ -3026,7 +3026,7 @@
     {
       "edgeType": "IN",
       "source": "Lettuce|-01.71|+00.82|-00.14",
-      "target": "Fridge|-01.76|+00.00|00.00",
+      "target": "Fridge|-01.76|+00.60|00.00",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "Lettuce",

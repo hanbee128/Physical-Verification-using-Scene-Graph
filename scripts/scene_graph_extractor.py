@@ -52,11 +52,20 @@ def find_target_object(scene_graph: Dict[str, Any], object_name: str) -> List[Di
     if object_name_lower == "knife":
         exclude_types = ["butterknife"]
     
+    # nodeId 형식인지 먼저 확인 (예: "Fridge|-01.76|+00.60|00.00")
+    is_nodeid_format = "|" in object_name and len(object_name.split("|")) >= 4
+    
     for obj_node in object_nodes:
         obj_type = obj_node.get("objectType", "")
         obj_id = obj_node.get("nodeId", "")
         obj_type_lower = obj_type.lower()
         obj_id_lower = obj_id.lower()
+        
+        # nodeId 형식이면 정확한 nodeId 매칭 우선
+        if is_nodeid_format:
+            if obj_id == object_name or obj_id_lower == object_name_lower:
+                exact_matches.append(obj_node)
+                continue  # 정확한 nodeId 매칭이면 다른 매칭 시도 안 함
         
         # 제외할 타입인지 확인 (부분 문자열 포함 여부 확인)
         # "knife"를 찾을 때 "butterknife"는 무조건 제외

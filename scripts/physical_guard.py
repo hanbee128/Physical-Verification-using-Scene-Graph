@@ -222,7 +222,7 @@ DEFAULT_EXAMPLES = {
         \tGoToObject('Sink')
         \tassert('close' to 'Sink')
         \t\telse: GoToObject('Sink')
-        \tPutObject('Mug', 'Sink')
+        \tPutObject('Mug', 'SinkBasin')
         \t# Step 3: Turn on the faucet and clean
         \tGoToObject('Faucet')
         \tassert('Faucet' is 'off')
@@ -244,6 +244,10 @@ DEFAULT_EXAMPLES = {
         \tassert('close' to 'Mug')
         \t\telse: GoToObject('Mug')
         \tPickupObject('Mug')
+        \t# Step 2: Break the mug
+        \tassert('Mug' in 'hands')
+        \t\telse: GoToObject('Mug')
+        \t\telse: PickupObject('Mug')
         \tBreakObject('Mug')
         """
     ),
@@ -911,12 +915,12 @@ def verify_guard_with_scene_graph(
         # y 범위: -0.35 ~ 1 (상하)
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
-        x_range_min = -0.952 -0.5  #
-        x_range_max = 0.293 + 0.5 #
-        y_range_min = -0.275     # 아래로 -0.35
-        y_range_max = 0.853  # 위로 1.0
-        z_range_min = -1.120 - 0.5  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
-        z_range_max = 0.146 + 0.5 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
+        x_range_min = -1 -0.5  #
+        x_range_max = +1 +0.5 #
+        y_range_min = -0.901     # 아래로 -0.35
+        y_range_max = 0.6  # 위로 1.0
+        z_range_min = -1 - 0.5 # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
+        z_range_max = +1 + 0.5 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
         
         # 손 위치 기준으로 범위 계산 (절대 좌표)
         x_min = agent_x + x_range_min
@@ -992,7 +996,7 @@ def verify_guard_with_scene_graph(
         distance = math.sqrt(dx**2 + dy**2 + dz**2)
         
         # 2m 이내이면 통과
-        proximity_threshold = 2.0
+        proximity_threshold = 1.5
         if distance <= proximity_threshold:
             return True, f"Agent와 객체 간 거리: {distance:.3f}m <= {proximity_threshold}m (agent 위치: ({agent_x:.3f}, {agent_y:.3f}, {agent_z:.3f}), 객체 위치: ({obj_x:.3f}, {obj_y:.3f}, {obj_z:.3f}))"
         else:
@@ -1726,21 +1730,49 @@ def verify_action_with_scene_graph(
                 
                 
         
-        # Proximity 가드 실패 → GoToObject 추가
-        if "Proximity" in failed_guards:
+        # Proximity 가드 실패 → GoToObject 추가 (NavMesh 상 목표 객체를 정면으로 보는 위치로 이동)
+        if any("Proximity" in g for g in failed_guards):
             # 목표 객체 찾기
             target_for_proximity = None
             target_name_for_proximity = None
             
             if action_type == "PutObject":
                 # PutObject의 경우 receptacle을 타겟으로 사용
-                target_for_proximity = receptacle_obj if receptacle_obj else target_obj
-                target_name_for_proximity = receptacle_name if receptacle_name else object_name
+                if receptacle_obj:
+                    target_for_proximity = receptacle_obj
+                    target_name_for_proximity = receptacle_name if receptacle_name else object_name
+                elif receptacle_name and scene_graph:
+                    # receptacle_obj가 None이면 scene_graph에서 직접 찾기
+                    if find_target_object:
+                        matched_receptacles = find_target_object(scene_graph, receptacle_name)
+                        if matched_receptacles:
+                            target_for_proximity = matched_receptacles[0]
+                            target_name_for_proximity = receptacle_name
+                    # find_target_object가 없으면 receptacle_name만 사용
+                    if not target_for_proximity:
+                        target_name_for_proximity = receptacle_name
+                else:
+                    target_for_proximity = target_obj
+                    target_name_for_proximity = object_name
             else:
                 target_for_proximity = target_obj
                 target_name_for_proximity = object_name
             
-            if target_for_proximity and target_name_for_proximity:
+            # target_name_for_proximity가 있으면 복구 액션 생성 (target_for_proximity가 None이어도 이름으로 이동 가능)
+            if target_name_for_proximity:
+                # NavMesh 상에서 목표 객체를 정면으로 보는 가장 가까운 위치 계산
+                target_position = None
+                if controller and target_for_proximity:
+                    obj_pos = target_for_proximity.get("position", {})
+                    if obj_pos:
+                        # Agent 위치 전달하여 목표 객체를 정면으로 보는 위치 선택
+                        closest_pos, distance, closest_by_distance = find_closest_reachable_position(
+                            controller, obj_pos, agent_position, return_closest_only=True
+                        )
+                        if closest_pos:
+                            target_position = closest_pos
+                            logger.info(f"    📍 Proximity 복구: 목표 객체 '{target_name_for_proximity}'를 정면으로 보는 위치 계산 완료: ({closest_pos.get('x', 0):.3f}, {closest_pos.get('y', 0):.3f}, {closest_pos.get('z', 0):.3f}) (거리: {distance:.3f}m)")
+                
                 goto_proximity_recovery = {
                     "type": "GoToObject",
                     "args": {"o": target_name_for_proximity},
@@ -1749,10 +1781,14 @@ def verify_action_with_scene_graph(
                     "is_original": False,
                     "is_recovery": True,
                     "failed_guards": ["Proximity"],
-                    "recovery_reason": f"Agent와 객체 '{target_name_for_proximity}' 간 거리가 2m를 초과하여 이동 필요"
+                    "recovery_reason": f"Agent와 객체 '{target_name_for_proximity}' 간 거리가 2m를 초과하여 이동 필요",
+                    "target_position": target_position  # NavMesh 상 계산된 위치 저장
                 }
                 recovery_actions.append(goto_proximity_recovery)
-                logger.info(f"    → 복구 액션 생성: GoToObject('{target_name_for_proximity}') (Proximity 가드 위반)")
+                if target_position:
+                    logger.info(f"    → 복구 액션 생성: GoToObject('{target_name_for_proximity}') (Proximity 가드 위반, 목표 위치: ({target_position.get('x', 0):.3f}, {target_position.get('y', 0):.3f}, {target_position.get('z', 0):.3f}))")
+                else:
+                    logger.info(f"    → 복구 액션 생성: GoToObject('{target_name_for_proximity}') (Proximity 가드 위반, Controller 없음으로 위치 계산 불가)")
         
         # REACHABLE 가드 실패 시 복구 불가능 - 검증 종료 처리 (아래에서 처리)
         

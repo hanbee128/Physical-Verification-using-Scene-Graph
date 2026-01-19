@@ -63,7 +63,7 @@ class AI2ThorExecutor:
     
     def __init__(
         self,
-        scene: str = "FloorPlan1",
+        scene: str = "FloorPlan2",
         agent_id: int = 0,
         headless: bool = False,
         save_images: bool = False,
@@ -1997,18 +1997,68 @@ class AI2ThorExecutor:
 
 # 사용 예시
 if __name__ == "__main__":
-    executor = AI2ThorExecutor(scene="FloorPlan1", headless=False)
+    executor = AI2ThorExecutor(scene="FloorPlan2", headless=False)
     executor.initialize()
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-    def break_mug():
-        \t# Step 1: Find and pick up the mug
-        \tGoToObject('Mug')
-        \tassert('close' to 'Mug')
-        \t\telse: GoToObject('Mug')
-        \tPickupObject('Mug')
-        \tBreakObject('Mug')
+    def put_the_apple_and_lettuce_in_the_sinkbasin():
+	# Task: Put the apple and lettuce in the sinkbasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.000)
+	GoToObject('Apple')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Fridge|-01.76|+00.60|00.00' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Fridge|-01.76|+00.60|00.00')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Apple')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-01.76|+00.60|00.00') 이후 자동 닫기
+	CloseObject('Fridge|-01.76|+00.60|00.00')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.000, 0.901, -0.750)
+	GoToObject('SinkBasin')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Apple', 'SinkBasin')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, -0.250)
+	GoToObject('Lettuce')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Fridge|-01.76|+00.60|00.00' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Fridge|-01.76|+00.60|00.00')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Lettuce')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-01.76|+00.60|00.00') 이후 자동 닫기
+	CloseObject('Fridge|-01.76|+00.60|00.00')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'SinkBasin' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.000, 0.901, -0.750)
+	GoToObject('SinkBasin')
+	# Step 12
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Lettuce', 'SinkBasin')
+
 
 
     """
