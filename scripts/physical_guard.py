@@ -251,6 +251,28 @@ DEFAULT_EXAMPLES = {
         \tBreakObject('Mug')
         """
     ),
+    # 예제 5: Cook the Egg
+    "cook_egg": textwrap.dedent(
+        """\
+        def cook_egg():
+        \t# Step 1: Find and pick up the egg
+        \tGoToObject('Egg')
+        \tPickupObject('Egg')
+        \t# Step 2: Put the egg in the pan
+        \tGoToObject('Pan')
+        \tPutObject('Egg', 'Pan')
+        \t# Step 3: Break the egg
+        \tBreakObject('Egg')
+        \t# Step 4: Pick up the pan and put it on the stove burner
+        \tPickupObject('Pan')
+        \tGoToObject('StoveBurner')
+        \tPutObject('Pan', 'StoveBurner')
+        \t# Step 5: Turn on the stove knob and cook the egg
+        \tToggleObjectOn('StoveKnob')
+        \tCookObject('EggCracked')
+        \tToggleObjectOff('StoveKnob')
+        """
+    )
 }
 
 

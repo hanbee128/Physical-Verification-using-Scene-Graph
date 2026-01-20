@@ -236,6 +236,44 @@ DEFAULT_EXAMPLES = {
         \tGoToObject('Faucet')
         \tToggleObjectOff('Faucet')
         """
+    ),
+    # 예제 4: Mug를 깨뜨리기
+    "break_mug": textwrap.dedent(
+        """\
+        def break_mug():
+        \t# Step 1: Find and pick up the mug
+        \tGoToObject('Mug')
+        \tassert('close' to 'Mug')
+        \t\telse: GoToObject('Mug')
+        \tPickupObject('Mug')
+        \t# Step 2: Break the mug
+        \tassert('Mug' in 'hands')
+        \t\telse: GoToObject('Mug')
+        \t\telse: PickupObject('Mug')
+        \tBreakObject('Mug')
+        """
+    ),
+    # 예제 5: Cook the Egg
+    "cook_egg": textwrap.dedent(
+        """\
+        def cook_egg():
+        \t# Step 1: Find and pick up the egg
+        \tGoToObject('Egg')
+        \tPickupObject('Egg')
+        \t# Step 2: Put the egg in the pan
+        \tGoToObject('Pan')
+        \tPutObject('Egg', 'Pan')
+        \t# Step 3: Break the egg
+        \tBreakObject('Egg')
+        \t# Step 4: Pick up the pan and put it on the stove burner
+        \tPickupObject('Pan')
+        \tGoToObject('StoveBurner')
+        \tPutObject('Pan', 'StoveBurner')
+        \t# Step 5: Turn on the stove knob and cook the egg
+        \tToggleObjectOn('StoveKnob')
+        \tCookObject('EggCracked')
+        \tToggleObjectOff('StoveKnob')
+        """
     )
 }
 
