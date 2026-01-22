@@ -111,7 +111,9 @@
   - `x` 범위: Agent 위치 기준 -1.452m ~ +0.793m (좌우)
   - `y` 범위: Agent 위치 기준 -0.275m ~ +0.853m (상하)
   - `z` 범위: Agent 위치 기준 -1.620m ~ +0.646m (앞뒤)
-- **중요**: REACHABLE 가드 위반 시 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
+- **중요**: 
+  - **REACHABLE만 실패한 경우**: 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
+  - **Proximity와 REACHABLE이 모두 실패한 경우**: Proximity 복구 액션(GoToObject) 실행 후, REACHABLE 가드를 한 번만 재검사합니다. 재검사 통과 시 원래 액션을 통과한 것으로 처리합니다.
 
 #### NAVIGABLE 가드
 - **목적**: NavMesh를 통해 객체까지 이동 가능한 경로가 있는지 확인
@@ -132,7 +134,9 @@
 
 #### PickupObject 실패 시
 - `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
-- `REACHABLE(agent, object)` 실패 → **검증 종료** (물체가 닿지 않는 거리에 있어 계획 생성 불가)
+- `REACHABLE(agent, object)` 실패:
+  - **REACHABLE만 실패한 경우**: 검증 종료 (물체가 닿지 않는 거리에 있어 계획 생성 불가)
+  - **Proximity와 REACHABLE이 모두 실패한 경우**: Proximity 복구 후 REACHABLE 재검사 (1회만)
 
 #### PutObject 실패 시
 - `HOLDS(agent, object)` 실패 → `GoToObject` + `PickupObject` 액션 추가
@@ -150,6 +154,18 @@
 
 #### 복구 액션으로 OpenObject 추가 시
 - 복구 액션으로 `OpenObject`가 추가되면, 원래 액션 이후에 자동으로 `CloseObject` 액션 추가
+
+#### OpenObject가 이미 열려있는 경우
+- `¬OPENED(object)` 가드 실패 시 (이미 열려있음): 액션을 건너뛰고 다음 액션으로 진행
+- PickupObject에서 이미 손에 물체가 있는 경우와 동일한 방식으로 처리
+
+#### Proximity + REACHABLE 복합 실패 처리
+- **Proximity와 REACHABLE이 모두 실패한 경우**:
+  1. Proximity 복구 액션(GoToObject) 실행
+  2. Scene Graph 업데이트 (Agent 위치 갱신)
+  3. REACHABLE 가드만 한 번 재검사
+  4. 재검사 통과 시: 나머지 가드들도 재검사 후, 모두 통과하면 원래 액션을 통과한 것으로 처리
+  5. 재검사 실패 시: 기존 복구 로직으로 처리
 
 ### 6. Scene Graph 업데이트
 
@@ -210,7 +226,8 @@
 다음 조건에서 물리적 검증이 즉시 종료됩니다:
 
 - **EXISTS 가드 실패**: 객체가 Scene Graph에 존재하지 않는 경우
-- **REACHABLE 가드 실패**: 물체가 agent의 손이 닿지 않는 거리에 있는 경우
+- **REACHABLE 가드 실패 (단독)**: REACHABLE만 실패한 경우, 물체가 agent의 손이 닿지 않는 거리에 있어 계획 생성 불가
+  - **주의**: Proximity와 REACHABLE이 모두 실패한 경우는 종료하지 않고, Proximity 복구 후 REACHABLE 재검사를 시도합니다.
 
 ### 10. Plan 출력 형식
 
@@ -223,7 +240,44 @@
 
 **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 출력됩니다.
 
-### 11. Baseline 비교 평가
+### 11. 실행 결과 평가
+
+#### evaluate_results.py
+
+`evaluate_results.py`를 사용하여 `physical_guard.py`의 결과를 실행하고 GCR(Goal Condition Rate)을 평가할 수 있습니다.
+
+**기능:**
+- `physical_guard.py`에서 생성된 plan 파일을 파싱하여 실행
+- 각 task의 기대 결과(`data/final_test/FloorPlan*.json`)와 실제 실행 결과 비교
+- **GCR (Goal Condition Rate)**: 실행된 액션에서 추출한 각 goal condition이 만족된 비율 계산
+- **Contains 검증**: `receptacleObjectIds`를 사용하여 수용체 내부 객체 확인
+- **상태 검증**: 객체의 상태 속성(`isSliced`, `isBroken`, `isOpen`, `isToggled` 등) 확인
+
+**평가 지표:**
+1. **GCR (Goal Condition Rate)**: 목표 조건 만족 비율
+   - 각 액션의 목표 조건을 추출하여 최종 상태에서 만족 여부 확인
+   - `(만족된 조건 수 / 전체 조건 수) * 100`
+2. **Exec (Executability)**: 액션 실행 가능 여부 (0 또는 1)
+3. **SR (Success Rate)**: 목표 지향 액션의 성공률
+4. **TCR (Task Completion Rate)**: 완료된 task 비율
+5. **Plan Length**: 실행된 액션 수
+6. **Guard Trigger Distribution**: 실패한 물리적 가드 수
+
+**사용 방법:**
+```bash
+# 기본 사용 (모든 plan 파일 자동 로드)
+python scripts/evaluate_results.py --test_file data/final_test/FloorPlan1.json
+
+# 특정 plan 파일 지정
+python scripts/evaluate_results.py --plan_file results/physical_guard_set3_result_*.txt --test_file data/final_test/FloorPlan1.json
+```
+
+**출력:**
+- 각 task별 GCR 및 검증 결과
+- 실행 로그 JSON 파일 (`execution_result_{task_name}.json`)
+- 전체 평가 요약 (평균 GCR 등)
+
+#### Baseline 비교 평가
 
 `evaluation.py`를 사용하여 Baseline(ProgPrompt)와 Physical Guard 결과를 비교할 수 있습니다.
 
@@ -355,15 +409,18 @@ Scene Graph는 다음 구조를 가집니다:
 
 1. **프로그램 파싱**: LLM이 생성한 프로그램 코드를 액션 리스트로 파싱
 2. **액션별 검증**: 각 액션에 대해 Scene Graph 기반 물리적 검증 수행
-3. **검증 종료 조건 확인**: EXISTS 또는 REACHABLE 가드 실패 시 즉시 검증 종료
+3. **검증 종료 조건 확인**: EXISTS 또는 REACHABLE 가드(단독) 실패 시 즉시 검증 종료
 4. **복구 액션 생성**: 검증 실패 시 자동으로 복구 액션 생성 및 삽입
    - Proximity 가드 실패 시 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject 추가
+   - **Proximity + REACHABLE 모두 실패 시**: Proximity 복구 후 REACHABLE 재검사 (1회만)
    - 복구 액션으로 `OpenObject` 추가 시, 원래 액션 이후에 `CloseObject` 자동 추가
+   - OpenObject가 이미 열려있으면 액션 건너뛰기
 5. **Scene Graph 업데이트**: 검증 통과한 액션 실행 후 Scene Graph 상태 업데이트
 6. **최종 플랜 생성**: 통과한 액션과 실패한 액션(주석처리)을 포함한 최종 플랜 생성
    - LLM 생성/시스템 생성 구분 표시
 7. **Task 완료 검증**: LLM을 사용하여 누락된 작업 확인 및 추가 플랜 생성
 8. **Baseline 비교 평가**: Baseline 실행 후 자동으로 평가 수행
+9. **실행 결과 평가**: `evaluate_results.py`를 사용하여 실제 실행 결과와 기대 결과 비교 (GCR 계산)
 
 ## 주요 함수
 
@@ -402,6 +459,14 @@ LLM을 사용하여 물리적 검증 실패 이유를 분석하고 주석 생성
 
 ### `evaluation.py`
 Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산 및 Scene Graph 비교
+
+### `evaluate_results.py`
+Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
+- Plan 파일 파싱 및 실행
+- 기대 결과와 실제 결과 비교
+- `receptacleObjectIds`를 사용한 contains 검증
+- 객체 상태 속성 검증 (`isSliced`, `isBroken`, `isOpen`, `isToggled` 등)
+- GCR, Exec, SR, TCR, Plan Length, Guard Trigger Distribution 계산
 
 ## 의존성
 
@@ -476,13 +541,18 @@ Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산 및 Scene
 
 - **정보 소스**: 대부분의 정보는 Scene Graph structured JSON 파일에서 가져오며, NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
 - **REACHABLE 검증**: Agent의 손 위치를 기준으로 절대 좌표로 비교합니다.
-- **REACHABLE 가드 위반 시**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
+- **REACHABLE 가드 위반 시**: 
+  - **REACHABLE만 실패**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
+  - **Proximity + REACHABLE 모두 실패**: Proximity 복구 후 REACHABLE을 한 번만 재검사합니다. 재검사 통과 시 원래 액션을 통과한 것으로 처리합니다.
 - **Proximity 가드**: Agent와 목표 객체 간 거리가 2m를 초과하면 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject가 자동 추가됩니다.
 - **복구 액션 OpenObject**: 복구 액션으로 수용체를 열면, 원래 액션 실행 후 자동으로 닫힙니다.
+- **OpenObject 이미 열려있을 때**: OpenObject가 이미 열려있는 경우(`¬OPENED(object)` 가드 실패), 액션을 건너뛰고 다음 액션으로 진행합니다.
 - **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 실행되지 않습니다.
 - **Plan 마커**: LLM이 생성한 부분과 시스템이 생성한 부분이 명확히 구분되어 출력됩니다.
 - **Knife vs ButterKnife**: `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭되며, ButterKnife는 제외됩니다.
 - **객체 매칭**: nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭이 우선됩니다.
+- **거리 계산**: `goto_object` 함수에서 거리 계산은 Agent에서 객체 중심까지의 거리를 사용합니다 (2D: X, Z 좌표만 사용).
+- **Contains 검증**: `evaluate_results.py`에서 `receptacleObjectIds`를 사용하여 수용체 내부 객체를 정확히 확인합니다.
 
 ## 평가 지표
 
