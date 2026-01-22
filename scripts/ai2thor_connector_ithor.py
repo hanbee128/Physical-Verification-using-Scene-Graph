@@ -7,10 +7,10 @@ ProgPrompt 형식의 코드를 파싱하고 AI2-THOR에서 실행합니다.
 """
 
 import cv2
-import heapq
 import math
 import numpy as np
 import os
+import random
 import re
 import shutil
 import threading
@@ -18,6 +18,14 @@ import time
 from datetime import datetime
 from glob import glob
 from typing import Dict, List, Optional, Tuple, Any
+
+try:
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    print("⚠️  matplotlib not installed. Path visualization will be disabled.")
 
 try:
     from ai2thor.controller import Controller
@@ -36,12 +44,15 @@ except ImportError:
 
 
 def distance_pts(pt1, pt2):
-    """두 점 사이의 거리 계산"""
-    return math.sqrt(sum([(a - b) ** 2 for a, b in zip(pt1, pt2)]))
+    """두 점 사이의 거리 계산 (X, Z 좌표만 사용, 2D 수평 거리)"""
+    return math.sqrt((pt1[0] - pt2[0]) ** 2 + (pt1[2] - pt2[2]) ** 2)
 
 
-def closest_node(target_pos, reachable_positions, no_agents, clost_node_location):
-    """타겟 위치에 가장 가까운 도달 가능한 위치들을 찾기"""
+def closest_node(target_pos, reachable_positions, closest_node_location=0):
+    """타겟 위치에 가장 가까운 도달 가능한 위치 찾기 (단일 로봇용)"""
+    if not reachable_positions:
+        return None
+    
     distances = []
     for pos in reachable_positions:
         dist = distance_pts(target_pos, pos)
@@ -49,13 +60,9 @@ def closest_node(target_pos, reachable_positions, no_agents, clost_node_location
     
     distances.sort(key=lambda x: x[0])
     
-    # 각 agent마다 다른 위치 할당
-    selected = []
-    for i in range(no_agents):
-        idx = (clost_node_location[i] + i) % len(distances)
-        selected.append(distances[idx][1])
-    
-    return selected
+    # closest_node_location 인덱스로 선택 (단일 로봇)
+    idx = closest_node_location % len(distances)
+    return distances[idx][1]
 
 
 class AI2ThorExecutor:
@@ -116,8 +123,20 @@ class AI2ThorExecutor:
         self.video_width = 1000
         self.video_height = 1000
         
-        # NavMesh 그래프 (A* 경로 탐색용, lazy initialization)
-        self.navmesh_graph = None
+        # 카메라 업데이트 관련 (오른쪽 사이드 뷰용)
+        self.last_agent_position = None
+        self.last_agent_rotation = None
+        self.camera_update_threshold = 0.1  # 0.1m 이상 이동하거나 5도 이상 회전하면 카메라 업데이트
+        
+        # 실시간 시각화 관련 (3분할: Top View, Right Side View, Agent View)
+        self.show_realtime_view = not headless  # 헤드리스 모드가 아니면 실시간 시각화 활성화
+        self.fig = None
+        self.ax_camera_top = None
+        self.ax_camera_right = None
+        self.ax_agent = None
+        self.img_display_top = None
+        self.img_display_right = None
+        self.agent_img_display = None
         
         # 이미지 저장 관련
         if self.save_images:
@@ -186,10 +205,119 @@ class AI2ThorExecutor:
         else:
             print(f"✓ Video writer initialized: {video_path} (FPS: {self.video_fps})")
             self.video_path = video_path
+
+
+    def _init_realtime_visualization(self):
+        """실시간 시각화 초기화 (Third Party View & Agent View)"""
+        if not MATPLOTLIB_AVAILABLE or not self.controller:
+            return
+        
+        try:
+            # Interactive mode 활성화
+            plt.ion()
+            
+            # 하나의 창에 두 개의 subplot 생성 (2분할)
+            self.fig = plt.figure(figsize=(20, 8))
+            self.fig.canvas.manager.set_window_title("Agent View & Top View")
+            
+            # Top view 카메라 뷰 (왼쪽)
+            self.ax_camera_top = self.fig.add_subplot(121)
+            self.ax_camera_top.axis('off')
+            self.ax_camera_top.set_title("Top View Camera", fontsize=14, fontweight='bold')
+            
+            # 에이전트 시야 뷰 (오른쪽)
+            self.ax_agent = self.fig.add_subplot(122)
+            self.ax_agent.axis('off')
+            self.ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+            
+            plt.tight_layout()
+            plt.show(block=False)  # 창을 즉시 표시
+            
+            # 초기 이미지 표시
+            self._update_realtime_visualization()
+            
+            print(f"  ✓ 실시간 시각화 초기화 완료")
+        except Exception as e:
+            print(f"  ⚠️ 실시간 시각화 초기화 실패: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    def _update_realtime_visualization(self):
+        """실시간 시각화 업데이트 (3분할: Top View, Right Side View, Agent View)"""
+        if not self.show_realtime_view or not MATPLOTLIB_AVAILABLE or not self.controller or not self.fig:
+            return
+        
+        try:
+            event = self.controller.last_event
+            
+            # 서드파티 카메라 이미지 업데이트 (third_party_camera_frames 사용)
+            if hasattr(event, 'third_party_camera_frames') and event.third_party_camera_frames:
+                # Top view 카메라 (첫 번째)
+                if len(event.third_party_camera_frames) > 0:
+                    img_data_top = event.third_party_camera_frames[0]
+                    if img_data_top is not None:
+                        if isinstance(img_data_top, np.ndarray):
+                            img_top = img_data_top
+                        else:
+                            img_top = np.array(img_data_top)
+                        
+                        if len(img_top.shape) == 3 and img_top.shape[2] == 4:
+                            img_top = img_top[:, :, :3]
+                        
+                        if self.img_display_top is None:
+                            self.img_display_top = self.ax_camera_top.imshow(img_top)
+                            self.ax_camera_top.set_title("Top View Camera", fontsize=14, fontweight='bold')
+                        else:
+                            self.img_display_top.set_data(img_top)
+                            self.img_display_top.set_clim(vmin=img_top.min(), vmax=img_top.max())
+            
+            # 에이전트 시야 이미지 업데이트
+            agent_img = None
+            if hasattr(event, 'frame') and event.frame is not None:
+                agent_img = event.frame
+            elif hasattr(event, 'events') and len(event.events) > self.agent_id:
+                agent_event = event.events[self.agent_id]
+                if hasattr(agent_event, 'frame') and agent_event.frame is not None:
+                    agent_img = agent_event.frame
+            
+            if agent_img is not None:
+                if isinstance(agent_img, np.ndarray):
+                    agent_img_array = agent_img
+                else:
+                    agent_img_array = np.array(agent_img)
+                
+                if len(agent_img_array.shape) == 3 and agent_img_array.shape[2] == 4:
+                    agent_img_array = agent_img_array[:, :, :3]
+                
+                if self.agent_img_display is None:
+                    self.agent_img_display = self.ax_agent.imshow(agent_img_array)
+                    self.ax_agent.set_title("Agent View", fontsize=14, fontweight='bold')
+                else:
+                    self.agent_img_display.set_data(agent_img_array)
+                    self.agent_img_display.set_clim(vmin=agent_img_array.min(), vmax=agent_img_array.max())
+            
+            # 화면 업데이트
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+            plt.pause(0.01)  # 화면 업데이트
+        except Exception as e:
+            # 시각화 업데이트 실패는 조용히 무시 (너무 많은 에러 메시지 방지)
+            pass
     
     def _capture_frame(self):
-        """현재 프레임을 캡처하여 비디오에 추가"""
-        if not self.save_video or not self.controller:
+        """현재 프레임을 캡처하여 비디오에 추가 및 실시간 시각화 업데이트 (3분할)"""
+        if not self.controller:
+            return
+        
+        # Update Tracking Top Camera
+        # self._update_top_tracking_camera() # 삭제됨 (고정 Map View 사용)
+        
+        # 실시간 시각화 업데이트
+        if self.show_realtime_view:
+            self._update_realtime_visualization()
+        
+        # 비디오 저장
+        if not self.save_video:
             return
         
         try:
@@ -231,8 +359,21 @@ class AI2ThorExecutor:
     
     def initialize(self):
         """AI2-THOR 환경 초기화"""
-        self.controller = Controller(height=1000, width=1000, headless=self.headless)
-        self.controller.reset(self.scene)
+        # Controller 초기화 (scene을 직접 전달하여 불필요한 이중 리셋 방지)
+        # headless 모드일 때 렌더링 옵션 최적화
+        # Controller 초기화 (scene을 직접 전달하여 불필요한 이중 리셋 방지)
+        # headless 모드일 때 렌더링 옵션 최적화
+        port = random.randint(9000, 10000)
+        print(f"Initializing Controller on port {port}...")
+        self.controller = Controller(
+            scene=self.scene,
+            height=800, 
+            width=800, 
+            headless=self.headless,
+            port=port,
+            # 타임아웃 증가 (기본값보다 길게 설정)
+            server_timeout=300,
+        )
         
         # Agent 초기화
         self.controller.step(dict(
@@ -246,18 +387,18 @@ class AI2ThorExecutor:
             agentCount=1
         ))
         
-        # Top view camera 추가
+        # Top view camera 추가 (고정 Map View)
         event = self.controller.step(action="GetMapViewCameraProperties")
         self.controller.step(action="AddThirdPartyCamera", **event.metadata["actionReturn"])
+        
+        # 실시간 시각화 초기화
+        if self.show_realtime_view:
+            self._init_realtime_visualization()
         
         # 도달 가능한 위치 가져오기 (NavMesh 기반)
         reachable_positions_ = self.controller.step(action="GetReachablePositions").metadata["actionReturn"]
         self.reachable_positions = [(p["x"], p["y"], p["z"]) for p in reachable_positions_]
-        
-        # NavMesh 그래프 초기화 (A* 경로 탐색용)
-        print(f"  Building NavMesh graph from {len(self.reachable_positions)} reachable positions...")
-        self.navmesh_graph = self._build_navmesh_graph(max_connection_distance=1.5)
-        print(f"  ✓ NavMesh graph built: {len(self.navmesh_graph)} nodes")
+        print(f"  ✓ Found {len(self.reachable_positions)} reachable positions")
         
         # Agent 초기 위치 설정
         init_pos = self._select_initial_position()
@@ -426,153 +567,25 @@ class AI2ThorExecutor:
                 return obj.get("axisAlignedBoundingBox", {}).get("center")
         return None
     
-    def _find_closest_reachable_position(self, target_pos: List[float], max_neighbors: int = 10) -> List[Tuple[float, float, float]]:
-        """
-        목표 위치에 가장 가까운 도달 가능한 위치들을 반환 (A* 경로 탐색용)
-        
-        Args:
-            target_pos: 목표 위치 [x, y, z]
-            max_neighbors: 반환할 최대 후보 개수
-            
-        Returns:
-            가장 가까운 도달 가능한 위치들의 리스트
-        """
-        if not self.reachable_positions:
-            return []
-        
-        # 거리순으로 정렬
-        sorted_positions = sorted(
-            self.reachable_positions,
-            key=lambda p: distance_pts(target_pos, p)
-        )
-        
-        return sorted_positions[:max_neighbors]
     
-    def _build_navmesh_graph(self, max_connection_distance: float = 1.5) -> Dict[Tuple[float, float, float], List[Tuple[Tuple[float, float, float], float]]]:
+    def goto_object(self, object_name: str, target_distance: float = 0.5, success_distance: float = 0.85, max_steps: int = 50) -> bool:
         """
-        NavMesh의 이동 가능한 위치들을 노드로 하는 그래프 생성
-        각 노드는 일정 거리 내의 다른 노드들과 연결됨
-        
-        Args:
-            max_connection_distance: 두 노드를 연결할 최대 거리 (미터)
-            
-        Returns:
-            그래프 딕셔너리: {노드: [(연결된_노드, 거리), ...]}
-        """
-        graph = {}
-        
-        for pos1 in self.reachable_positions:
-            neighbors = []
-            for pos2 in self.reachable_positions:
-                if pos1 == pos2:
-                    continue
-                dist = distance_pts(pos1, pos2)
-                if dist <= max_connection_distance:
-                    neighbors.append((pos2, dist))
-            graph[tuple(pos1)] = neighbors
-        
-        return graph
-    
-    def _astar_pathfinding(
-        self, 
-        start_pos: Tuple[float, float, float], 
-        goal_pos: Tuple[float, float, float],
-        graph: Dict[Tuple[float, float, float], List[Tuple[Tuple[float, float, float], float]]],
-        max_search_nodes: int = 500
-    ) -> Optional[List[Tuple[float, float, float]]]:
-        """
-        A* 알고리즘을 사용한 최단 경로 탐색
-        
-        Args:
-            start_pos: 시작 위치 (x, y, z)
-            goal_pos: 목표 위치 (x, y, z)
-            graph: NavMesh 그래프
-            max_search_nodes: 최대 탐색 노드 수
-            
-        Returns:
-            경로 (위치 리스트) 또는 None (경로 없음)
-        """
-        start = tuple(start_pos)
-        goal = tuple(goal_pos)
-        
-        # 시작점과 목표점이 그래프에 없으면 가장 가까운 노드 찾기
-        if start not in graph:
-            closest_start = min(
-                graph.keys(),
-                key=lambda p: distance_pts(list(start), list(p))
-            )
-            start = closest_start
-        
-        if goal not in graph:
-            closest_goal = min(
-                graph.keys(),
-                key=lambda p: distance_pts(list(goal), list(p))
-            )
-            goal = closest_goal
-        
-        # A* 알고리즘
-        open_set = [(0, start)]  # (f_score, node)
-        came_from = {}
-        g_score = {start: 0}  # 시작점에서 각 노드까지의 실제 거리
-        f_score = {start: distance_pts(list(start), list(goal))}  # 휴리스틱 (예상 총 거리)
-        visited = set()
-        
-        search_count = 0
-        
-        while open_set and search_count < max_search_nodes:
-            current_f, current = heapq.heappop(open_set)
-            
-            if current in visited:
-                continue
-            
-            visited.add(current)
-            search_count += 1
-            
-            # 목표 도달
-            if distance_pts(list(current), list(goal)) < 0.5:
-                # 경로 재구성
-                path = [list(goal)]
-                node = current
-                while node in came_from:
-                    path.append(list(node))
-                    node = came_from[node]
-                path.append(list(start))
-                path.reverse()
-                return path
-            
-            # 인접 노드 탐색
-            if current not in graph:
-                continue
-                
-            for neighbor, edge_cost in graph[current]:
-                if neighbor in visited:
-                    continue
-                
-                tentative_g = g_score[current] + edge_cost
-                
-                if neighbor not in g_score or tentative_g < g_score[neighbor]:
-                    came_from[neighbor] = current
-                    g_score[neighbor] = tentative_g
-                    h_score = distance_pts(list(neighbor), list(goal))  # 휴리스틱
-                    f_score[neighbor] = tentative_g + h_score
-                    heapq.heappush(open_set, (f_score[neighbor], neighbor))
-        
-        # 경로를 찾지 못함
-        return None
-    
-    def goto_object(self, object_name: str, target_distance: float = 1.0, max_steps: int = 50, use_astar: bool = True) -> bool:
-        """
-        객체로 이동 (A* 경로 탐색 또는 AI2-THOR의 ObjectNavExpertAction 사용)
+        객체로 이동 (SMART-LLM 방식: ObjectNavExpertAction 사용)
         
         Args:
             object_name: 목표 객체 이름
-            target_distance: 목표 거리 (미터, 기본값: 0.5m)
+            target_distance: 목표 거리 (미터, 기본값: 0.5m) - 이동 시도 시 목표로 하는 거리
+            success_distance: 성공 판정 거리 (미터, 기본값: None=target_distance와 동일) - 이 거리 내에 들어오면 성공으로 간주
             max_steps: 최대 이동 시도 횟수 (기본값: 50)
-            use_astar: A* 알고리즘 사용 여부 (기본값: True)
-            
+        
         Returns:
-            성공 여부
+        성공 여부
         """
+        if success_distance is None:
+            success_distance = target_distance
+
+        print(f"Going to {object_name} (Target: {target_distance}m, Success Thresh: {success_distance}m)")
+        
         object_id = self._find_object_id(object_name)
         if not object_id:
             print(f"✗ Object '{object_name}' not found")
@@ -583,273 +596,123 @@ class AI2ThorExecutor:
             print(f"✗ Object '{object_name}' has invalid position")
             return False
         
-        dest_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
+        dest_obj_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
         
-        # A* 경로 탐색 사용
-        if use_astar and self.navmesh_graph:
-            return self._goto_object_with_astar(object_name, dest_pos, target_distance, max_steps)
+        # SMART-LLM 방식으로 이동
+        goal_thresh = target_distance
+        closest_node_location = 0
+        count_since_update = 0
+        prev_dist_goal = 10.0
         
-        # 기존 방식: 가장 가까운 도달 가능한 위치 찾기
-        closest_pos = min(
-            self.reachable_positions,
-            key=lambda p: distance_pts(dest_pos, p)
-        )
-        return self._goto_object_with_objectnav(object_name, closest_pos, dest_pos, target_distance, max_steps)
-    
-    def _goto_object_with_astar(self, object_name: str, dest_pos: List[float], target_distance: float, max_steps: int) -> bool:
-        """A* 알고리즘을 사용한 경로 탐색 및 이동"""
-        # 현재 agent 위치
-        metadata = self.controller.last_event.events[self.agent_id].metadata
-        robot_pos = metadata["agent"]["position"]
-        start_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
+        # 가장 가까운 도달 가능한 위치 찾기
+        crp = closest_node(dest_obj_pos, self.reachable_positions, closest_node_location)
+        if not crp:
+            print(f"✗ No reachable position found")
+            return False
         
-        # A* 경로 탐색
-        print(f"  Finding shortest path using A* algorithm...")
-        path = self._astar_pathfinding(start_pos, dest_pos, self.navmesh_graph)
+        # agent에서 객체 중심까지의 거리 계산 (crp까지의 거리가 아님)
+        current_agent_pos = [
+            self.controller.last_event.events[self.agent_id].metadata["agent"]["position"]["x"],
+            self.controller.last_event.events[self.agent_id].metadata["agent"]["position"]["y"],
+            self.controller.last_event.events[self.agent_id].metadata["agent"]["position"]["z"]
+        ]
+        dist_goal = distance_pts(current_agent_pos, dest_obj_pos)
         
-        if not path:
-            print(f"  ⚠ A* path not found, falling back to ObjectNavExpertAction")
-            # 폴백: 가장 가까운 도달 가능한 위치 사용
-            closest_pos = min(
-                self.reachable_positions,
-                key=lambda p: distance_pts(dest_pos, p)
-            )
-            return self._goto_object_with_objectnav("", closest_pos, dest_pos, target_distance, max_steps)
-        
-        print(f"  ✓ A* path found: {len(path)} waypoints")
-        
-        # 경로를 따라 이동
-        for waypoint_idx, waypoint in enumerate(path[1:], 1):  # 첫 번째는 현재 위치이므로 스킵
-            # ObjectNavExpertAction으로 waypoint까지 이동
-            event = self.controller.step(dict(
-                action='ObjectNavExpertAction',
-                position=dict(x=waypoint[0], y=waypoint[1], z=waypoint[2]),
-                agentId=self.agent_id
-            ))
-            self._capture_frame()
+        step_count = 0
+        while dist_goal > goal_thresh and step_count < max_steps:
+            # 현재 agent 위치
+            metadata = self.controller.last_event.events[self.agent_id].metadata
+            location = {
+                "x": metadata["agent"]["position"]["x"],
+                "y": metadata["agent"]["position"]["y"],
+                "z": metadata["agent"]["position"]["z"],
+                "rotation": metadata["agent"]["rotation"]["y"]
+            }
             
-            next_action = event.metadata.get('actionReturn')
-            if next_action:
-                self.controller.step(
-                    action=next_action,
-                    agentId=self.agent_id,
-                    forceAction=True
-                )
-                self._capture_frame()
+            prev_dist_goal = dist_goal
+            # agent에서 객체 중심까지의 거리 계산 (crp까지의 거리가 아님)
+            dist_goal = distance_pts([location['x'], location['y'], location['z']], dest_obj_pos)
             
-            time.sleep(0.1)
-        
-        # A* 경로의 마지막 노드에 도달한 후, 목표까지의 거리 확인
-        current_metadata = self.controller.last_event.events[self.agent_id].metadata
-        current_pos = current_metadata["agent"]["position"]
-        current_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
-        
-        if current_distance <= target_distance:
-            print(f"  ✓ Reached destination (distance: {current_distance:.2f}m)")
-            return True
-        
-        # 목표까지 거리가 멀면 추가 이동 시도
-        print(f"  → A* path completed, but still {current_distance:.2f}m away. Moving closer to target...")
-        
-        # 목표에 가장 가까운 도달 가능한 위치 찾기
-        closest_reachable = min(
-            self.reachable_positions,
-            key=lambda p: distance_pts(dest_pos, list(p))
-        )
-        closest_distance = distance_pts(dest_pos, list(closest_reachable))
-        
-        # 가장 가까운 도달 가능한 위치까지 추가 이동
-        if closest_distance < current_distance:
-            # ObjectNavExpertAction으로 가장 가까운 위치까지 이동
-            step_count = 0
-            while step_count < 20:  # 최대 20스텝
+            dist_del = abs(dist_goal - prev_dist_goal)
+            
+            if dist_del < 0.2:
+                # 로봇이 이동하지 않음
+                count_since_update += 1
+            else:
+                # 로봇이 이동 중
+                count_since_update = 0
+            
+            if count_since_update < 15:
+                # ObjectNavExpertAction으로 이동
                 event = self.controller.step(dict(
                     action='ObjectNavExpertAction',
-                    position=dict(x=closest_reachable[0], y=closest_reachable[1], z=closest_reachable[2]),
+                    position=dict(x=crp[0], y=crp[1], z=crp[2]),
                     agentId=self.agent_id
                 ))
                 self._capture_frame()
                 
+                # 실패 로그 체크 및 실패 시 다른 위치 시도
+                if not event.metadata.get('lastActionSuccess', True):
+                    error_msg = event.metadata.get('errorMessage', 'Unknown error')
+                    print(f"  ⚠ ObjectNavExpertAction failed: {error_msg}")
+                    # 실패 시 다른 가까운 위치 시도
+                    closest_node_location += 1
+                    count_since_update = 0
+                    crp = closest_node(dest_obj_pos, self.reachable_positions, closest_node_location)
+                    if not crp:
+                        break
+                    # agent에서 객체 중심까지의 거리 계산
+                    dist_goal = distance_pts([location['x'], location['y'], location['z']], dest_obj_pos)
+                    step_count += 1
+                    time.sleep(0.5)
+                    continue
+                
+                # ObjectNavExpertAction이 반환한 다음 액션 실행
                 next_action = event.metadata.get('actionReturn')
                 if next_action:
-                    self.controller.step(
+                    next_event = self.controller.step(
                         action=next_action,
                         agentId=self.agent_id,
-                        forceAction=True
+                        forceAction=True, # 강제 실행으로 전환 (이동 보장)
+                        renderImage=True
                     )
+                    # Force updated for ThirdPartyCamera (Top View)
+                    self.controller.step(action="Pass")
                     self._capture_frame()
-                else:
-                    break  # 더 이상 이동할 수 없음
-                
-                # 현재 거리 확인
-                current_metadata = self.controller.last_event.events[self.agent_id].metadata
-                current_pos = current_metadata["agent"]["position"]
-                current_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
-                
-                if current_distance <= target_distance:
-                    print(f"  ✓ Reached destination after additional movement (distance: {current_distance:.2f}m)")
-                    return True
-                
-                step_count += 1
-                time.sleep(0.1)
-        
-        # 최종 확인
-        current_metadata = self.controller.last_event.events[self.agent_id].metadata
-        current_pos = current_metadata["agent"]["position"]
-        final_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
-        
-        if final_distance <= target_distance:
-            print(f"  ✓ Reached destination (distance: {final_distance:.2f}m)")
-            return True
-        else:
-            print(f"  ⚠ Reached path end but still {final_distance:.2f}m away from target")
-            # 폴백: 기존 ObjectNavExpertAction 방식으로 한 번 더 시도
-            return self._goto_object_with_objectnav(object_name, closest_reachable, dest_pos, target_distance, max_steps=20)
-    
-    def _goto_object_with_objectnav(self, object_name: str, closest_pos: Tuple[float, float, float], dest_pos: List[float], target_distance: float, max_steps: int) -> bool:
-        """기존 ObjectNavExpertAction을 사용한 이동 (fallback)"""
-        
-        step_count = 0
-        stuck_count = 0
-        prev_distance = float('inf')
-        last_successful_action = None
-        
-        obj_label = f"'{object_name}'" if object_name else "target"
-        print(f"  Moving towards {obj_label} (target: {target_distance}m)...")
-        
-        while step_count < max_steps:
-            # 현재 agent 위치
-            metadata = self.controller.last_event.events[self.agent_id].metadata
-            robot_pos = metadata["agent"]["position"]
-            robot_rot = metadata["agent"]["rotation"]["y"]
-            
-            current_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
-            current_distance = distance_pts(current_pos, dest_pos)
-            
-            # 목표 거리 이내로 도달했는지 확인
-            if current_distance <= target_distance:
-                print(f"  ✓ Reached '{object_name}' (distance: {current_distance:.2f}m)")
-                # 객체를 향해 최종 회전
-                self._rotate_towards_object(dest_pos, robot_pos, robot_rot)
-                return True
-            
-            # 이동하지 않는 경우 체크
-            distance_change = abs(current_distance - prev_distance)
-            if distance_change < 0.05:
-                stuck_count += 1
+                    
+                    # 실패 로그 체크
+                    if not next_event.metadata.get('lastActionSuccess', True):
+                        error_msg = next_event.metadata.get('errorMessage', 'Unknown error')
+                        print(f"  ⚠ Action '{next_action}' failed: {error_msg}")
             else:
-                stuck_count = 0
-            
-            prev_distance = current_distance
-            
-            # 너무 오래 막혀있으면 다른 경로 시도
-            if stuck_count > 10:
-                # 다른 도달 가능한 위치로 이동 시도
-                reachable_sorted = sorted(
-                    self.reachable_positions,
-                    key=lambda p: distance_pts(dest_pos, p)
-                )
-                # 두 번째로 가까운 위치 시도
-                if len(reachable_sorted) > 1:
-                    closest_pos = reachable_sorted[1]
-                stuck_count = 0
-                print(f"  ⚠ Stuck, trying alternative path...")
-            
-            # ObjectNavExpertAction 사용 (AI2-THOR의 내장 경로 탐색)
-            # 목표 위치를 객체 중심이 아닌 가장 가까운 도달 가능한 위치로 설정
-            event = self.controller.step(dict(
-                action='ObjectNavExpertAction',
-                position=dict(x=closest_pos[0], y=closest_pos[1], z=closest_pos[2]),
-                agentId=self.agent_id
-            ))
-            self._capture_frame()  # 모든 step 후 프레임 캡처
-            
-            # ObjectNavExpertAction이 반환한 다음 액션 실행
-            next_action = event.metadata.get('actionReturn')
-            if next_action:
-                action_success = self.controller.step(
-                    action=next_action, 
-                    agentId=self.agent_id, 
-                    forceAction=True
-                )
-                self._capture_frame()  # 모든 step 후 프레임 캡처
-                last_successful_action = next_action
-                
-                # 액션이 성공했는지 확인
-                if action_success.metadata.get('lastActionSuccess', False):
-                    stuck_count = 0  # 성공하면 stuck 카운터 리셋
-            else:
-                # ObjectNavExpertAction이 다음 액션을 반환하지 않으면
-                # 직접 MoveAhead 시도 (이미 목표에 가까운 경우)
-                if current_distance > target_distance:
-                    # 객체 방향으로 회전 후 이동
-                    robot_object_vec = [dest_pos[0] - robot_pos['x'], dest_pos[2] - robot_pos['z']]
-                    if np.linalg.norm(robot_object_vec) > 0.01:
-                        y_axis = [0, 1]
-                        unit_y = np.array(y_axis) / np.linalg.norm(y_axis)
-                        unit_vector = np.array(robot_object_vec) / np.linalg.norm(robot_object_vec)
-                        
-                        angle = math.atan2(np.linalg.det([unit_vector, unit_y]), np.dot(unit_vector, unit_y))
-                        angle = 360 * angle / (2 * math.pi)
-                        angle = (angle + 360) % 360
-                        rot_angle = angle - robot_rot
-                        
-                        # 각도 정규화
-                        if rot_angle > 180:
-                            rot_angle -= 360
-                        elif rot_angle < -180:
-                            rot_angle += 360
-                        
-                        # 큰 각도 차이만 회전 (작은 각도는 무시, 최대 90도씩)
-                        if abs(rot_angle) > 15:
-                            rotation_amount = min(abs(rot_angle), 90)  # 최대 90도씩 회전
-                            if rot_angle > 0:
-                                self.controller.step(action="RotateRight", degrees=rotation_amount, agentId=self.agent_id)
-                            else:
-                                self.controller.step(action="RotateLeft", degrees=rotation_amount, agentId=self.agent_id)
-                            self._capture_frame()  # 모든 step 후 프레임 캡처
-                            time.sleep(0.2)
-                        
-                        # 앞으로 이동
-                        move_event = self.controller.step(action="MoveAhead", moveMagnitude=0.25, agentId=self.agent_id)
-                        self._capture_frame()  # 모든 step 후 프레임 캡처
-                        if move_event.metadata.get('lastActionSuccess', False):
-                            stuck_count = 0
-                        else:
-                            # 이동 실패 시 다른 방향 시도
-                            stuck_count += 1
-                            if stuck_count % 3 == 0:
-                                # 좌우로 회전하여 장애물 회피
-                                self.controller.step(action="RotateRight", degrees=30, agentId=self.agent_id)
-                                self._capture_frame()  # 모든 step 후 프레임 캡처
-                                time.sleep(0.2)
+                # 목표 위치 업데이트 (다른 가까운 위치 시도)
+                closest_node_location += 1
+                count_since_update = 0
+                crp = closest_node(dest_obj_pos, self.reachable_positions, closest_node_location)
+                if not crp:
+                    break
+                # agent에서 객체 중심까지의 거리 계산
+                dist_goal = distance_pts([location['x'], location['y'], location['z']], dest_obj_pos)
             
             step_count += 1
-            time.sleep(0.2)  # 액션 간 대기 시간
-            
-            # 진행 상황 출력 (5스텝마다)
-            if step_count % 5 == 0:
-                print(f"  Distance to '{object_name}': {current_distance:.2f}m (step {step_count}, stuck: {stuck_count})")
+            time.sleep(0.1) # 속도 개선을 위해 0.5 -> 0.1로 줄임
         
         # 최종 거리 확인
-        metadata = self.controller.last_event.events[self.agent_id].metadata
-        robot_pos = metadata["agent"]["position"]
-        final_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
-        final_distance = distance_pts(final_pos, dest_pos)
-        
-        # 최종 회전을 위해 rotation 가져오기
         final_metadata = self.controller.last_event.events[self.agent_id].metadata
-        final_robot_rot = final_metadata["agent"]["rotation"]["y"]
+        final_pos = [
+            final_metadata["agent"]["position"]["x"],
+            final_metadata["agent"]["position"]["y"],
+            final_metadata["agent"]["position"]["z"]
+        ]
+        final_distance = distance_pts(final_pos, dest_obj_pos)
         
-        if final_distance <= target_distance:
-            print(f"  ✓ Reached '{object_name}' (distance: {final_distance:.2f}m)")
-            self._rotate_towards_object(dest_pos, robot_pos, final_robot_rot)
+        if final_distance <= success_distance:
+            print(f"✓ Reached: {object_name} (Distance: {final_distance:.2f}m <= Success: {success_distance}m)")
             return True
         else:
-            print(f"  ⚠ Could not reach '{object_name}' within {target_distance}m (final distance: {final_distance:.2f}m)")
-            # 최소한 객체를 향해 회전
-            self._rotate_towards_object(dest_pos, robot_pos, final_robot_rot)
+            print(f"⚠ Could not reach '{object_name}' within {success_distance}m (final distance: {final_distance:.2f}m)")
             return False
+    
     
     def _is_object_visible(self, object_id: str) -> bool:
         """객체가 현재 시야에 보이는지 확인"""
@@ -887,37 +750,7 @@ class AI2ThorExecutor:
         
         # 먼저 객체가 이미 보이는지 확인
         if self._is_object_visible(object_id):
-            # 이미 보이면 정확히 중앙에 오도록 한 번만 미세 조정
-            metadata = self.controller.last_event.events[self.agent_id].metadata
-            robot_pos = metadata["agent"]["position"]
-            robot_rot = metadata["agent"]["rotation"]["y"]
-            
-            robot_object_vec = [dest_pos[0] - robot_pos['x'], dest_pos[2] - robot_pos['z']]
-            if np.linalg.norm(robot_object_vec) > 0.01:
-                y_axis = [0, 1]
-                unit_y = np.array(y_axis) / np.linalg.norm(y_axis)
-                unit_vector = np.array(robot_object_vec) / np.linalg.norm(robot_object_vec)
-                
-                angle = math.atan2(np.linalg.det([unit_vector, unit_y]), np.dot(unit_vector, unit_y))
-                angle = 360 * angle / (2 * math.pi)
-                angle = (angle + 360) % 360
-                rot_angle = angle - robot_rot
-                
-                # 각도 정규화
-                if rot_angle > 180:
-                    rot_angle -= 360
-                elif rot_angle < -180:
-                    rot_angle += 360
-                
-                # 5도 이상 차이면 미세 조정
-                if abs(rot_angle) > 5:
-                    if rot_angle > 0:
-                        self.controller.step(action="RotateRight", degrees=min(abs(rot_angle), 20), agentId=self.agent_id)
-                    else:
-                        self.controller.step(action="RotateLeft", degrees=min(abs(rot_angle), 20), agentId=self.agent_id)
-                    self._capture_frame()
-                    time.sleep(0.2)
-            
+            # 이미 보이면 회전하지 않음 (불필요한 회전 방지)
             print(f"  ✓ '{object_name}' is already visible")
             return True
         
@@ -952,32 +785,30 @@ class AI2ThorExecutor:
             # 큰 각도는 여러 번에 나눠서 회전 (최대 90도씩)
             remaining_angle = abs(rot_angle)
             rotation_direction = "RotateRight" if rot_angle > 0 else "RotateLeft"
+            consecutive_failures = 0  # 연속 실패 횟수 추적
             
             while remaining_angle > 5 and max_rotations > 0:
                 rotation_amount = min(remaining_angle, 90)  # 최대 90도씩
-                self.controller.step(action=rotation_direction, degrees=rotation_amount, agentId=self.agent_id)
+                rot_event = self.controller.step(action=rotation_direction, degrees=rotation_amount, agentId=self.agent_id)
                 self._capture_frame()
+                
+                # 실패 로그 체크
+                if not rot_event.metadata.get('lastActionSuccess', True):
+                    error_msg = rot_event.metadata.get('errorMessage', 'Unknown error')
+                    print(f"  ⚠ Rotation failed: {error_msg}")
+                    consecutive_failures += 1
+                    # 연속 실패가 3회 이상이면 조기 종료
+                    if consecutive_failures >= 3:
+                        print(f"  ⚠ Too many rotation failures, stopping")
+                        break
+                else:
+                    consecutive_failures = 0
+                
                 time.sleep(0.2)
                 
                 # 회전 후 객체가 보이는지 확인
                 if self._is_object_visible(object_id):
                     print(f"  ✓ '{object_name}' is now visible")
-                    # 미세 조정
-                    metadata = self.controller.last_event.events[self.agent_id].metadata
-                    robot_rot = metadata["agent"]["rotation"]["y"]
-                    rot_angle = angle - robot_rot
-                    if rot_angle > 180:
-                        rot_angle -= 360
-                    elif rot_angle < -180:
-                        rot_angle += 360
-                    
-                    if abs(rot_angle) > 3:
-                        if rot_angle > 0:
-                            self.controller.step(action="RotateRight", degrees=min(abs(rot_angle), 10), agentId=self.agent_id)
-                        else:
-                            self.controller.step(action="RotateLeft", degrees=min(abs(rot_angle), 10), agentId=self.agent_id)
-                        self._capture_frame()
-                        time.sleep(0.15)
                     return True
                 
                 remaining_angle -= rotation_amount
@@ -1048,10 +879,16 @@ class AI2ThorExecutor:
             action="PickupObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Pickup failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ Pickup failed: {event.metadata['errorMessage']}")
@@ -1084,10 +921,16 @@ class AI2ThorExecutor:
             action="PutObject",
             objectId=receptacle_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Put failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ Put failed: {event.metadata['errorMessage']}")
@@ -1125,6 +968,12 @@ class AI2ThorExecutor:
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
         
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Open failed: {error_msg}")
+            return False
+        
         if event.metadata.get('errorMessage'):
             print(f"✗ Open failed: {event.metadata['errorMessage']}")
             return False
@@ -1160,6 +1009,12 @@ class AI2ThorExecutor:
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Close failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ Close failed: {event.metadata['errorMessage']}")
@@ -1197,6 +1052,12 @@ class AI2ThorExecutor:
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
         
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ ToggleOn failed: {error_msg}")
+            return False
+        
         if event.metadata.get('errorMessage'):
             print(f"✗ ToggleOn failed: {event.metadata['errorMessage']}")
             return False
@@ -1232,6 +1093,12 @@ class AI2ThorExecutor:
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ ToggleOff failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ ToggleOff failed: {event.metadata['errorMessage']}")
@@ -1269,6 +1136,12 @@ class AI2ThorExecutor:
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
         
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Slice failed: {error_msg}")
+            return False
+        
         if event.metadata.get('errorMessage'):
             print(f"✗ Slice failed: {event.metadata['errorMessage']}")
             return False
@@ -1300,6 +1173,14 @@ class AI2ThorExecutor:
             agentId=self.agent_id,
             forceAction=True
         )
+        self._capture_frame()  # 액션 실행 후 프레임 캡처
+        time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Clean failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ Clean failed: {event.metadata['errorMessage']}")
@@ -1337,6 +1218,12 @@ class AI2ThorExecutor:
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
         
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ Break failed: {error_msg}")
+            return False
+        
         if event.metadata.get('errorMessage'):
             print(f"✗ Break failed: {event.metadata['errorMessage']}")
             return False
@@ -1355,6 +1242,12 @@ class AI2ThorExecutor:
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
+        
+        # 실패 로그 체크
+        if not event.metadata.get('lastActionSuccess', True):
+            error_msg = event.metadata.get('errorMessage', 'Unknown error')
+            print(f"✗ DropHand failed: {error_msg}")
+            return False
         
         if event.metadata.get('errorMessage'):
             print(f"✗ DropHand failed: {event.metadata['errorMessage']}")
@@ -2002,21 +1895,8 @@ if __name__ == "__main__":
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-    def put_the_apple_and_lettuce_in_the_sinkbasin():
-    GoToObject('Egg')
-    OpenObject('Fridge')
-    PickupObject('Egg')
-    CloseObject('Fridge')
-	GoToObject('Pan')
-    PutObject('Egg', 'Pan')
-    BreakObject('Egg')
-    PickupObject('Pan')
-    GoToObject('StoveBurner')
-    PutObject('Pan', 'StoveBurner')
-    ToggleObjectOn('StoveKnob')
-    CookObject('EggCracked')
-    ToggleObjectOff('StoveKnob')
-
+    def put_egg_into_bowl():
+    GoToObject('Bowl')
     """
     
     result = executor.execute_program(program)

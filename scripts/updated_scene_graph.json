@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -0.5,
+        "x": -1.25,
         "y": 0.900999128818512,
-        "z": -1.75
+        "z": 1.0
       },
       "rotation": {
         "x": -0.0,
@@ -71,7 +71,7 @@
           "z": 0.02027934230864048
         },
         "parentReceptacles": [
-          "CounterTop|-00.08|+01.15|00.00"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1240,7 +1240,7 @@
           "z": 100.07095336914062
         },
         "parentReceptacles": [
-          "StoveBurner|-00.47|+00.92|-02.37"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1924,7 +1924,7 @@
           "z": -0.0005083804135210812
         },
         "parentReceptacles": [
-          "CounterTop|-01.87|+00.95|-01.21"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2787,7 +2787,7 @@
           "z": 0.08418001979589462
         },
         "parentReceptacles": [
-          "CounterTop|-00.08|+01.15|00.00"
+          "Fridge|-02.10|+00.50|+01.07"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -3038,6 +3038,15 @@
     },
     {
       "edgeType": "IN",
+      "source": "Egg|-02.04|+00.81|+01.24",
+      "target": "Fridge|-02.10|+00.50|+01.07",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Egg",
+      "targetObjectType": "Fridge"
+    },
+    {
+      "edgeType": "IN",
       "source": "Fork|+00.95|+00.77|-02.37",
       "target": "Drawer|+00.95|+00.83|-02.20",
       "sourceType": "Object",
@@ -3281,12 +3290,30 @@
     },
     {
       "edgeType": "IN",
-      "source": "Egg|-02.04|+00.81|+01.24",
-      "target": "StoveBurner|-00.47|+00.92|-02.37",
+      "source": "Apple|-00.47|+01.15|+00.48",
+      "target": "Fridge|-02.10|+00.50|+01.07",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Egg",
-      "targetObjectType": "StoveBurner"
+      "sourceObjectType": "Apple",
+      "targetObjectType": "Fridge"
+    },
+    {
+      "edgeType": "IN",
+      "source": "Tomato|-00.39|+01.14|-00.81",
+      "target": "Fridge|-02.10|+00.50|+01.07",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Tomato",
+      "targetObjectType": "Fridge"
+    },
+    {
+      "edgeType": "IN",
+      "source": "Potato|-01.66|+00.93|-02.15",
+      "target": "Fridge|-02.10|+00.50|+01.07",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Potato",
+      "targetObjectType": "Fridge"
     }
   ]
 }

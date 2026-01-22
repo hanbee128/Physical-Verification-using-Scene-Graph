@@ -1,0 +1,70 @@
+[
+  {
+    "task": "Put egg into the bowl",
+    "object_states": [
+      {
+        "name": "Bowl",
+        "contains": [
+          "Egg"
+        ],
+        "state": "None"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  },
+  {
+    "task": "Bring Plate to CounterTop",
+    "object_states": [
+      {
+        "name": "CounterTop",
+        "contains": [
+          "Plate"
+        ],
+        "state": "None"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  },
+  {
+    "task": "Put Apple, Tomato and Potato into Fridge",
+    "object_states": [
+      {
+        "name": "Fridge",
+        "contains": [
+          "Apple",
+          "Tomato",
+          "Potato"
+        ],
+        "state": "None"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  },
+  {
+    "task": "Slice the Bread",
+    "object_states": [
+      {
+        "name": "Bread",
+        "contains": [],
+        "state": "Sliced"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  },
+  {
+    "task": "Break the vase",
+    "object_states": [
+      {
+        "name": "Vase",
+        "contains": [],
+        "state": "Broken"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  }
+]

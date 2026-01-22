@@ -109,6 +109,11 @@ def parse_info_txt(info_file_path: str) -> Tuple[List[str], List[str]]:
                         "PutObject": "Place held object inside/on receptacle",
                         "OpenObject": "Open openable container/appliance",
                         "CloseObject": "Close openable object",
+                        "ToggleObjectOn": "Turn on a switchable object",
+                        "ToggleObjectOff": "Turn off a switchable object",  
+                        "BreakObject": "Break a breakable object",
+                        "SliceObject": "Slice a sliceable object",
+                        "CookObject": "Cook a cookable object"
                     }
                     desc = descriptions.get(action_name, "")
                     if desc:
@@ -137,6 +142,11 @@ AI2THOR_ACTIONS = [
     "PutObject <obj> <recp>        # Place held object inside/on receptacle",
     "OpenObject <obj>              # Open openable container/appliance",
     "CloseObject <obj>             # Close openable object",
+    "ToggleObjectOn <obj>          # Turn on a switchable object",
+    "ToggleObjectOff <obj>         # Turn off a switchable object",
+    "BreakObject <obj>             # Break a breakable object",
+    "SliceObject <obj>             # Slice a sliceable object",
+    "CookObject <obj>              # Cook a cookable object"
 ]
 
 # FloorPlan1 씬에서 사용 가능한 기본 객체 목록 (info.txt에서 추출)
@@ -294,24 +304,57 @@ def load_task_list(task_file: Optional[str], inline_tasks: List[str]) -> List[st
     if not task_file:
         return tasks
 
-    # 파일에서 작업 목록 읽기
+    # 파일 전체를 읽어 JSON 파싱 시도
+    try:
+        with open(task_file, "r", encoding="utf-8") as f:
+            whole_data = json.load(f)
+            
+            if isinstance(whole_data, list):
+                for item in whole_data:
+                    if isinstance(item, dict) and "task" in item:
+                        tasks.append(item["task"])
+                    elif isinstance(item, str):
+                        tasks.append(item)
+                    # Handle other cases if necessary
+                return tasks
+            elif isinstance(whole_data, dict):
+                # If dict, maybe keys are tasks or specific field
+                # For now retain legacy behavior: keys as tasks
+                tasks.extend(whole_data.keys())
+                return tasks
+    except json.JSONDecodeError:
+        # Not a valid single JSON file, try line-by-line (JSONL or Text)
+        pass
+
+    # 파일에서 작업 목록 읽기 (Line-by-line fallback)
     with open(task_file, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()  # 앞뒤 공백 제거
             if not line:  # 빈 줄은 건너뛰기
                 continue
+            
+            # Skip lines that are just JSON array brackets if checking line-by-line failed
+            if line in ['[', ']']: 
+                continue
+
             try:
                 # JSON 형식으로 파싱 시도
                 data = json.loads(line)
             except json.JSONDecodeError:
                 # JSON이 아니면 일반 텍스트로 처리하여 작업 목록에 추가
+                # Remove trailing commas if it looks like a JSON list item
+                if line.endswith(','):
+                    line = line[:-1]
                 tasks.append(line)
                 continue
             
             # 파싱된 데이터 타입에 따라 처리
             if isinstance(data, dict):
-                # 딕셔너리인 경우 키들을 작업으로 사용
-                tasks.extend(data.keys())
+                if "task" in data:
+                     tasks.append(data["task"])
+                else:
+                     # 딕셔너리인 경우 키들을 작업으로 사용 (Legacy)
+                     tasks.extend(data.keys())
             elif isinstance(data, list):
                 # 리스트인 경우 모든 요소를 작업으로 사용
                 tasks.extend(data)
@@ -3030,8 +3073,14 @@ def generate_final_plan_with_physical_verification(
                 "error": "OBJECT_NOT_EXISTS"
             }
         
-        # REACHABLE 가드 실패 시 (물체가 닿지 않은 거리에 있음) 검증 종료
-        if any("REACHABLE" in guard for guard in failed_guards):
+        # REACHABLE 가드 실패 시 처리
+        # Proximity와 REACHABLE이 모두 실패했을 때는 Proximity 복구 후 REACHABLE 재검사
+        # REACHABLE만 실패했을 때는 검증 종료
+        has_proximity_failure = any("Proximity" in guard for guard in failed_guards)
+        has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
+        
+        if has_reachable_failure and not has_proximity_failure:
+            # REACHABLE만 실패한 경우: 검증 종료
             action_type = action.get("type", "")
             action_args = action.get("args", {})
             object_name = action_args.get("o") or action_args.get("r") or "알 수 없음"
@@ -3136,6 +3185,14 @@ def generate_final_plan_with_physical_verification(
                 i += 1  # 다음 액션으로 진행
                 continue
             
+            # OpenObject이고 ¬OPENED(object) 가드가 실패한 경우 (이미 열려있음)
+            # 해당 액션을 건너뛰고 다음 액션으로 진행
+            if action_type == "OpenObject" and "¬OPENED(object)" in failed_guards:
+                logger.info(f"  ⏭️  OpenObject 건너뛰기: 객체 '{object_name}'가 이미 열려있음")
+                logger.info(f"     → 다음 액션으로 진행")
+                i += 1  # 다음 액션으로 진행
+                continue
+            
             # OpenObject이고 openable(object) 가드가 실패한 경우 (openable하지 않은 객체)
             # 해당 액션을 삭제하고 다음 액션으로 진행
             if action_type == "OpenObject" and "openable(object)" in failed_guards:
@@ -3156,44 +3213,163 @@ def generate_final_plan_with_physical_verification(
             
             # 복구 액션이 있으면 원래 액션 이전에 삽입하고 다시 검증
             if recovery_actions:
-                logger.info(f"  → 복구 액션 {len(recovery_actions)}개를 원래 액션 이전에 삽입")
+                # Proximity와 REACHABLE이 모두 실패했을 때: Proximity 복구 후 REACHABLE 재검사
+                has_proximity_recovery = any(ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []) for ra in recovery_actions)
+                has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
                 
-                # 복구 액션 중 OpenObject가 있는지 확인하고, 있다면 원래 액션 이후에 CloseObject 추가
-                open_object_recoveries = []
-                for recovery_action in recovery_actions:
-                    if recovery_action.get("type") == "OpenObject":
-                        open_object_recoveries.append(recovery_action)
+                if has_proximity_recovery and has_reachable_failure:
+                    logger.info(f"  → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사")
+                    
+                    # Proximity 복구 액션만 먼저 실행
+                    proximity_recovery = None
+                    other_recoveries = []
+                    for ra in recovery_actions:
+                        if ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []):
+                            proximity_recovery = ra
+                        else:
+                            other_recoveries.append(ra)
+                    
+                    if proximity_recovery:
+                        # Proximity 복구 액션을 plan에 삽입하고 실행
+                        plan_actions.insert(i, proximity_recovery)
+                        logger.info(f"    → Proximity 복구 액션 삽입: {proximity_recovery.get('line', '')}")
+                        
+                        # Proximity 복구 액션 실행 (검증 통과로 처리)
+                        verified_actions.append(proximity_recovery)
+                        scene_graph = update_scene_graph_after_action(
+                            scene_graph, proximity_recovery, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+                        )
+                        logger.info(f"  ✓ Proximity 복구 액션 실행 완료")
+                        
+                        # Scene Graph 업데이트 후 다시 로드
+                        if scene_graph_path:
+                            scene_graph = load_scene_graph(scene_graph_path)
+                            logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
+                        
+                        # Agent 위치 업데이트 (복구 액션 실행 후)
+                        agent_position = None
+                        if scene_graph:
+                            agent_node = scene_graph.get("nodes", {}).get("agent", {})
+                            if agent_node:
+                                agent_position = agent_node.get("position", {})
+                        
+                        # scene_context 재생성 (업데이트된 scene_graph 기반)
+                        scene_context = get_relevant_scene_context(
+                            scene_graph, action_type, object_name, receptacle_name
+                        )
+                        
+                        # REACHABLE 가드만 다시 한 번 검사
+                        logger.info(f"  → REACHABLE 가드 재검사 중...")
+                        reachable_guards = [g for g in failed_guards if "REACHABLE" in g]
+                        reachable_passed = True
+                        reachable_failure_reason = ""
+                        
+                        for reachable_guard in reachable_guards:
+                            passed, reason = verify_guard_with_scene_graph(
+                                reachable_guard, scene_context, action_type, object_name, receptacle_name,
+                                controller, scene_graph, agent_position
+                            )
+                            if not passed:
+                                reachable_passed = False
+                                reachable_failure_reason = reason
+                                logger.warning(f"    ✗ REACHABLE 가드 재검사 실패: {reason}")
+                                break
+                            else:
+                                logger.info(f"    ✓ REACHABLE 가드 재검사 통과: {reason}")
+                        
+                        if reachable_passed:
+                            # REACHABLE 재검사 통과: 나머지 가드들도 다시 검사
+                            logger.info(f"  → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...")
+                            remaining_failed_guards = [g for g in failed_guards if "REACHABLE" not in g and "Proximity" not in g]
+                            
+                            all_passed = True
+                            final_reason = "모든 가드 통과"
+                            
+                            for guard in remaining_failed_guards:
+                                passed, reason = verify_guard_with_scene_graph(
+                                    guard, scene_context, action_type, object_name, receptacle_name,
+                                    controller, scene_graph, agent_position
+                                )
+                                if not passed:
+                                    all_passed = False
+                                    final_reason = reason
+                                    break
+                            
+                            if all_passed:
+                                # 모든 가드 통과: 원래 액션 통과 처리
+                                verified_actions.append(action)
+                                scene_graph = update_scene_graph_after_action(
+                                    scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+                                )
+                                logger.info(f"  ✓ 모든 가드 통과: {final_reason}")
+                                
+                                # 나머지 복구 액션들도 처리
+                                if other_recoveries:
+                                    for other_ra in other_recoveries:
+                                        plan_actions.insert(i + 1, other_ra)
+                                        logger.info(f"    → 기타 복구 액션 삽입: {other_ra.get('line', '')}")
+                                
+                                # Scene Graph 업데이트 후 다시 로드
+                                if scene_graph_path:
+                                    scene_graph = load_scene_graph(scene_graph_path)
+                                    logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
+                                
+                                i += 1  # 다음 액션으로 진행
+                                continue
+                            else:
+                                # 나머지 가드 실패: 기존 로직으로 처리
+                                logger.warning(f"  ✗ 나머지 가드 실패: {final_reason}")
+                                failed_guards = remaining_failed_guards + [g for g in failed_guards if "REACHABLE" in g or "Proximity" in g]
+                        else:
+                            # REACHABLE 재검사 실패: 기존 로직으로 처리
+                            logger.warning(f"  ✗ REACHABLE 재검사 실패: {reachable_failure_reason}")
+                            # Proximity 복구 액션은 이미 실행했으므로 제거하지 않음
+                            # 나머지 복구 액션들과 함께 처리
+                            if other_recoveries:
+                                recovery_actions = other_recoveries
+                            else:
+                                recovery_actions = []
                 
-                # 복구 액션들을 plan_actions에 현재 위치에 삽입 (역순으로 삽입하여 순서 유지)
-                for j, recovery_action in enumerate(reversed(recovery_actions)):
-                    plan_actions.insert(i, recovery_action)
-                    logger.info(f"    → 복구 액션 삽입: {recovery_action.get('line', '')}")
-                
-                # OpenObject 복구 액션이 있으면 원래 액션 이후에 CloseObject 추가
-                if open_object_recoveries:
-                    # 원래 액션의 위치는 i + len(recovery_actions) (복구 액션 삽입 후)
-                    # 원래 액션 이후에 CloseObject 추가 (역순으로 삽입하여 순서 유지)
-                    for open_object_recovery in reversed(open_object_recoveries):
-                        open_obj_id = open_object_recovery.get("nodeId") or open_object_recovery.get("args", {}).get("o")
-                        if open_obj_id:
-                            close_action = {
-                                "type": "CloseObject",
-                                "args": {"o": open_obj_id},
-                                "line": f"CloseObject('{open_obj_id}')",
-                                "nodeId": open_obj_id,
-                                "reason": f"복구 액션으로 열린 수용체 '{open_obj_id}' 닫기",
-                                "is_original": False,
-                                "is_recovery": True,
-                                "failed_guards": [],
-                                "recovery_reason": f"복구 액션 OpenObject('{open_obj_id}') 이후 자동 닫기"
-                            }
-                            # 원래 액션 이후 위치에 CloseObject 삽입
-                            plan_actions.insert(i + len(recovery_actions) + 1, close_action)
-                            logger.info(f"  → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('{open_obj_id}')")
-                
-                # 복구 액션부터 다시 검증하도록 인덱스 유지 (i는 그대로, continue로 루프 재시작)
-                logger.info(f"  → 복구 액션부터 다시 검증 시작")
-                continue  # while 루프의 시작으로 돌아가서 복구 액션부터 검증
+                # 일반적인 복구 액션 처리 (Proximity+REACHABLE 케이스가 아닌 경우)
+                if not (has_proximity_recovery and has_reachable_failure):
+                    logger.info(f"  → 복구 액션 {len(recovery_actions)}개를 원래 액션 이전에 삽입")
+                    
+                    # 복구 액션 중 OpenObject가 있는지 확인하고, 있다면 원래 액션 이후에 CloseObject 추가
+                    open_object_recoveries = []
+                    for recovery_action in recovery_actions:
+                        if recovery_action.get("type") == "OpenObject":
+                            open_object_recoveries.append(recovery_action)
+                    
+                    # 복구 액션들을 plan_actions에 현재 위치에 삽입 (역순으로 삽입하여 순서 유지)
+                    for j, recovery_action in enumerate(reversed(recovery_actions)):
+                        plan_actions.insert(i, recovery_action)
+                        logger.info(f"    → 복구 액션 삽입: {recovery_action.get('line', '')}")
+                    
+                    # OpenObject 복구 액션이 있으면 원래 액션 이후에 CloseObject 추가
+                    if open_object_recoveries:
+                        # 원래 액션의 위치는 i + len(recovery_actions) (복구 액션 삽입 후)
+                        # 원래 액션 이후에 CloseObject 추가 (역순으로 삽입하여 순서 유지)
+                        for open_object_recovery in reversed(open_object_recoveries):
+                            open_obj_id = open_object_recovery.get("nodeId") or open_object_recovery.get("args", {}).get("o")
+                            if open_obj_id:
+                                close_action = {
+                                    "type": "CloseObject",
+                                    "args": {"o": open_obj_id},
+                                    "line": f"CloseObject('{open_obj_id}')",
+                                    "nodeId": open_obj_id,
+                                    "reason": f"복구 액션으로 열린 수용체 '{open_obj_id}' 닫기",
+                                    "is_original": False,
+                                    "is_recovery": True,
+                                    "failed_guards": [],
+                                    "recovery_reason": f"복구 액션 OpenObject('{open_obj_id}') 이후 자동 닫기"
+                                }
+                                # 원래 액션 이후 위치에 CloseObject 삽입
+                                plan_actions.insert(i + len(recovery_actions) + 1, close_action)
+                                logger.info(f"  → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('{open_obj_id}')")
+                    
+                    # 복구 액션부터 다시 검증하도록 인덱스 유지 (i는 그대로, continue로 루프 재시작)
+                    logger.info(f"  → 복구 액션부터 다시 검증 시작")
+                    continue  # while 루프의 시작으로 돌아가서 복구 액션부터 검증
             
             # 복구 액션이 없는 경우 실패로 처리하고 검증 중단
             failed_actions.append({
@@ -3822,14 +3998,18 @@ def main():
             "--output-dir", str(Path(args.output_dir).resolve())
         ]
         
-        # --tasks 인자로 직접 전달 (args.tasks가 있으면)
-        if args.tasks:
+        # --tasks 인자로 직접 전달 (이미 파싱된 tasks 변수 사용)
+        if tasks:
+            cmd.append("--tasks")
+            cmd.extend(tasks)
+        # --tasks 인자로 직접 전달 (args.tasks가 있으면 - fallback)
+        elif args.tasks:
             cmd.append("--tasks")
             cmd.extend(args.tasks)
         # --task-file이 있으면 전달
         elif args.task_file:
             cmd.extend(["--task-file", str(Path(args.task_file).resolve())])
-        # 둘 다 없으면 JSON 파일 사용
+        # 둘 다 없으면 JSON 파일 사용 (fallback)
         else:
             output_path_abs = Path(output_path).resolve()
             cmd.extend(["--task-file", str(output_path_abs)])

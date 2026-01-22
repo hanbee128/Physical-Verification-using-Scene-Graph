@@ -13,6 +13,7 @@ import heapq
 import math
 import numpy as np
 import os
+import random
 import re
 import shutil
 import sys
@@ -43,19 +44,183 @@ except ImportError:
             return "Knife"
         return obj_type
 
+try:
+    from scipy.spatial.transform import Rotation as R
+    SCIPY_AVAILABLE = True
+except ImportError:
+    SCIPY_AVAILABLE = False
+    print("⚠️  scipy not installed. Please install: pip install scipy")
+
 
 def distance_pts(pt1, pt2):
     """두 점 사이의 거리 계산"""
     return math.sqrt(sum([(a - b) ** 2 for a, b in zip(pt1, pt2)]))
 
 
+# ============================================================================
+# ManipulaTHOR 공식 좌표 변환 함수들 (ithor_arm.utils 참고)
+# ============================================================================
+
+def make_rotation_matrix(position: Dict[str, float], rotation: Dict[str, float]) -> np.ndarray:
+    """
+    위치와 회전으로부터 4x4 변환 행렬 생성
+    
+    Args:
+        position: 위치 {"x": float, "y": float, "z": float}
+        rotation: 회전 {"x": float, "y": float, "z": float} (도 단위)
+        
+    Returns:
+        4x4 변환 행렬 (numpy array)
+    """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("scipy is required for coordinate transformation")
+    
+    result = np.zeros((4, 4))
+    r = R.from_euler("xyz", [rotation["x"], rotation["y"], rotation["z"]], degrees=True)
+    result[:3, :3] = r.as_matrix()
+    result[3, 3] = 1
+    result[:3, 3] = [position["x"], position["y"], position["z"]]
+    return result
+
+
+def inverse_rot_trans_mat(mat: np.ndarray) -> np.ndarray:
+    """
+    변환 행렬의 역행렬 계산
+    
+    Args:
+        mat: 4x4 변환 행렬
+        
+    Returns:
+        역행렬
+    """
+    return np.linalg.inv(mat)
+
+
+def position_rotation_from_mat(matrix: np.ndarray) -> Dict[str, Any]:
+    """
+    변환 행렬에서 위치와 회전 추출
+    
+    Args:
+        matrix: 4x4 변환 행렬
+        
+    Returns:
+        {"position": {"x": float, "y": float, "z": float}, 
+         "rotation": {"x": float, "y": float, "z": float}}
+    """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("scipy is required for coordinate transformation")
+    
+    result = {"position": None, "rotation": None}
+    rotation = R.from_matrix(matrix[:3, :3]).as_euler("xyz", degrees=True)
+    rotation_dict = {"x": rotation[0], "y": rotation[1], "z": rotation[2]}
+    result["rotation"] = rotation_dict
+    position = matrix[:3, 3]
+    result["position"] = {"x": position[0], "y": position[1], "z": position[2]}
+    return result
+
+
+def calc_inverse(deg: float) -> np.ndarray:
+    """
+    주어진 각도에 대한 역회전 행렬 계산
+    
+    Args:
+        deg: 회전 각도 (도 단위, y축 기준)
+        
+    Returns:
+        3x3 역회전 행렬
+    """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("scipy is required for coordinate transformation")
+    
+    rotation = R.from_euler("xyz", [0, deg, 0], degrees=True)
+    result = rotation.as_matrix()
+    inverse = inverse_rot_trans_mat(result)
+    return inverse
+
+
+# 미리 계산된 역회전 행렬 캐시 (45도 간격)
+saved_inverse_rotation_mats = {}
+if SCIPY_AVAILABLE:
+    saved_inverse_rotation_mats = {i: calc_inverse(i) for i in range(0, 360, 45)}
+    saved_inverse_rotation_mats[360] = saved_inverse_rotation_mats[0]
+
+
+def find_closest_inverse(deg: float) -> np.ndarray:
+    """
+    주어진 각도에 가장 가까운 미리 계산된 역회전 행렬 찾기
+    
+    Args:
+        deg: 회전 각도 (도 단위, y축 기준)
+        
+    Returns:
+        3x3 역회전 행렬
+    """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("scipy is required for coordinate transformation")
+    
+    for k in saved_inverse_rotation_mats.keys():
+        if abs(k - deg) < 5:
+            return saved_inverse_rotation_mats[k]
+    
+    # 캐시에 없으면 계산
+    rotation = R.from_euler("xyz", [0, deg, 0], degrees=True)
+    result = rotation.as_matrix()
+    inverse = inverse_rot_trans_mat(result)
+    print(f"WARNING: Had to calculate the matrix for {deg} degrees")
+    return inverse
+
+
+def convert_world_to_agent_coordinate(world_obj: Dict[str, Any], agent_state: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    세계 좌표를 에이전트 좌표계로 변환 (ManipulaTHOR 공식 방식)
+    
+    Args:
+        world_obj: 세계 좌표의 객체 {"position": {"x": float, "y": float, "z": float}, 
+                                    "rotation": {"x": float, "y": float, "z": float}}
+        agent_state: 에이전트 상태 {"position": {"x": float, "y": float, "z": float},
+                                   "rotation": {"x": float, "y": float, "z": float}}
+        
+    Returns:
+        에이전트 좌표계의 객체 {"position": {"x": float, "y": float, "z": float},
+                              "rotation": {"x": float, "y": float, "z": float}}
+    """
+    if not SCIPY_AVAILABLE:
+        raise ImportError("scipy is required for coordinate transformation")
+    
+    position = agent_state["position"]
+    rotation = agent_state["rotation"]
+    agent_translation = np.array([position["x"], position["y"], position["z"]])
+    
+    # x, z 회전이 0에 가까운지 확인 (ManipulaTHOR는 y축 회전만 사용)
+    assert abs(rotation["x"] - 0) < 0.01 and abs(rotation["z"] - 0) < 0.01, \
+        f"Agent rotation must be y-axis only: x={rotation['x']}, z={rotation['z']}"
+    
+    # 에이전트의 y축 회전에 대한 역회전 행렬 찾기
+    inverse_agent_rotation = find_closest_inverse(rotation["y"])
+    
+    # 객체의 변환 행렬 생성
+    obj_matrix = make_rotation_matrix(world_obj["position"], world_obj["rotation"])
+    
+    # 객체의 위치를 에이전트 좌표계로 변환
+    obj_translation = np.matmul(
+        inverse_agent_rotation, (obj_matrix[:3, 3] - agent_translation)
+    )
+    
+    # 변환된 위치를 행렬에 적용
+    obj_matrix[:3, 3] = obj_translation
+    
+    # 변환 행렬에서 위치와 회전 추출
+    result = position_rotation_from_mat(obj_matrix)
+    return result
+
+
 def closest_node(target_pos, reachable_positions, no_agents, clost_node_location):
     """
-    타겟 위치에 가장 가까운 도달 가능한 위치들을 찾기 (참고 코드 방식)
+    타겟 위치에 가장 가까운 도달 가능한 위치들을 찾기 (SMART-LLM 방식)
     
     Args:
         target_pos: 목표 위치 [x, y, z]
-        reachable_positions: 도달 가능한 위치 리스트
+        reachable_positions: 도달 가능한 위치 리스트 (튜플 리스트)
         no_agents: 에이전트 수
         clost_node_location: 각 에이전트의 위치 인덱스 리스트
     
@@ -65,18 +230,21 @@ def closest_node(target_pos, reachable_positions, no_agents, clost_node_location
     # 거리 계산
     distances = []
     for pos in reachable_positions:
-        dist = distance_pts(target_pos, pos)
+        dist = distance_pts(target_pos, list(pos))
         distances.append(dist)
     
-    # 거리순으로 정렬된 인덱스 얻기 (참고 코드: dist_indices = np.argsort(np.array(distances))[0])
+    # 거리순으로 정렬된 인덱스 얻기 (SMART-LLM: dist_indices = np.argsort(np.array(distances)))
     dist_indices = sorted(range(len(distances)), key=lambda i: distances[i])
     
-    # 각 agent마다 다른 위치 할당 (참고 코드: pos_index = dist_indices[(i * 5) + clost_node_location[i]])
+    # 각 agent마다 다른 위치 할당 (SMART-LLM: pos_index = dist_indices[(i * 5) + clost_node_location[i]])
     selected = []
     for i in range(no_agents):
-        # 참고 코드: (i * 5) + clost_node_location[i]로 인덱스 계산
-        pos_index = dist_indices[(i * 5) + clost_node_location[i]] if (i * 5) + clost_node_location[i] < len(dist_indices) else dist_indices[clost_node_location[i] % len(dist_indices)]
-        selected.append(reachable_positions[pos_index])
+        # SMART-LLM 방식: (i * 5) + clost_node_location[i]로 인덱스 계산
+        pos_index = (i * 5) + clost_node_location[i]
+        if pos_index >= len(dist_indices):
+            # 인덱스가 범위를 벗어나면 모듈로 연산으로 순환
+            pos_index = clost_node_location[i] % len(dist_indices)
+        selected.append(reachable_positions[dist_indices[pos_index]])
     
     return selected
 
@@ -132,6 +300,9 @@ class ManipulaThorExecutor:
         self.total_exec = 0
         self.success_exec = 0
         self.execution_log = []
+        
+        # NavMesh 그래프 (A* 경로 탐색용, lazy initialization)
+        self.navmesh_graph = None
         
         # 비디오 저장 관련
         self.video_writer = None
@@ -337,7 +508,7 @@ class ManipulaThorExecutor:
             pass
     
     def _update_right_side_camera(self):
-        """로봇의 현재 위치를 추적하여 90도 오른쪽 카메라 업데이트"""
+        """로봇의 현재 위치를 추적하여 90도 오른쪽 카메라 업데이트 (변화가 있을 때만)"""
         try:
             # 에이전트 위치와 회전 가져오기
             metadata = self.controller.last_event.metadata
@@ -348,23 +519,40 @@ class ManipulaThorExecutor:
             agent_z = agent_pos.get("z", 0)
             agent_rotation_y = agent_rot.get("y", 0)
             
+            # 이전 위치와 비교하여 변화가 충분히 클 때만 카메라 업데이트
+            if self.last_agent_position is not None and self.last_agent_rotation is not None:
+                pos_change = distance_pts(
+                    [agent_x, agent_y, agent_z],
+                    [self.last_agent_position['x'], self.last_agent_position['y'], self.last_agent_position['z']]
+                )
+                rot_change = abs(agent_rotation_y - self.last_agent_rotation)
+                
+                # 위치 변화가 0.1m 미만이고 회전 변화가 5도 미만이면 스킵
+                if pos_change < self.camera_update_threshold and rot_change < 5.0:
+                    return  # 카메라 업데이트 스킵
+            
+            # 카메라 업데이트 (변화가 충분히 클 때만)
             self.controller.step(
                 action="AddThirdPartyCamera",
                 position=dict(x=2.2, y=2, z=2.2),
                 rotation=dict(x=0, y=225, z=0),  # 로봇을 향하도록
                 fieldOfView=90,
             )
+            
+            # 현재 위치 저장
+            self.last_agent_position = agent_pos.copy()
+            self.last_agent_rotation = agent_rotation_y
 
         except Exception as e:
             # 카메라 업데이트 실패는 조용히 무시 (너무 많은 에러 메시지 방지)
             pass
     
     def _capture_frame(self):
-        """현재 프레임을 캡처하여 비디오에 추가 및 실시간 시각화 업데이트 (3분할)"""
-        # 로봇 위치 추적하여 카메라 업데이트
+        """현재 프레임을 캡처하여 비디오에 추가 및 실시간 시각화 업데이트 (3분할) - 최적화됨"""
+        # 로봇 위치 추적하여 카메라 업데이트 (변화가 있을 때만)
         self._update_right_side_camera()
         
-        # 실시간 시각화 업데이트
+        # 실시간 시각화 업데이트 (빈도 제한)
         if self.show_realtime_view:
             self._update_realtime_visualization()
         
@@ -476,7 +664,17 @@ class ManipulaThorExecutor:
     
     def initialize(self):
         """AI2-THOR ManipulaTHOR 환경 초기화"""
-        self.controller = Controller(height=1000, width=1000, headless=self.headless)
+        # Controller 초기화
+        port = random.randint(9000, 10000)
+        print(f"Initializing ManipulaTHOR Controller on port {port}...")
+        self.controller = Controller(
+            scene=self.scene, 
+            height=1000, 
+            width=1000, 
+            headless=self.headless,
+            port=port,
+            server_timeout=300
+        )
         self.controller.reset(self.scene)
         
         # Agent 초기화 (ManipulaTHOR는 agentMode="arm" 사용)
@@ -487,7 +685,7 @@ class ManipulaThorExecutor:
             gridSize=0.25,
             rotateStepDegrees=20,
             visibilityDistance=1.5,
-            fieldOfView=120,
+            fieldOfView=90,
             agentCount=1,
             handSphereRadius=0.2  # handSphereRadius 설정
         ))
@@ -881,7 +1079,7 @@ class ManipulaThorExecutor:
             time.sleep(0.2)
             
             if not event.metadata.get('lastActionSuccess', False):
-                print(f"  ⚠ MoveArmBase fa````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````iled: {event.metadata.get('errorMessage', 'Unknown error')}")
+                print(f"  ⚠ MoveArmBase failed: {event.metadata.get('errorMessage', 'Unknown error')}")
             
             # 2. MoveArm을 몸쪽으로 접기 (x=0, y=0, z=0은 몸쪽 위치)
             event = self.controller.step(
@@ -900,119 +1098,181 @@ class ManipulaThorExecutor:
         except Exception as e:
             print(f"  ⚠ Arm retraction failed: {e}")
     
-    def goto_object(self, object_name: str, target_distance: float = 1.0, max_steps: int = 50, target_position: Optional[Dict[str, float]] = None) -> bool:
+    def goto_object(self, object_name: str, target_distance: float = 0.3, max_steps: int = 100, target_position: Optional[Dict[str, float]] = None) -> bool:
         """
-        객체로 이동 - NavMesh상 가장 가까운 위치로 이동
+        객체로 이동 (SMART-LLM 방식: ObjectNavExpertAction 사용, 간단하고 효율적)
         
         Args:
             object_name: 목표 객체 이름
-            target_distance: 목표 거리 (미터, 기본값: 1.0m)
-            max_steps: 최대 이동 시도 횟수 (기본값: 50)
+            target_distance: 목표 거리 (미터, 기본값: 0.3m)
+            max_steps: 최대 이동 시도 횟수 (기본값: 100)
             target_position: 물리적 검증에서 계산된 목표 좌표 (있으면 이 좌표로 직접 이동)
             
         Returns:
             성공 여부
         """
+        print(f"Going to {object_name}")
+        
         # 이동 전에 팔을 접어서 경로를 막지 않도록 함
         self._retract_arm_for_navigation()
         
-        # target_position이 제공된 경우 해당 좌표로 직접 이동
+        # 목표 위치 결정
         if target_position:
-            target_x = target_position.get("x", 0)
-            target_y = target_position.get("y", 0)
-            target_z = target_position.get("z", 0)
-            print(f"  Moving to specified target position: ({target_x:.3f}, {target_y:.3f}, {target_z:.3f})")
+            # target_position이 제공된 경우
+            dest_obj_pos = [target_position.get("x", 0), target_position.get("y", 0), target_position.get("z", 0)]
+            print(f"  Using specified target position: ({dest_obj_pos[0]:.3f}, {dest_obj_pos[1]:.3f}, {dest_obj_pos[2]:.3f})")
+        else:
+            # 객체 ID 찾기
+            object_id = self._find_object_id(object_name)
+            if not object_id:
+                print(f"✗ Object '{object_name}' not found")
+                return False
             
+            # 객체 중심 위치 가져오기
+            obj_center = self._get_object_center(object_id)
+            if not obj_center or obj_center == {'x': 0.0, 'y': 0.0, 'z': 0.0}:
+                print(f"✗ Object '{object_name}' has invalid position")
+                return False
+            
+            dest_obj_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
+            print(f"  Target object position: ({dest_obj_pos[0]:.3f}, {dest_obj_pos[1]:.3f}, {dest_obj_pos[2]:.3f})")
+        
+        # GetReachablePositions로 최신 이동 가능한 위치들 가져오기
+        event = self.controller.step(action="GetReachablePositions")
+        reachable_positions = event.metadata.get("actionReturn", [])
+        if not reachable_positions:
+            print(f"✗ No reachable positions found")
+            return False
+        
+        # 단일 로봇용 closest_node (clost_node_location=0으로 시작)
+        clost_node_location = [0]
+        no_agents = 1
+        crp_list = closest_node(dest_obj_pos, [(p["x"], p["y"], p["z"]) for p in reachable_positions], no_agents, clost_node_location)
+        crp = crp_list[0]  # 단일 로봇이므로 첫 번째만 사용
+        
+        # 거리 추적 변수 (SMART-LLM 방식: crp와의 거리 추적)
+        goal_thresh = target_distance
+        dist_goal = 10.0
+        prev_dist_goal = 10.0
+        count_since_update = 0
+        
+        # 목표 위치까지 이동 (SMART-LLM: while all(d > goal_thresh for d in dist_goals))
+        step_count = 0
+        while dist_goal > goal_thresh and step_count < max_steps:
             # 현재 agent 위치
             metadata = self.controller.last_event.metadata
-            current_pos = metadata["agent"]["position"]
-            current_pos_list = [current_pos['x'], current_pos['y'], current_pos['z']]
-            target_pos_list = [target_x, target_y, target_z]
+            agent_pos = metadata["agent"]["position"]
+            current_pos = [agent_pos['x'], agent_pos['y'], agent_pos['z']]
             
-            # 이미 목표 위치에 가까이 있으면 성공
-            current_distance = distance_pts(current_pos_list, target_pos_list)
-            if current_distance < 0.1:  # 0.1m 이내면 이미 도착
-                print(f"  ✓ Already at target position (distance: {current_distance:.3f}m)")
-                # 객체를 향해 회전
-                object_id = self._find_object_id(object_name)
-                if object_id:
-                    obj_center = self._get_object_center(object_id)
-                    if obj_center:
-                        robot_rot = metadata["agent"]["rotation"]["y"]
-                        dest_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
-                        self._rotate_towards_object(dest_pos, current_pos, robot_rot)
-                return True
+            # 목표까지의 거리 계산 (SMART-LLM: crp와의 거리)
+            prev_dist_goal = dist_goal
+            dist_goal = distance_pts(current_pos, list(crp))
             
-            # 경로 시각화 (저장하지 않음)
-            print(f"  Visualizing path to target position...")
-            self._visualize_path(current_pos_list, target_pos_list, object_name)
+            # 거리 변화량 계산 (SMART-LLM: dist_del = abs(dist_goals[ia] - prev_dist_goals[ia]))
+            dist_del = abs(dist_goal - prev_dist_goal)
             
-            # 지정된 좌표로 이동
-            movement_success = self._goto_object_with_objectnav(
-                object_name,
-                tuple(target_pos_list),
-                target_pos_list,  # dest_pos도 동일하게 사용
-                target_distance,
-                max_steps
-            )
-            return movement_success
+            if step_count % 10 == 0:  # 10스텝마다 로그 출력
+                print(f"  Dist to Goal: {dist_goal:.3f}m, change: {dist_del:.3f}m, closest_node_idx: {clost_node_location[0]}")
+            
+            # 로봇이 이동하지 않았는지 확인 (SMART-LLM: if dist_del < 0.2)
+            if dist_del < 0.2:
+                count_since_update += 1
+            else:
+                count_since_update = 0
+            
+            # 막혔으면 다른 위치 시도 (SMART-LLM: if count_since_update[ia] < 15)
+            if count_since_update >= 15:
+                clost_node_location[0] += 1
+                count_since_update = 0
+                crp_list = closest_node(dest_obj_pos, [(p["x"], p["y"], p["z"]) for p in reachable_positions], no_agents, clost_node_location)
+                crp = crp_list[0]
+                print(f"  ⚠ Stuck, trying alternative closest position (idx: {clost_node_location[0]})")
+            
+            # ObjectNavExpertAction으로 목표 위치까지 이동 (SMART-LLM: action_queue.append)
+            event = self.controller.step(dict(
+                action='ObjectNavExpertAction',
+                position=dict(x=crp[0], y=crp[1], z=crp[2]),
+                agentId=self.agent_id
+            ))
+            self._capture_frame()
+            
+            # 오류 메시지 확인 및 출력
+            if not event.metadata.get('lastActionSuccess', False):
+                error_msg = event.metadata.get('errorMessage', 'Unknown error')
+                print(f"  ⚠ ObjectNavExpertAction failed: {error_msg}")
+            
+            # ObjectNavExpertAction이 반환한 다음 액션 실행
+            next_action = event.metadata.get('actionReturn')
+            if next_action:
+                manipulathor_action = self._convert_ithor_to_manipulathor_action(next_action)
+                if manipulathor_action:
+                    action_result = self.controller.step(manipulathor_action)
+                    self._capture_frame()
+                    
+                    # 변환된 액션 실행 후 오류 메시지 확인 및 출력
+                    if not action_result.metadata.get('lastActionSuccess', False):
+                        error_msg = action_result.metadata.get('errorMessage', 'Unknown error')
+                        action_name = manipulathor_action.get('action', 'Unknown')
+                        print(f"  ⚠ {action_name} failed: {error_msg}")
+            
+            step_count += 1
+            time.sleep(0.1)  # SMART-LLM은 0.5초지만 너무 느리므로 0.1초로 단축
         
-        # target_position이 없는 경우 기존 로직 사용
-        object_id = self._find_object_id(object_name)
-        if not object_id:
-            print(f"✗ Object '{object_name}' not found")
-            return False
-        
-        obj_center = self._get_object_center(object_id)
-        if not obj_center or obj_center == {'x': 0.0, 'y': 0.0, 'z': 0.0}:
-            print(f"✗ Object '{object_name}' has invalid position")
-            return False
-        
-        print(f"  Finding closest reachable position to '{object_name}' (position: {obj_center})...")
-        
-        # NavMesh에서 목표 객체까지 가장 가까운 이동 가능 위치 찾기
-        closest_pos, distance = self._find_closest_reachable_position_to_target(obj_center)
-        
-        if closest_pos is None:
-            print(f"  ✗ Could not find reachable position near '{object_name}'")
-            return False
-        
-        print(f"  ✓ Found closest reachable position: ({closest_pos['x']:.3f}, {closest_pos['y']:.3f}, {closest_pos['z']:.3f}), distance: {distance:.3f}m")
-        
-        # 현재 agent 위치
+        # 목표 도달 확인 (SMART-LLM: while 루프 종료 후 객체를 향해 회전)
         metadata = self.controller.last_event.metadata
-        current_pos = metadata["agent"]["position"]
-        current_pos_list = [current_pos['x'], current_pos['y'], current_pos['z']]
-        closest_pos_list = [closest_pos['x'], closest_pos['y'], closest_pos['z']]
+        agent_pos = metadata["agent"]["position"]
+        final_pos = [agent_pos['x'], agent_pos['y'], agent_pos['z']]
+        final_distance = distance_pts(final_pos, dest_obj_pos)
         
-        # 이미 목표 위치에 가까이 있으면 성공
-        current_distance = distance_pts(current_pos_list, closest_pos_list)
-        if current_distance < 0.1:  # 0.1m 이내면 이미 도착
-            print(f"  ✓ Already at closest reachable position (distance: {current_distance:.3f}m)")
-            # 객체를 향해 회전
-            robot_rot = metadata["agent"]["rotation"]["y"]
-            dest_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
-            self._rotate_towards_object(dest_pos, current_pos, robot_rot)
+        if final_distance <= goal_thresh:
+            print(f"✓ Reached {object_name} (distance: {final_distance:.3f}m)")
+            
+            # 객체를 향해 회전 (SMART-LLM 방식)
+            robot_location = {
+                "x": agent_pos['x'],
+                "y": agent_pos['y'],
+                "z": agent_pos['z'],
+                "rotation": metadata["agent"]["rotation"]["y"]
+            }
+            
+            robot_object_vec = [dest_obj_pos[0] - robot_location['x'], dest_obj_pos[2] - robot_location['z']]
+            if np.linalg.norm(robot_object_vec) > 0.01:
+                y_axis = np.array([0, 1])
+                unit_y = y_axis / np.linalg.norm(y_axis)
+                unit_vector = np.array(robot_object_vec) / np.linalg.norm(robot_object_vec)
+                
+                angle = math.atan2(np.linalg.det([unit_vector, unit_y]), np.dot(unit_vector, unit_y))
+                angle = 360 * angle / (2 * math.pi)
+                angle = (angle + 360) % 360
+                rot_angle = angle - robot_location['rotation']
+                
+                # 각도 정규화
+                if rot_angle > 180:
+                    rot_angle -= 360
+                elif rot_angle < -180:
+                    rot_angle += 360
+                
+                if abs(rot_angle) > 5:
+                    rotation_action = {
+                        "action": "RotateAgent",
+                        "degrees": rot_angle,
+                        "returnToStart": True,
+                        "speed": 1.0,
+                        "fixedDeltaTime": 0.02,
+                        "agentId": self.agent_id
+                    }
+                    rotation_result = self.controller.step(rotation_action)
+                    self._capture_frame()
+                    
+                    # 회전 액션 오류 메시지 확인 및 출력
+                    if not rotation_result.metadata.get('lastActionSuccess', False):
+                        error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                        print(f"  ⚠ RotateAgent failed: {error_msg}")
+            
             return True
-        
-        # 경로 시각화 (저장하지 않음)
-        print(f"  Visualizing path to '{object_name}'...")
-        self._visualize_path(current_pos_list, closest_pos_list, object_name)
-        
-        # 가장 가까운 위치까지 실제로 이동 (ObjectNavExpertAction 사용)
-        # ObjectNavExpertAction은 AI2-THOR의 내장 경로 탐색으로 NavMesh를 자동으로 따름
-        print(f"  Moving to closest reachable position...")
-        
-        movement_success = self._goto_object_with_objectnav(
-            object_name, 
-            tuple(closest_pos_list), 
-            [obj_center['x'], obj_center['y'], obj_center['z']], 
-            target_distance, 
-            max_steps
-        )
-        
-        # 최종 결과 반환
-        return movement_success
+        else:
+            print(f"⚠ Could not reach {object_name} within {goal_thresh}m (final distance: {final_distance:.3f}m)")
+            return False
     
     def _visualize_path(self, current_pos: List[float], target_pos: List[float], object_name: str = ""):
         """
@@ -1244,6 +1504,382 @@ class ManipulaThorExecutor:
         # 경로를 찾지 못함
         return None
     
+    def _visualize_navmesh_path(
+        self, 
+        path: List[List[float]], 
+        start_pos: List[float], 
+        dest_pos: List[float],
+        object_name: str = "",
+        object_pos: Optional[List[float]] = None
+    ) -> None:
+        """
+        NavMesh 상의 경로를 시각화
+        
+        Args:
+            path: A* 경로 (위치 리스트)
+            start_pos: 시작 위치 [x, y, z]
+            dest_pos: 목표 위치 [x, y, z]
+            object_name: 객체 이름 (선택적)
+            object_pos: 객체 위치 [x, y, z] (선택적)
+        """
+        if not MATPLOTLIB_AVAILABLE:
+            print("  ⚠️  matplotlib not available, skipping path visualization")
+            return
+        
+        try:
+            # 2D 시각화 (x-z 평면, top-down view)
+            fig, ax = plt.subplots(figsize=(12, 10))
+            
+            # NavMesh 상의 모든 노드 표시 (회색 점)
+            if self.navmesh_graph:
+                navmesh_x = [pos[0] for pos in self.navmesh_graph.keys()]
+                navmesh_z = [pos[2] for pos in self.navmesh_graph.keys()]
+                ax.scatter(navmesh_x, navmesh_z, c='lightgray', s=5, alpha=0.3, label='NavMesh Nodes')
+            
+            # NavMesh 상의 엣지 표시 (연결선)
+            if self.navmesh_graph:
+                for node, neighbors in self.navmesh_graph.items():
+                    for neighbor, _ in neighbors:
+                        ax.plot([node[0], neighbor[0]], [node[2], neighbor[2]], 
+                               'lightgray', linewidth=0.5, alpha=0.2)
+            
+            # A* 경로 표시 (파란 선과 점)
+            if path and len(path) > 1:
+                path_x = [p[0] for p in path]
+                path_z = [p[2] for p in path]
+                ax.plot(path_x, path_z, 'b-', linewidth=2, alpha=0.7, label='A* Path')
+                ax.scatter(path_x, path_z, c='blue', s=30, alpha=0.8, zorder=5)
+            
+            # 시작점 표시 (녹색 점)
+            ax.scatter(start_pos[0], start_pos[2], c='green', s=200, marker='o', 
+                      edgecolors='darkgreen', linewidths=2, label='Start Position', zorder=10)
+            ax.annotate('Start', (start_pos[0], start_pos[2]), 
+                       xytext=(5, 5), textcoords='offset points', fontsize=10, fontweight='bold')
+            
+            # 목표점 표시 (빨간 점)
+            ax.scatter(dest_pos[0], dest_pos[2], c='red', s=200, marker='s', 
+                      edgecolors='darkred', linewidths=2, label='Target Position', zorder=10)
+            ax.annotate('Target', (dest_pos[0], dest_pos[2]), 
+                       xytext=(5, 5), textcoords='offset points', fontsize=10, fontweight='bold')
+            
+            # 객체 위치 표시 (주황색 점, 선택적)
+            if object_pos:
+                ax.scatter(object_pos[0], object_pos[2], c='orange', s=150, marker='*', 
+                          edgecolors='darkorange', linewidths=2, label=f'Object: {object_name}', zorder=10)
+                ax.annotate(object_name, (object_pos[0], object_pos[2]), 
+                           xytext=(5, 5), textcoords='offset points', fontsize=9)
+            
+            # 그래프 설정
+            ax.set_xlabel('X Position (m)', fontsize=12)
+            ax.set_ylabel('Z Position (m)', fontsize=12)
+            ax.set_title(f'NavMesh Path Visualization{" - " + object_name if object_name else ""}', fontsize=14, fontweight='bold')
+            ax.legend(loc='upper right', fontsize=9)
+            ax.grid(True, alpha=0.3)
+            ax.set_aspect('equal', adjustable='box')
+            
+            # 경로 정보 텍스트 추가
+            if path:
+                path_length = sum(
+                    distance_pts(path[i], path[i+1]) 
+                    for i in range(len(path)-1)
+                )
+                info_text = f'Path Length: {path_length:.2f}m\nWaypoints: {len(path)}'
+                ax.text(0.02, 0.98, info_text, transform=ax.transAxes, 
+                       fontsize=10, verticalalignment='top',
+                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+            
+            plt.tight_layout()
+            
+            # 저장
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            # 파일명에 사용할 수 없는 문자 제거
+            safe_object_name = re.sub(r'[^\w\-_\.]', '_', object_name) if object_name else ""
+            save_path = f"navmesh_path_{safe_object_name}_{timestamp}.png" if safe_object_name else f"navmesh_path_{timestamp}.png"
+            plt.savefig(save_path, dpi=150, bbox_inches='tight')
+            print(f"  📊 Path visualization saved to: {save_path}")
+            
+            # 표시 (선택적, headless 모드에서는 주석 처리)
+            # plt.show()
+            plt.close(fig)
+            
+        except Exception as e:
+            print(f"  ⚠️  Error visualizing path: {e}")
+    
+    def _goto_object_with_astar(self, object_name: str, dest_pos: List[float], target_distance: float, max_steps: int) -> bool:
+        """A* 알고리즘을 사용한 경로 탐색 및 이동 (ai2thor_connector_ithor.py 방식)"""
+        # 현재 agent 위치
+        metadata = self.controller.last_event.metadata
+        robot_pos = metadata["agent"]["position"]
+        start_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
+        
+        # A* 경로 탐색
+        print(f"  Finding shortest path using A* algorithm...")
+        path = self._astar_pathfinding(start_pos, dest_pos, self.navmesh_graph)
+        
+        if not path:
+            print(f"  ⚠ A* path not found, falling back to ObjectNavExpertAction")
+            # 폴백: 가장 가까운 도달 가능한 위치 사용
+            closest_pos = min(
+                self.reachable_positions,
+                key=lambda p: distance_pts(dest_pos, p)
+            )
+            return self._goto_object_with_objectnav("", closest_pos, dest_pos, target_distance, max_steps)
+        
+        print(f"  ✓ A* path found: {len(path)} waypoints")
+        
+        # 경로 시각화
+        object_pos = None
+        if object_name:
+            object_id = self._find_object_id(object_name)
+            if object_id:
+                obj_center = self._get_object_center(object_id)
+                if obj_center:
+                    object_pos = [obj_center['x'], obj_center['y'], obj_center['z']]
+        
+        self._visualize_navmesh_path(path, start_pos, dest_pos, object_name, object_pos)
+        
+        # 경로를 따라 이동
+        for waypoint_idx, waypoint in enumerate(path[1:], 1):  # 첫 번째는 현재 위치이므로 스킵
+            # ObjectNavExpertAction으로 waypoint까지 이동
+            event = self.controller.step(dict(
+                action='ObjectNavExpertAction',
+                position=dict(x=waypoint[0], y=waypoint[1], z=waypoint[2]),
+                agentId=self.agent_id
+            ))
+            self._capture_frame()
+            
+            # 오류 메시지 확인 및 출력
+            if not event.metadata.get('lastActionSuccess', False):
+                error_msg = event.metadata.get('errorMessage', 'Unknown error')
+                print(f"  ⚠ ObjectNavExpertAction failed: {error_msg}")
+            
+            next_action = event.metadata.get('actionReturn')
+            if next_action:
+                # iTHOR 액션을 ManipulaTHOR 액션으로 변환
+                manipulathor_action = self._convert_ithor_to_manipulathor_action(next_action)
+                if manipulathor_action:
+                    action_result = self.controller.step(manipulathor_action)
+                    self._capture_frame()
+                    
+                    # 변환된 액션 실행 후 오류 메시지 확인 및 출력
+                    if not action_result.metadata.get('lastActionSuccess', False):
+                        error_msg = action_result.metadata.get('errorMessage', 'Unknown error')
+                        action_name = manipulathor_action.get('action', 'Unknown')
+                        print(f"  ⚠ {action_name} failed: {error_msg}")
+            
+            time.sleep(0.1)
+        
+        # A* 경로의 마지막 노드에 도달한 후, 목표까지의 거리 확인
+        current_metadata = self.controller.last_event.metadata
+        current_pos = current_metadata["agent"]["position"]
+        current_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
+        
+        # 부동소수점 오차 고려: 0.01m 여유
+        if current_distance <= target_distance + 0.01:
+            print(f"  ✓ Reached destination (distance: {current_distance:.2f}m)")
+            return True
+        
+        # 목표까지 거리가 멀면 추가 이동 시도
+        print(f"  → A* path completed, but still {current_distance:.2f}m away. Moving closer to target...")
+        
+        # 목표에 가장 가까운 도달 가능한 위치 찾기
+        closest_reachable = min(
+            self.reachable_positions,
+            key=lambda p: distance_pts(dest_pos, list(p))
+        )
+        closest_distance = distance_pts(dest_pos, list(closest_reachable))
+        
+        # 가장 가까운 도달 가능한 위치까지 추가 이동
+        if closest_distance < current_distance:
+            # ObjectNavExpertAction으로 가장 가까운 위치까지 이동
+            step_count = 0
+            while step_count < 20:  # 최대 20스텝
+                event = self.controller.step(dict(
+                    action='ObjectNavExpertAction',
+                    position=dict(x=closest_reachable[0], y=closest_reachable[1], z=closest_reachable[2]),
+                    agentId=self.agent_id
+                ))
+                self._capture_frame()
+                
+                next_action = event.metadata.get('actionReturn')
+                if next_action:
+                    manipulathor_action = self._convert_ithor_to_manipulathor_action(next_action)
+                    if manipulathor_action:
+                        self.controller.step(manipulathor_action)
+                        self._capture_frame()
+                else:
+                    break  # 더 이상 이동할 수 없음
+                
+                # 현재 거리 확인
+                current_metadata = self.controller.last_event.metadata
+                current_pos = current_metadata["agent"]["position"]
+                current_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
+                
+                # 부동소수점 오차 고려: 0.01m 여유
+                if current_distance <= target_distance + 0.01:
+                    print(f"  ✓ Reached destination after additional movement (distance: {current_distance:.2f}m)")
+                    return True
+                
+                step_count += 1
+                time.sleep(0.1)
+        
+        # 최종 확인
+        current_metadata = self.controller.last_event.metadata
+        current_pos = current_metadata["agent"]["position"]
+        final_distance = distance_pts([current_pos['x'], current_pos['y'], current_pos['z']], dest_pos)
+        
+        # 부동소수점 오차 고려: 0.01m 여유
+        if final_distance <= target_distance + 0.01:
+            print(f"  ✓ Reached destination (distance: {final_distance:.2f}m)")
+            return True
+        else:
+            print(f"  ⚠ Reached path end but still {final_distance:.2f}m away from target")
+            # 폴백: 기존 ObjectNavExpertAction 방식으로 한 번 더 시도
+            return self._goto_object_with_objectnav(object_name, closest_reachable, dest_pos, target_distance, max_steps=20)
+    
+    def _convert_ithor_to_manipulathor_action(self, next_action: Any) -> Optional[Dict[str, Any]]:
+        """
+        iTHOR 액션을 ManipulaTHOR 액션으로 변환
+        
+        Args:
+            next_action: iTHOR 액션 (str 또는 dict)
+            
+        Returns:
+            ManipulaTHOR 액션 딕셔너리 또는 None
+        """
+        manipulathor_action = None
+        action_name = None
+        
+        if isinstance(next_action, str):
+            action_name = next_action
+            # iTHOR 액션 이름을 ManipulaTHOR로 직접 변환
+            if action_name == "MoveAhead":
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": 0.25,
+                    "right": 0.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveBack":
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": -0.25,
+                    "right": 0.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveLeft":
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": 0.0,
+                    "right": -0.25,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveRight":
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": 0.0,
+                    "right": 0.25,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "RotateLeft":
+                manipulathor_action = {
+                    "action": "RotateAgent",
+                    "degrees": -10.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "RotateRight":
+                manipulathor_action = {
+                    "action": "RotateAgent",
+                    "degrees": 10.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+        elif isinstance(next_action, dict):
+            action_name = next_action.get('action', 'Unknown')
+            degrees = next_action.get('degrees', 90)
+            
+            if action_name == "MoveAhead":
+                move_distance = next_action.get('moveMagnitude', 0.25)
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": move_distance,
+                    "right": 0.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveBack":
+                move_distance = next_action.get('moveMagnitude', 0.25)
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": -move_distance,
+                    "right": 0.0,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveLeft":
+                move_distance = next_action.get('moveMagnitude', 0.25)
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": 0.0,
+                    "right": -move_distance,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "MoveRight":
+                move_distance = next_action.get('moveMagnitude', 0.25)
+                manipulathor_action = {
+                    "action": "MoveAgent",
+                    "ahead": 0.0,
+                    "right": move_distance,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "RotateLeft":
+                manipulathor_action = {
+                    "action": "RotateAgent",
+                    "degrees": -degrees,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+            elif action_name == "RotateRight":
+                manipulathor_action = {
+                    "action": "RotateAgent",
+                    "degrees": degrees,
+                    "returnToStart": True,
+                    "speed": 1.0,
+                    "fixedDeltaTime": 0.02,
+                    "agentId": self.agent_id
+                }
+        
+        return manipulathor_action
+    
     def _move_to_waypoint(self, waypoint: List[float], max_iterations: int = 50) -> bool:
         """
         특정 waypoint로 이동 (ManipulaTHOR MoveAgent와 RotateAgent 사용)
@@ -1369,335 +2005,206 @@ class ManipulaThorExecutor:
         return angle_diff <= angle_threshold
     
     def _goto_object_with_objectnav(self, object_name: str, closest_pos: Tuple[float, float, float], dest_pos: List[float], target_distance: float, max_steps: int) -> bool:
-        """
-        ObjectNavExpertAction을 사용한 이동 (참고 코드 방식)
-        - AI2-THOR의 내장 NavMesh 경로 탐색 사용
-        - 이동 가능 영역에서만 경로 생성 (장애물 회피)
-        """
+        """기존 ObjectNavExpertAction을 사용한 이동 (fallback, ai2thor_connector_ithor.py 방식)"""
+        
+        step_count = 0
+        stuck_count = 0
+        prev_distance = float('inf')
+        last_successful_action = None
+        
         obj_label = f"'{object_name}'" if object_name else "target"
-        print(f"  Moving towards {obj_label} (goal_thresh: 0.3m, target_object_distance: {target_distance}m)...")
+        print(f"  Moving towards {obj_label} (target: {target_distance}m)...")
         
-        # 참고 코드 방식: clost_node_location을 리스트로 관리 (단일 agent이므로 [0] 사용)
-        clost_node_location = [0]  # 대체 reachable position 인덱스
-        goal_thresh = 0.3  # 참고 코드: goal_thresh = 0.3 (고정값)
-        
-        # 참고 코드 방식: closest_node 함수 사용하여 reachable position 선택
-        # 단일 agent이므로 no_agents=1
-        crp_list = closest_node(dest_pos, self.reachable_positions, 1, clost_node_location)
-        current_closest_pos = crp_list[0] if crp_list else closest_pos
-        
-        print(f"  Selected reachable position: ({current_closest_pos[0]:.3f}, {current_closest_pos[1]:.3f}, {current_closest_pos[2]:.3f})")
-        
-        # 거리 추적 (참고 코드 방식)
-        dist_goal = 10.0
-        prev_dist_goal = 10.0
-        count_since_update = 0
-        iteration_count = 0  # 무한 루프 방지
-        max_iterations = 200  # 최대 반복 횟수
-        
-        # 참고 코드 방식: while all(d > goal_thresh for d in dist_goals)
-        # 단일 agent이므로 dist_goal > goal_thresh 조건 사용
-        while dist_goal > goal_thresh and iteration_count < max_iterations:
-            iteration_count += 1
+        while step_count < max_steps:
             # 현재 agent 위치
             metadata = self.controller.last_event.metadata
             robot_pos = metadata["agent"]["position"]
             robot_rot = metadata["agent"]["rotation"]["y"]
             
             current_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
-            # 참고 코드 방식: dist_goals[ia] = distance_pts([location['x'], location['y'], location['z']], crp[ia])
-            prev_dist_goal = dist_goal
-            dist_goal = distance_pts(current_pos, list(current_closest_pos))
+            current_distance = distance_pts(current_pos, dest_pos)
             
-            # 참고 코드 방식: dist_del = abs(dist_goals[ia] - prev_dist_goals[ia])
-            dist_del = abs(dist_goal - prev_dist_goal)
-            print(f"  Dist to Goal: {dist_goal:.2f}m, change: {dist_del:.2f}m, node_idx: {clost_node_location[0]}")
+            # 목표 거리 이내로 도달했는지 확인 (부동소수점 오차 고려: 0.01m 여유)
+            if current_distance <= target_distance + 0.01:
+                print(f"  ✓ Reached '{object_name}' (distance: {current_distance:.2f}m)")
+                # 객체를 향해 최종 회전
+                self._rotate_towards_object(dest_pos, robot_pos, robot_rot)
+                return True
             
-            # 참고 코드 방식: if dist_del < 0.2: count_since_update[ia] += 1
-            if dist_del < 0.2:
-                # 로봇이 이동하지 않음
-                count_since_update += 1
+            # 이동하지 않는 경우 체크
+            distance_change = abs(current_distance - prev_distance)
+            if distance_change < 0.05:
+                stuck_count += 1
             else:
-                # 로봇이 이동 중
-                count_since_update = 0
+                stuck_count = 0
             
-            # 액션 실패 추적
-            action_failed = False
-            action_success = True  # 기본값
+            prev_distance = current_distance
             
-            # 참고 코드 방식: if count_since_update[ia] < 15: ObjectNavExpertAction
-            if count_since_update < 15:
-                # ObjectNavExpertAction 사용 (AI2-THOR의 내장 경로 탐색, NavMesh 자동 따름)
-                event = self.controller.step(dict(
-                    action='ObjectNavExpertAction',
-                    position=dict(x=current_closest_pos[0], y=current_closest_pos[1], z=current_closest_pos[2]),
-                    agentId=self.agent_id
-                ))
-                self._capture_frame()
-                
-                # ObjectNavExpertAction 성공 여부 확인
-                action_success = event.metadata.get('lastActionSuccess', False)
-                if not action_success:
-                    error_msg = event.metadata.get('errorMessage', 'Unknown error')
-                    print(f"  ⚠ ObjectNavExpertAction failed: {error_msg}")
-                else:
-                    # ObjectNavExpertAction이 반환한 다음 액션 실행
-                    # 참고 코드: next_action = multi_agent_event.metadata['actionReturn']
-                    next_action = event.metadata.get('actionReturn')
-                    if next_action:
-                        # 참고 코드: multi_agent_event = c.step(action=next_action, agentId=act['agent_id'], forceAction=True)
-                        # ManipulaTHOR에서는 iTHOR 액션을 ManipulaTHOR 액션으로 변환 필요
-                        manipulathor_action = None
-                        action_name = None
-                        
-                        if isinstance(next_action, str):
-                            action_name = next_action
-                            # iTHOR 액션 이름을 ManipulaTHOR로 직접 변환
-                            if action_name == "MoveAhead":
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": 0.25,
-                                    "right": 0.0,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveBack":
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": -0.25,
-                                    "right": 0.0,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveLeft":
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": 0.0,
-                                    "right": -0.25,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveRight":
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": 0.0,
-                                    "right": 0.25,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "RotateLeft":
-                                # 작은 각도로 회전 (90도는 너무 커서 장애물에 부딪힐 수 있음)
-                                manipulathor_action = {
-                                    "action": "RotateAgent",
-                                    "degrees": -10.0,  
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "RotateRight":
-                                # 작은 각도로 회전 (90도는 너무 커서 장애물에 부딪힐 수 있음)
-                                manipulathor_action = {
-                                    "action": "RotateAgent",
-                                    "degrees": 10.0,  
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                        elif isinstance(next_action, dict):
-                            action_name = next_action.get('action', 'Unknown')
-                            degrees = next_action.get('degrees', 90)
-                            
-                            if action_name == "MoveAhead":
-                                move_distance = next_action.get('moveMagnitude', 0.25)
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": move_distance,
-                                    "right": 0.0,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveBack":
-                                move_distance = next_action.get('moveMagnitude', 0.25)
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": -move_distance,
-                                    "right": 0.0,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveLeft":
-                                move_distance = next_action.get('moveMagnitude', 0.25)
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": 0.0,
-                                    "right": -move_distance,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "MoveRight":
-                                move_distance = next_action.get('moveMagnitude', 0.25)
-                                manipulathor_action = {
-                                    "action": "MoveAgent",
-                                    "ahead": 0.0,
-                                    "right": move_distance,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "RotateLeft":
-                                manipulathor_action = {
-                                    "action": "RotateAgent",
-                                    "degrees": -degrees,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                            elif action_name == "RotateRight":
-                                manipulathor_action = {
-                                    "action": "RotateAgent",
-                                    "degrees": degrees,
-                                    "returnToStart": True,
-                                    "speed": 1.0,
-                                    "fixedDeltaTime": 0.02,
-                                    "agentId": self.agent_id
-                                }
-                        
-                        if manipulathor_action:
-                            # ManipulaTHOR 액션 실행
-                            action_result = self.controller.step(manipulathor_action)
-                            self._capture_frame()
-                            
-                            if not action_result.metadata.get('lastActionSuccess', False):
-                                error_msg = action_result.metadata.get('errorMessage', 'Unknown error')
-                                print(f"  ⚠ Next action '{action_name}' failed: {error_msg}")
-                                action_failed = True
-                                # 액션 실패 시 count_since_update 증가 (참고 코드에서는 dist_del만 체크하지만, 액션 실패도 고려)
-                                count_since_update += 1
-                                
-                                # 회전 액션이 실패하면 작은 각도로 재시도
-                                if action_name in ["RotateLeft", "RotateRight"]:
-                                    # 작은 각도로 재시도 (30도)
-                                    small_rotation = {
-                                        "action": "RotateAgent",
-                                        "degrees": -30.0 if action_name == "RotateLeft" else 30.0,
-                                        "returnToStart": True,
-                                        "speed": 1.0,
-                                        "fixedDeltaTime": 0.02,
-                                        "agentId": self.agent_id
-                                    }
-                                    retry_result = self.controller.step(small_rotation)
-                                    self._capture_frame()
-                                    if retry_result.metadata.get('lastActionSuccess', False):
-                                        print(f"  ✓ Small rotation succeeded")
-                                        action_failed = False
-                                        count_since_update = max(0, count_since_update - 1)  # 성공하면 카운터 감소
-                            else:
-                                # 액션 성공
-                                action_failed = False
+            # 너무 오래 막혀있으면 다른 경로 시도
+            if stuck_count > 10:
+                # 다른 도달 가능한 위치로 이동 시도
+                reachable_sorted = sorted(
+                    self.reachable_positions,
+                    key=lambda p: distance_pts(dest_pos, p)
+                )
+                # 두 번째로 가까운 위치 시도
+                if len(reachable_sorted) > 1:
+                    closest_pos = reachable_sorted[1]
+                stuck_count = 0
+                print(f"  ⚠ Stuck, trying alternative path...")
+            
+            # ObjectNavExpertAction 사용 (AI2-THOR의 내장 경로 탐색)
+            # 목표 위치를 객체 중심이 아닌 가장 가까운 도달 가능한 위치로 설정
+            event = self.controller.step(dict(
+                action='ObjectNavExpertAction',
+                position=dict(x=closest_pos[0], y=closest_pos[1], z=closest_pos[2]),
+                agentId=self.agent_id
+            ))
+            self._capture_frame()  # 모든 step 후 프레임 캡처
+            
+            # ObjectNavExpertAction 오류 메시지 확인 및 출력
+            if not event.metadata.get('lastActionSuccess', False):
+                error_msg = event.metadata.get('errorMessage', 'Unknown error')
+                print(f"  ⚠ ObjectNavExpertAction failed: {error_msg}")
+            
+            # ObjectNavExpertAction이 반환한 다음 액션 실행
+            next_action = event.metadata.get('actionReturn')
+            action_executed = False
+            if next_action:
+                manipulathor_action = self._convert_ithor_to_manipulathor_action(next_action)
+                if manipulathor_action:
+                    action_success = self.controller.step(manipulathor_action)
+                    self._capture_frame()  # 모든 step 후 프레임 캡처
+                    last_successful_action = next_action
+                    action_executed = True
+                    
+                    # 액션이 성공했는지 확인
+                    if action_success.metadata.get('lastActionSuccess', False):
+                        stuck_count = 0  # 성공하면 stuck 카운터 리셋
                     else:
-                        # ObjectNavExpertAction이 다음 액션을 반환하지 않음
-                        if dist_goal <= goal_thresh:
-                            break
-                        else:
-                            count_since_update += 1
-                            action_failed = True
-                            print(f"  ⚠ ObjectNavExpertAction returned no next action (dist: {dist_goal:.2f}m)")
-            else:
-                # 참고 코드 방식: updating goal (count_since_update >= 15)
-                clost_node_location[0] += 1
-                count_since_update = 0
-                
-                # 새로운 reachable position 선택
-                crp_list = closest_node(dest_pos, self.reachable_positions, 1, clost_node_location)
-                if crp_list:
-                    current_closest_pos = crp_list[0]
-                    print(f"  ⚠ Stuck, updating goal to reachable position #{clost_node_location[0]}: ({current_closest_pos[0]:.3f}, {current_closest_pos[1]:.3f}, {current_closest_pos[2]:.3f})")
+                        # 액션이 실패하면 stuck_count 증가 (이동하지 않음)
+                        stuck_count += 1
+                        # 오류 메시지 출력
+                        error_msg = action_success.metadata.get('errorMessage', 'Unknown error')
+                        action_name = manipulathor_action.get('action', 'Unknown')
+                        print(f"  ⚠ {action_name} failed: {error_msg}")
                 else:
-                    # 모든 reachable position을 시도했으면 처음부터 다시
-                    clost_node_location[0] = 0
-                    crp_list = closest_node(dest_pos, self.reachable_positions, 1, clost_node_location)
-                    if crp_list:
-                        current_closest_pos = crp_list[0]
-                    print(f"  ⚠ All reachable positions tried, resetting to first position...")
+                    # manipulathor_action이 None이면 (알 수 없는 액션) stuck_count 증가
+                    stuck_count += 1
+                    print(f"  ⚠ Failed to convert action: {next_action}")
             
-            # ObjectNavExpertAction 자체가 실패한 경우에도 count_since_update 증가
-            if not action_success:
-                count_since_update += 1
+            # ObjectNavExpertAction이 다음 액션을 반환하지 않았거나, 액션이 실패했거나, 
+            # 거리가 여전히 멀면 직접 MoveAgent 시도
+            if not action_executed or (action_executed and current_distance > target_distance + 0.01 and stuck_count > 3):
+                # 직접 MoveAgent 시도 (이미 목표에 가까운 경우)
+                # 부동소수점 오차 고려: target_distance보다 0.01m 이상 멀면 이동 시도
+                if current_distance > target_distance + 0.01:
+                    # 객체 방향으로 회전 후 이동
+                    robot_object_vec = [dest_pos[0] - robot_pos['x'], dest_pos[2] - robot_pos['z']]
+                    if np.linalg.norm(robot_object_vec) > 0.01:
+                        y_axis = [0, 1]
+                        unit_y = np.array(y_axis) / np.linalg.norm(y_axis)
+                        unit_vector = np.array(robot_object_vec) / np.linalg.norm(robot_object_vec)
+                        
+                        angle = math.atan2(np.linalg.det([unit_vector, unit_y]), np.dot(unit_vector, unit_y))
+                        angle = 360 * angle / (2 * math.pi)
+                        angle = (angle + 360) % 360
+                        rot_angle = angle - robot_rot
+                        
+                        # 각도 정규화
+                        if rot_angle > 180:
+                            rot_angle -= 360
+                        elif rot_angle < -180:
+                            rot_angle += 360
+                        
+                        # 큰 각도 차이만 회전 (작은 각도는 무시, 최대 90도씩)
+                        if abs(rot_angle) > 15:
+                            rotation_amount = min(abs(rot_angle), 90)  # 최대 90도씩 회전
+                            rotation_action = {
+                                "action": "RotateAgent",
+                                "degrees": rotation_amount if rot_angle > 0 else -rotation_amount,
+                                "returnToStart": True,
+                                "speed": 1.0,
+                                "fixedDeltaTime": 0.02,
+                                "agentId": self.agent_id
+                            }
+                            rotation_result = self.controller.step(rotation_action)
+                            self._capture_frame()  # 모든 step 후 프레임 캡처
+                            
+                            # 회전 액션 오류 메시지 확인 및 출력
+                            if not rotation_result.metadata.get('lastActionSuccess', False):
+                                error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                                print(f"  ⚠ RotateAgent failed: {error_msg}")
+                            
+                            time.sleep(0.2)
+                        
+                        # 앞으로 이동
+                        move_action = {
+                            "action": "MoveAgent",
+                            "ahead": 0.25,
+                            "right": 0.0,
+                            "returnToStart": True,
+                            "speed": 1.0,
+                            "fixedDeltaTime": 0.02,
+                            "agentId": self.agent_id
+                        }
+                        move_event = self.controller.step(move_action)
+                        self._capture_frame()  # 모든 step 후 프레임 캡처
+                        if move_event.metadata.get('lastActionSuccess', False):
+                            stuck_count = 0
+                        else:
+                            # 이동 실패 시 다른 방향 시도
+                            stuck_count += 1
+                            # 이동 실패 오류 메시지 출력
+                            error_msg = move_event.metadata.get('errorMessage', 'Unknown error')
+                            print(f"  ⚠ MoveAgent failed: {error_msg}")
+                            
+                            if stuck_count % 3 == 0:
+                                # 좌우로 회전하여 장애물 회피
+                                rotation_action = {
+                                    "action": "RotateAgent",
+                                    "degrees": 30.0,
+                                    "returnToStart": True,
+                                    "speed": 1.0,
+                                    "fixedDeltaTime": 0.02,
+                                    "agentId": self.agent_id
+                                }
+                                rotation_result = self.controller.step(rotation_action)
+                                self._capture_frame()  # 모든 step 후 프레임 캡처
+                                
+                                # 회전 액션 오류 메시지 확인 및 출력
+                                if not rotation_result.metadata.get('lastActionSuccess', False):
+                                    error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                                    print(f"  ⚠ RotateAgent (obstacle avoidance) failed: {error_msg}")
+                                
+                                time.sleep(0.2)
             
-            # 연속 실패가 5회 이상이면 빠르게 목표 업데이트
-            if action_failed and count_since_update >= 5:
-                clost_node_location[0] += 1
-                count_since_update = 0
-                crp_list = closest_node(dest_pos, self.reachable_positions, 1, clost_node_location)
-                if crp_list:
-                    current_closest_pos = crp_list[0]
-                    print(f"  ⚠ Multiple action failures, updating goal to reachable position #{clost_node_location[0]}: ({current_closest_pos[0]:.3f}, {current_closest_pos[1]:.3f}, {current_closest_pos[2]:.3f})")
+            step_count += 1
+            time.sleep(0.2)  # 액션 간 대기 시간
             
-            # 참고 코드 방식: time.sleep(0.5)
-            time.sleep(0.5)
+            # 진행 상황 출력 (5스텝마다)
+            if step_count % 5 == 0:
+                print(f"  Distance to '{object_name}': {current_distance:.2f}m (step {step_count}, stuck: {stuck_count})")
         
-        # 무한 루프 방지: 최대 반복 횟수 도달 시
-        if iteration_count >= max_iterations:
-            print(f"  ⚠ Maximum iterations ({max_iterations}) reached. Current distance to goal: {dist_goal:.2f}m")
-            return False
-        
-        # 참고 코드 방식: align the robot once goal is reached
-        # 목표 reachable position에 도달했으므로 객체를 향해 회전
+        # 최종 거리 확인
         metadata = self.controller.last_event.metadata
         robot_pos = metadata["agent"]["position"]
-        robot_rot = metadata["agent"]["rotation"]["y"]
-        current_pos_list = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
+        final_pos = [robot_pos['x'], robot_pos['y'], robot_pos['z']]
+        final_distance = distance_pts(final_pos, dest_pos)
         
-        # 실제 객체까지의 거리 확인
-        distance_to_object = distance_pts(current_pos_list, dest_pos)
-        print(f"  Reached reachable position. Distance to object: {distance_to_object:.2f}m (target: {target_distance:.2f}m)")
+        # 최종 회전을 위해 rotation 가져오기
+        final_metadata = self.controller.last_event.metadata
+        final_robot_rot = final_metadata["agent"]["rotation"]["y"]
         
-        # 참고 코드 방식: compute angle between robot heading and object
-        robot_object_vec = [dest_pos[0] - robot_pos['x'], dest_pos[2] - robot_pos['z']]
-        y_axis = [0, 1]
-        unit_y = np.array(y_axis) / np.linalg.norm(y_axis)
-        unit_vector = np.array(robot_object_vec) / np.linalg.norm(robot_object_vec)
-        
-        angle = math.atan2(np.linalg.det([unit_vector, unit_y]), np.dot(unit_vector, unit_y))
-        angle = 360 * angle / (2 * math.pi)
-        angle = (angle + 360) % 360
-        rot_angle = angle - robot_rot
-        
-        # ManipulaTHOR RotateAgent 사용
-        self.controller.step({
-            "action": "RotateAgent",
-            "degrees": rot_angle,
-            "returnToStart": True,
-            "speed": 1.0,
-            "fixedDeltaTime": 0.02,
-            "agentId": self.agent_id
-        })
-        self._capture_frame()
-        
-        # 객체까지의 거리가 target_distance 이내면 성공
-        if distance_to_object <= target_distance:
-            print(f"  ✓ Reached: {object_name} (distance: {distance_to_object:.2f}m)")
+        # 부동소수점 오차 고려: 0.01m 여유
+        if final_distance <= target_distance + 0.01:
+            print(f"  ✓ Reached '{object_name}' (distance: {final_distance:.2f}m)")
+            self._rotate_towards_object(dest_pos, robot_pos, final_robot_rot)
             return True
         else:
-            print(f"  ⚠ Reached reachable position but still {distance_to_object:.2f}m away from {object_name}")
+            print(f"  ⚠ Could not reach '{object_name}' within {target_distance}m (final distance: {final_distance:.2f}m)")
+            # 최소한 객체를 향해 회전
+            self._rotate_towards_object(dest_pos, robot_pos, final_robot_rot)
             return False
     
     def _is_object_visible(self, object_id: str) -> bool:
@@ -1761,7 +2268,7 @@ class ManipulaThorExecutor:
                 
                 # 5도 이상 차이면 미세 조정 (ManipulaTHOR RotateAgent 사용)
                 if abs(rot_angle) > 5:
-                    self.controller.step({
+                    rotation_result = self.controller.step({
                         "action": "RotateAgent",
                         "degrees": rot_angle,  # 양수면 오른쪽, 음수면 왼쪽
                         "returnToStart": True,
@@ -1770,6 +2277,12 @@ class ManipulaThorExecutor:
                         "agentId": self.agent_id
                     })
                     self._capture_frame()
+                    
+                    # 회전 액션 오류 메시지 확인 및 출력
+                    if not rotation_result.metadata.get('lastActionSuccess', False):
+                        error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                        print(f"  ⚠ RotateAgent (fine adjustment) failed: {error_msg}")
+                    
                     time.sleep(0.2)
             
             print(f"  ✓ '{object_name}' is already visible")
@@ -1810,7 +2323,7 @@ class ManipulaThorExecutor:
                 rotation_amount = min(abs(remaining_angle), 90)  # 최대 90도씩
                 rotation_degrees = rotation_amount if remaining_angle > 0 else -rotation_amount  # 부호 유지
                 
-                self.controller.step({
+                rotation_result = self.controller.step({
                     "action": "RotateAgent",
                     "degrees": rotation_degrees,
                     "returnToStart": True,
@@ -1819,6 +2332,12 @@ class ManipulaThorExecutor:
                     "agentId": self.agent_id
                 })
                 self._capture_frame()
+                
+                # 회전 액션 오류 메시지 확인 및 출력
+                if not rotation_result.metadata.get('lastActionSuccess', False):
+                    error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                    print(f"  ⚠ RotateAgent (to face object) failed: {error_msg}")
+                
                 time.sleep(0.2)
                 
                 # 회전 후 객체가 보이는지 확인
@@ -1834,7 +2353,7 @@ class ManipulaThorExecutor:
                         rot_angle += 360
                     
                     if abs(rot_angle) > 3:
-                        self.controller.step({
+                        fine_tune_result = self.controller.step({
                             "action": "RotateAgent",
                             "degrees": rot_angle,
                             "returnToStart": True,
@@ -1843,6 +2362,12 @@ class ManipulaThorExecutor:
                             "agentId": self.agent_id
                         })
                         self._capture_frame()
+                        
+                        # 미세 조정 회전 액션 오류 메시지 확인 및 출력
+                        if not fine_tune_result.metadata.get('lastActionSuccess', False):
+                            error_msg = fine_tune_result.metadata.get('errorMessage', 'Unknown error')
+                            print(f"  ⚠ RotateAgent (fine tune) failed: {error_msg}")
+                        
                         time.sleep(0.15)
                     return True
                 
@@ -1886,7 +2411,7 @@ class ManipulaThorExecutor:
         
         if abs(rot_angle) > 5:
             # ManipulaTHOR RotateAgent 사용
-            self.controller.step({
+            rotation_result = self.controller.step({
                 "action": "RotateAgent",
                 "degrees": rot_angle,  # 양수면 오른쪽, 음수면 왼쪽
                 "returnToStart": True,
@@ -1895,11 +2420,17 @@ class ManipulaThorExecutor:
                 "agentId": self.agent_id
             })
             self._capture_frame()  # 회전 후 프레임 캡처
+            
+            # 회전 액션 오류 메시지 확인 및 출력
+            if not rotation_result.metadata.get('lastActionSuccess', False):
+                error_msg = rotation_result.metadata.get('errorMessage', 'Unknown error')
+                print(f"  ⚠ RotateAgent (towards object) failed: {error_msg}")
+            
             time.sleep(0.1)
     
     def _world_to_armbase_coords(self, world_pos: Dict[str, float], agent_pos: Dict[str, float], agent_rot: float) -> Dict[str, float]:
         """
-        절대 좌표를 armBase 좌표계로 변환
+        절대 좌표를 armBase 좌표계로 변환 (ManipulaTHOR 공식 방식 사용)
         
         Args:
             world_pos: 절대 좌표 {"x": float, "y": float, "z": float}
@@ -1909,23 +2440,43 @@ class ManipulaThorExecutor:
         Returns:
             armBase 좌표 {"x": float, "y": float, "z": float}
         """
-        # Agent 위치 기준 상대 좌표
-        dx = world_pos["x"] - agent_pos["x"]
-        dy = world_pos["y"] - agent_pos["y"]
-        dz = world_pos["z"] - agent_pos["z"]
+        if not SCIPY_AVAILABLE:
+            # scipy가 없으면 기존 방식 사용
+            dx = world_pos["x"] - agent_pos["x"]
+            dy = world_pos["y"] - agent_pos["y"]
+            dz = world_pos["z"] - agent_pos["z"]
+            
+            rot_rad = math.radians(agent_rot)
+            cos_rot = math.cos(rot_rad)
+            sin_rot = math.sin(rot_rad)
+            
+            armbase_x = dx * cos_rot + dz * sin_rot
+            armbase_z = -dx * sin_rot + dz * cos_rot
+            armbase_y = dy
+            
+            return {"x": armbase_x, "y": armbase_y, "z": armbase_z}
         
-        # Agent 회전 각도를 라디안으로 변환
-        rot_rad = math.radians(agent_rot)
-        cos_rot = math.cos(rot_rad)
-        sin_rot = math.sin(rot_rad)
+        # ManipulaTHOR 공식 방식 사용
+        world_obj = {
+            "position": world_pos,
+            "rotation": {"x": 0, "y": 0, "z": 0}  # 객체는 회전 없음
+        }
         
-        # armBase 좌표계로 변환 (Agent의 앞쪽이 +z, 오른쪽이 +x)
-        # 회전 변환: Agent가 회전한 만큼 반대로 회전
-        armbase_x = dx * cos_rot + dz * sin_rot
-        armbase_z = -dx * sin_rot + dz * cos_rot
-        armbase_y = dy  # y는 회전과 무관
+        agent_state = {
+            "position": agent_pos,
+            "rotation": {"x": 0, "y": agent_rot, "z": 0}  # y축 회전만
+        }
         
-        return {"x": armbase_x, "y": armbase_y, "z": armbase_z}
+        # 세계 좌표를 에이전트 좌표계로 변환
+        agent_coord = convert_world_to_agent_coordinate(world_obj, agent_state)
+        
+        # armBase 좌표는 에이전트 좌표계의 위치만 사용 (회전은 무시)
+        # y축 높이 보정: 에이전트 바닥에서 어깨까지의 높이(약 0.9m) 차감
+        return {
+            "x": agent_coord["position"]["x"],
+            "y": agent_coord["position"]["y"] - 0.9,  # 어깨 높이 보정
+            "z": agent_coord["position"]["z"]
+        }
     
     def _calculate_armbase_y_normalized(self, target_y: float, agent_y: float) -> float:
         """

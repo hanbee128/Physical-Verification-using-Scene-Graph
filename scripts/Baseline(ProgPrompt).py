@@ -548,6 +548,8 @@ def parse_program_to_actions(program_code: str) -> List[Dict[str, Any]]:
             action_type = "SliceObject"
         elif action == "Break":
             action_type = "BreakObject"
+        elif action == "Cook":
+            action_type = "CookObject"
         
         if len(params) == 1:
             plan.append({
