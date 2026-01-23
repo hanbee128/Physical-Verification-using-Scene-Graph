@@ -1,7 +1,18 @@
 [
-    {"task": "Turn on the Television", "object_ststes": [{"name": "Television", "contains": [], "state": "On"}], "trans":0, "max_trans":0},
+    {
+        "task": "Turn on the Television", 
+        "object_states": [
+            {
+                "name": "Television", 
+                "contains": [], 
+                "state": "On"
+            }
+        ], 
+        "trans":0, 
+        "max_trans":0
+    },
     {"task": "Put the remotecontrol in the drawer", "object_states": [{"name": "Drawer", "contains": ["RemoteControl"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Put laptop on the DiningTable", "object_states": [{"name": "DiningTable", "contains": ["Laptop"], "state": "None"}], "trans":0, "max_trans":0},
+    {"task": "Turn on the Laptop and Turn off the Desklamp", "object_states": [{"name": "LapTop", "contains": [], "state": "On"}, {"name": "DeskLamp", "contains": [], "state": "Off"}], "trans":0, "max_trans":0},
     {"task": "Turn off the desklamp and floorlamp", "object_states": [{"name": "DeskLamp", "contains": [], "state": "Off"}, {"name": "FloorLamp", "contains": [], "state": "Off"}], "trans":0, "max_trans":0},
-    {"task": "Put Keychain into the box", "object_states": [{"name": "Box", "contains": ["KeyChain"], "state": "None"}], "trans":0, "max_trans":0}
+    {"task": "Put Keychain and CreditCard into the box", "object_states": [{"name": "Box", "contains": ["KeyChain", "CreditCard"], "state": "None"}], "trans":0, "max_trans":0}
 ]

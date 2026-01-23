@@ -253,15 +253,30 @@ DEFAULT_EXAMPLES = {
         """
     ),
     # 예제 6: Turn on the Television
-    "Turn on the Television": textwrap.dedent(
+    "Turn on the Television and FloorLamp": textwrap.dedent(
         """\
         def turn_on_television():
         \t# Step 1: Go to the television
         \tGoToObject('Television')
         \t# Step 2: Turn on the television
         \tToggleObjectOn('Television')
+        \t# Step 3: Turn on the floor lamp
+        \tGoToObject('FloorLamp')
+        \tToggleObjectOn('FloorLamp')
         """
-    )
+    ),
+    # 예제 7: Turn on Laptop and Turn off the DeskLamp
+    "Turn on the Laptop and Turn off the DeskLamp": textwrap.dedent(
+        """\
+        def turn_on_laptop_and_turn_off_desklamp():
+        \t# Step 1: Turn on the laptop
+        \tGoToObject('Laptop')
+        \tToggleObjectOn('Laptop')
+        \t# Step 2: Turn off the desk lamp
+        \tGoToObject('DeskLamp')
+        \tToggleObjectOff('DeskLamp')
+        """
+    ),
 }
 
 
@@ -1358,7 +1373,12 @@ def verify_guard_with_scene_graph(
         if is_open:
             return True, f"객체가 열려있음 (openness: {target.get('openness', 'N/A')})"
         else:
-            return False, "객체가 닫혀있음"
+            # CloseObject 액션의 경우 더 명확한 메시지 제공
+            action_type = scene_context.get("actionType", "")
+            if action_type == "CloseObject":
+                return False, "객체가 닫혀있어 CloseObject를 수행할 수 없음 (객체가 열려있어야 CloseObject 가능)"
+            else:
+                return False, "객체가 닫혀있음"
     
     # ¬OPENED(object) 검증
     if "OPENED" in guard_upper and "¬" in guard_name:
@@ -3628,6 +3648,23 @@ def main():
     # 명령줄 인자 파싱
     args = parser.parse_args()
     
+    # --task-file에서 FloorPlan 번호 추출하여 해당 FPX_info.txt 자동 선택
+    if args.task_file and not args.use_ai2thor_objects:
+        task_file_path = Path(args.task_file)
+        task_file_name = task_file_path.name
+        
+        # FloorPlan{번호}.json 형식에서 번호 추출
+        match = re.search(r'FloorPlan(\d+)\.json', task_file_name)
+        if match:
+            floorplan_num = match.group(1)
+            fp_info_path = Path(f"data/all_plans_env0/FP{floorplan_num}_info.txt")
+            
+            if fp_info_path.exists():
+                args.info_file = str(fp_info_path)
+                print(f"📋 FloorPlan{floorplan_num} 감지: {fp_info_path} 사용")
+            else:
+                print(f"⚠️  {fp_info_path} 파일을 찾을 수 없습니다. 기본 info.txt를 사용합니다.")
+    
     # Scene 번호 입력 받기 (--scene-number이 없으면 사용자 입력)
     if args.scene_number is None:
         try:
@@ -3712,42 +3749,44 @@ def main():
     # 시스템 프롬프트 구성 (객체, 액션, 예제 포함)
     prompt = build_prompt(objects, actions, examples, max_examples=args.max_examples)
 
-    # FloorPlan1.json 또는 FloorPlan2.json인 경우 Kitchen 폴더에 저장
+    # FloorPlan 번호 추출하여 해당 FP{num} 폴더에 저장
     if args.task_file:
         task_file_path = Path(args.task_file)
         task_file_name = task_file_path.name
-        if task_file_name in ["FloorPlan1.json", "FloorPlan2.json"]:
-            # Kitchen 폴더로 변경
-            kitchen_output_dir = Path(args.output_dir) / "Kitchen"
-            args.output_dir = str(kitchen_output_dir)
-            print(f"📁 FloorPlan1/FloorPlan2 감지: 결과를 {args.output_dir}에 저장합니다.")
-    # FloorPlan216.json 또는 FloorPlan224.json인 경우 LivingRoom 폴더에 저장
-    if args.task_file:
-        task_file_path = Path(args.task_file)
-        task_file_name = task_file_path.name
-        if task_file_name in ["FloorPlan216.json", "FloorPlan224.json"]:
-            # Kitchen 폴더로 변경
-            kitchen_output_dir = Path(args.output_dir) / "LivingRoom"
-            args.output_dir = str(kitchen_output_dir)
-            print(f"📁 FloorPlan216/FloorPlan224 감지: 결과를 {args.output_dir}에 저장합니다.")
-    # FloorPlan325.json 또는 FloorPlan326.json인 경우 Bedroom 폴더에 저장
-    if args.task_file:
-        task_file_path = Path(args.task_file)
-        task_file_name = task_file_path.name
-        if task_file_name in ["FloorPlan325.json", "FloorPlan326.json"]:
-            # Bedroom 폴더로 변경
-            bedroom_output_dir = Path(args.output_dir) / "BedRoom"
-            args.output_dir = str(bedroom_output_dir)
-            print(f"📁 FloorPlan325/FloorPlan326 감지: 결과를 {args.output_dir}에 저장합니다.")
-    # FloorPlan403.json 또는 FloorPlan425.json인 경우 Bathroom 폴더에 저장
-    if args.task_file:
-        task_file_path = Path(args.task_file)
-        task_file_name = task_file_path.name
-        if task_file_name in ["FloorPlan403.json", "FloorPlan425.json"]:
-            # Bathroom 폴더로 변경
-            bathroom_output_dir = Path(args.output_dir) / "BathRoom"
-            args.output_dir = str(bathroom_output_dir)
-            print(f"📁 FloorPlan403/FloorPlan425 감지: 결과를 {args.output_dir}에 저장합니다.")
+        
+        # FloorPlan{번호}.json 형식에서 번호 추출
+        match = re.search(r'FloorPlan(\d+)\.json', task_file_name)
+        if match:
+            floorplan_num = match.group(1)
+            
+            # FloorPlan 번호에 따라 상위 폴더 결정
+            if floorplan_num in ["1"]:
+                base_folder = "Kitchen/FP1"
+            elif floorplan_num in ["2"]:
+                base_folder = "Kitchen/FP2"
+            elif floorplan_num in ["216"]:
+                base_folder = "LivingRoom/FP216"
+            elif floorplan_num in ["224"]:
+                base_folder = "LivingRoom/FP224"
+            elif floorplan_num in ["325"]:
+                base_folder = "BedRoom/FP325"
+            elif floorplan_num in ["326"]:
+                base_folder = "BedRoom/FP326"
+            elif floorplan_num in ["403"]:
+                base_folder = "BathRoom/FP403"
+            elif floorplan_num in ["425"]:
+                base_folder = "BathRoom/FP425"
+            else:
+                # 알 수 없는 번호는 기본 폴더 사용
+                base_folder = None
+            
+            if base_folder:
+                # base_folder에 이미 전체 경로가 포함되어 있음 (예: "Kitchen/FP1")
+                fp_output_dir = Path(args.output_dir) / base_folder
+                args.output_dir = str(fp_output_dir)
+                print(f"📁 FloorPlan{floorplan_num} 감지: 결과를 {args.output_dir}에 저장합니다.")
+            else:
+                print(f"⚠️  알 수 없는 FloorPlan 번호: {floorplan_num}, 기본 출력 디렉토리 사용")
     
 
     # 출력 디렉토리 생성 (없으면 생성)

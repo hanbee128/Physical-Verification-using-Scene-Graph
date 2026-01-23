@@ -230,7 +230,7 @@
           "z": -0.00019467322272248566
         },
         "parentReceptacles": [
-          "DiningTable|-03.94|+00.01|+00.26"
+          "Box|-03.78|+01.30|+00.46"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1770,6 +1770,15 @@
       "targetType": "Object",
       "sourceObjectType": "Vase",
       "targetObjectType": "Shelf"
+    },
+    {
+      "edgeType": "IN",
+      "source": "CreditCard|-03.66|+01.06|+00.06",
+      "target": "Box|-03.78|+01.30|+00.46",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "CreditCard",
+      "targetObjectType": "Box"
     }
   ]
 }

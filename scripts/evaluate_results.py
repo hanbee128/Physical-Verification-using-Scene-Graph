@@ -227,21 +227,21 @@ def verify_object_state(executor: AI2ThorExecutor, expected_state: Dict[str, Any
             else:
                 print(f"  ❌ Expected '{object_name}' to be Closed, but isOpen={is_open}.")
                 
-        elif expected_status == 'ToggledOn':
+        elif expected_status == 'ToggledOn' or expected_status == 'On':
             is_toggled = obj_meta.get('isToggled', False)
             if is_toggled:
-                print(f"  ✅ Verified '{object_name}' is ToggledOn (isToggled={is_toggled}).")
+                print(f"  ✅ Verified '{object_name}' is {'On' if expected_status == 'On' else 'ToggledOn'} (isToggled={is_toggled}).")
                 state_passed = True
             else:
-                print(f"  ❌ Expected '{object_name}' to be ToggledOn, but isToggled={is_toggled}.")
+                print(f"  ❌ Expected '{object_name}' to be {'On' if expected_status == 'On' else 'ToggledOn'}, but isToggled={is_toggled}.")
                 
-        elif expected_status == 'ToggledOff':
+        elif expected_status == 'ToggledOff' or expected_status == 'Off':
             is_toggled = obj_meta.get('isToggled', False)
             if not is_toggled:
-                print(f"  ✅ Verified '{object_name}' is ToggledOff (isToggled={is_toggled}).")
+                print(f"  ✅ Verified '{object_name}' is {'Off' if expected_status == 'Off' else 'ToggledOff'} (isToggled={is_toggled}).")
                 state_passed = True
             else:
-                print(f"  ❌ Expected '{object_name}' to be ToggledOff, but isToggled={is_toggled}.")
+                print(f"  ❌ Expected '{object_name}' to be {'Off' if expected_status == 'Off' else 'ToggledOff'}, but isToggled={is_toggled}.")
         else:
             print(f"  ⚠ Unknown state '{expected_status}' for '{object_name}'.")
             # 알 수 없는 상태는 통과로 처리하지 않음
@@ -344,10 +344,10 @@ def execute_and_evaluate_task(
                          success = executor.slice_object(target)
                     elif action == "BreakObject" and hasattr(executor, "break_object"):
                          success = executor.break_object(target)
-                    elif action == "ToggleObjectOn" and hasattr(executor, "toggle_object_on"):
-                         success = executor.toggle_object_on(target)
-                    elif action == "ToggleObjectOff" and hasattr(executor, "toggle_object_off"):
-                         success = executor.toggle_object_off(target)
+                    elif action == "ToggleObjectOn" and hasattr(executor, "toggle_on"):
+                         success = executor.toggle_on(target)
+                    elif action == "ToggleObjectOff" and hasattr(executor, "toggle_off"):
+                         success = executor.toggle_off(target)
                     else:
                          print(f"    Warn: Unknown action method '{method_name_action}' or '{action}'")
                          success = False
@@ -389,20 +389,29 @@ def execute_and_evaluate_task(
     task_passed_conds = 0
     task_total_conds = 0
 
-    for obj_state in task_def['object_states']:
-         print(f"  Checking: {obj_state['name']}")
-         p_count, t_count = verify_object_state(executor, obj_state)
-         task_passed_conds += p_count
-         task_total_conds += t_count
-         print(f"    → Passed: {p_count}/{t_count} conditions")
-    
-    if task_total_conds > 0:
-        gcr = (task_passed_conds / task_total_conds) * 100
-        if task_passed_conds < task_total_conds:
-            all_passed = False
-    else:
+    # object_states 키가 있는지 확인
+    object_states = task_def.get('object_states', [])
+    if not object_states:
+        print(f"  ⚠️  No object_states defined for task '{task_name}'")
+        print(f"    → Skipping verification")
         gcr = 0.0
-        print("    ⚠ No conditions to verify.")
+        task_total_conds = 0
+        task_passed_conds = 0
+    else:
+        for obj_state in object_states:
+            print(f"  Checking: {obj_state['name']}")
+            p_count, t_count = verify_object_state(executor, obj_state)
+            task_passed_conds += p_count
+            task_total_conds += t_count
+            print(f"    → Passed: {p_count}/{t_count} conditions")
+        
+        if task_total_conds > 0:
+            gcr = (task_passed_conds / task_total_conds) * 100
+            if task_passed_conds < task_total_conds:
+                all_passed = False
+        else:
+            gcr = 0.0
+            print("    ⚠ No conditions to verify.")
         
     status = "PASSED" if all_passed and not execution_failed else "FAILED"
     if execution_failed:
@@ -428,27 +437,73 @@ def main():
     parser.add_argument("--physical_guard_json", type=str, help="Path to physical_guard_result JSON file (optional)")
     parser.add_argument("--baseline_json", type=str, help="Path to baseline_result JSON file (optional)")
     parser.add_argument("--test_file", type=str, default="data/final_test/FloorPlan1.json", help="Path to the test definition JSON")
+    parser.add_argument("--folder", type=str, default="Kitchen", 
+                       choices=["Kitchen", "LivingRoom", "BedRoom", "BathRoom"],
+                       help="Folder name in results/ directory to search for JSON files (default: Kitchen)")
+    parser.add_argument("--fp-number", type=str, default=None,
+                       help="FP number (e.g., 1, 2, 216, 224, 325, 326, 403, 425). If not provided, will prompt for input.")
     args = parser.parse_args()
 
-    # Find JSON files
-    # Priority 1: Check results/Kitchen folder first
-    kitchen_physical_guard_pattern = os.path.join(current_dir, "../results/Kitchen", "physical_guard_result_*.json")
-    kitchen_baseline_pattern = os.path.join(current_dir, "../results/Kitchen", "baseline_result_*.json")
+    # Get FP number
+    fp_number = args.fp_number
+    if not fp_number:
+        try:
+            fp_number = input(f"📋 FP 번호를 입력하세요 (예: 1, 2, 216, 224, 325, 326, 403, 425): ").strip()
+            if not fp_number:
+                print("❌ FP 번호가 입력되지 않았습니다.")
+                return
+        except (KeyboardInterrupt, EOFError):
+            print("\n❌ 입력이 취소되었습니다.")
+            return
     
-    physical_guard_files = glob.glob(kitchen_physical_guard_pattern)
-    baseline_files = glob.glob(kitchen_baseline_pattern)
+    # Auto-select test_file based on FP number if not specified
+    if not args.test_file or args.test_file == "data/final_test/FloorPlan1.json":
+        test_file_path = os.path.join("data/final_test", f"FloorPlan{fp_number}.json")
+        if os.path.exists(test_file_path):
+            args.test_file = test_file_path
+            print(f"📋 FP{fp_number}에 맞는 test_file 자동 선택: {args.test_file}")
+        else:
+            print(f"⚠️  Warning: {test_file_path} not found, using default: {args.test_file}")
+    else:
+        print(f"📋 Using specified test file: {args.test_file}")
     
+    # Find JSON files in the specified folder/FP{num} directory
+    folder_name = args.folder
+    fp_folder = f"FP{fp_number}"
+    print(f"📂 Searching in results/{folder_name}/{fp_folder} folder...")
+    
+    # Try absolute path first
+    folder_physical_guard_pattern = os.path.join(current_dir, "../results", folder_name, fp_folder, "physical_guard_result_*.json")
+    folder_baseline_pattern = os.path.join(current_dir, "../results", folder_name, fp_folder, "baseline_result_*.json")
+    
+    physical_guard_files = glob.glob(folder_physical_guard_pattern)
+    baseline_files = glob.glob(folder_baseline_pattern)
+    
+    # Try relative path if absolute path didn't work
     if not physical_guard_files:
-        # Try relative path
-        kitchen_physical_guard_pattern = "results/Kitchen/physical_guard_result_*.json"
-        physical_guard_files = glob.glob(kitchen_physical_guard_pattern)
+        folder_physical_guard_pattern = os.path.join("results", folder_name, fp_folder, "physical_guard_result_*.json")
+        physical_guard_files = glob.glob(folder_physical_guard_pattern)
     
     if not baseline_files:
-        # Try relative path
-        kitchen_baseline_pattern = "results/Kitchen/baseline_result_*.json"
-        baseline_files = glob.glob(kitchen_baseline_pattern)
+        folder_baseline_pattern = os.path.join("results", folder_name, fp_folder, "baseline_result_*.json")
+        baseline_files = glob.glob(folder_baseline_pattern)
     
-    # Priority 2: Check results folder if Kitchen folder has no files
+    # Fallback: Check parent folder (results/{folder_name}/) if FP{num} folder has no files
+    if not physical_guard_files:
+        search_pattern = os.path.join(current_dir, "../results", folder_name, "physical_guard_result_*.json")
+        physical_guard_files = glob.glob(search_pattern)
+        if not physical_guard_files:
+            search_pattern = os.path.join("results", folder_name, "physical_guard_result_*.json")
+            physical_guard_files = glob.glob(search_pattern)
+    
+    if not baseline_files:
+        search_pattern = os.path.join(current_dir, "../results", folder_name, "baseline_result_*.json")
+        baseline_files = glob.glob(search_pattern)
+        if not baseline_files:
+            search_pattern = os.path.join("results", folder_name, "baseline_result_*.json")
+            baseline_files = glob.glob(search_pattern)
+    
+    # Final fallback: Check results folder directly
     if not physical_guard_files:
         search_pattern = os.path.join(current_dir, "../results", "physical_guard_result_*.json")
         physical_guard_files = glob.glob(search_pattern)
@@ -483,11 +538,20 @@ def main():
     
     if not physical_guard_file and not baseline_file:
         print("❌ No JSON files found.")
-        print("   Searched for:")
-        print("     - results/Kitchen/physical_guard_result_*.json")
-        print("     - results/Kitchen/baseline_result_*.json")
-        print("     - results/physical_guard_result_*.json")
-        print("     - results/baseline_result_*.json")
+        print(f"   Searched for:")
+        print(f"     - results/{folder_name}/{fp_folder}/physical_guard_result_*.json")
+        print(f"     - results/{folder_name}/{fp_folder}/baseline_result_*.json")
+        print(f"     - results/{folder_name}/physical_guard_result_*.json")
+        print(f"     - results/{folder_name}/baseline_result_*.json")
+        print(f"     - results/physical_guard_result_*.json")
+        print(f"     - results/baseline_result_*.json")
+        print(f"\n   Available folders in results/{folder_name}/:")
+        folder_dir = os.path.join(current_dir, "../results", folder_name)
+        if os.path.exists(folder_dir):
+            for item in os.listdir(folder_dir):
+                item_path = os.path.join(folder_dir, item)
+                if os.path.isdir(item_path):
+                    print(f"     - {item}")
         return
     
     # Load plans
@@ -515,23 +579,26 @@ def main():
     physical_guard_exe = None
     baseline_exe = None
     
+    # Determine scene name from FP number
+    scene_name = f"FloorPlan{fp_number}"
+    
     if physical_guard_plans:
         physical_guard_exe = AI2ThorExecutor(
-            scene="FloorPlan1",
+            scene=scene_name,
             headless=False, 
             save_video=False 
         )
         physical_guard_exe.initialize()
-        print("   ✓ Physical Guard executor initialized")
+        print(f"   ✓ Physical Guard executor initialized (Scene: {scene_name})")
     
     if baseline_plans:
         baseline_exe = AI2ThorExecutor(
-            scene="FloorPlan1",
+            scene=scene_name,
             headless=False, 
             save_video=False 
         )
         baseline_exe.initialize()
-        print("   ✓ Baseline executor initialized")
+        print(f"   ✓ Baseline executor initialized (Scene: {scene_name})")
     
     # Evaluate tasks
     physical_guard_results = []
