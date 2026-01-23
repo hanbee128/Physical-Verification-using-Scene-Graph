@@ -32,6 +32,7 @@
 #### GoToObject
 - `EXISTS(object)`: 객체가 Scene Graph에 존재하는지 확인
 - `NAVIGABLE(agent, object)`: NavMesh를 통해 객체까지 이동 가능한 경로가 있는지 확인 (거리 1.3m 이내)
+- **즉시 reached 판정**: 이동 루프 내에서 매 반복마다 거리를 확인하고, `dist_goal <= success_distance`가 되면 즉시 성공 판정 (루프 종료를 기다리지 않음)
 
 #### PickupObject
 - `EXISTS(object)`: 객체 존재 확인
@@ -211,8 +212,11 @@
 - nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭 우선
 
 #### 특수 케이스 처리
-- **Knife vs ButterKnife**: `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭 (ButterKnife 제외)
-- **정확한 매칭 없음**: 정확한 매칭이 없으면 부분 매칭 사용 (단, Knife는 정확한 매칭만 사용)
+- **Knife vs ButterKnife**: 
+  - `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭 (ButterKnife 제외)
+  - `_find_object_id()` 함수에서 "Knife"를 찾을 때 objectType과 objectId 모두에서 "butter"가 포함된 객체는 제외
+  - 좌표 포함 형식(`Knife|+00.72|+02.02|-02.46`)에서도 ButterKnife 제외
+  - 정확한 매칭이 없으면 부분 매칭 사용 (단, Knife는 정확한 매칭만 사용, ButterKnife는 항상 제외)
 
 ### 8. Task 완료 검증
 
@@ -244,14 +248,21 @@
 
 #### evaluate_results.py
 
-`evaluate_results.py`를 사용하여 `physical_guard.py`의 결과를 실행하고 GCR(Goal Condition Rate)을 평가할 수 있습니다.
+`evaluate_results.py`를 사용하여 `physical_guard.py`와 `Baseline(ProgPrompt).py`의 결과를 실행하고 GCR(Goal Condition Rate)을 평가할 수 있습니다.
 
 **기능:**
-- `physical_guard.py`에서 생성된 plan 파일을 파싱하여 실행
+- `physical_guard_result_*.json`과 `baseline_result_*.json` 파일을 자동으로 찾아서 실행
 - 각 task의 기대 결과(`data/final_test/FloorPlan*.json`)와 실제 실행 결과 비교
+- **Physical Guard와 Baseline 결과를 동시에 실행하고 비교**
 - **GCR (Goal Condition Rate)**: 실행된 액션에서 추출한 각 goal condition이 만족된 비율 계산
 - **Contains 검증**: `receptacleObjectIds`를 사용하여 수용체 내부 객체 확인
 - **상태 검증**: 객체의 상태 속성(`isSliced`, `isBroken`, `isOpen`, `isToggled` 등) 확인
+
+**파일 검색 우선순위:**
+1. `results/Kitchen/physical_guard_result_*.json` (우선)
+2. `results/Kitchen/baseline_result_*.json` (우선)
+3. `results/physical_guard_result_*.json` (fallback)
+4. `results/baseline_result_*.json` (fallback)
 
 **평가 지표:**
 1. **GCR (Goal Condition Rate)**: 목표 조건 만족 비율
@@ -265,15 +276,20 @@
 
 **사용 방법:**
 ```bash
-# 기본 사용 (모든 plan 파일 자동 로드)
+# 기본 사용 (JSON 파일 자동 검색 및 실행)
 python scripts/evaluate_results.py --test_file data/final_test/FloorPlan1.json
 
-# 특정 plan 파일 지정
-python scripts/evaluate_results.py --plan_file results/physical_guard_set3_result_*.txt --test_file data/final_test/FloorPlan1.json
+# 특정 JSON 파일 지정
+python scripts/evaluate_results.py \
+    --physical_guard_json results/Kitchen/physical_guard_result_*.json \
+    --baseline_json results/Kitchen/baseline_result_*.json \
+    --test_file data/final_test/FloorPlan1.json
 ```
 
 **출력:**
-- 각 task별 GCR 및 검증 결과
+- Physical Guard 결과 요약 (각 task별 GCR 및 검증 결과)
+- Baseline 결과 요약 (각 task별 GCR 및 검증 결과)
+- Side-by-side 비교 테이블 (더 높은 GCR에 🏆 표시)
 - 실행 로그 JSON 파일 (`execution_result_{task_name}.json`)
 - 전체 평가 요약 (평균 GCR 등)
 
@@ -291,7 +307,7 @@ python scripts/evaluate_results.py --plan_file results/physical_guard_set3_resul
 **사용 방법:**
 ```bash
 python scripts/evaluation.py \
-    --baseline-json results/ai2thor_progprompt_*.json \
+    --baseline-json results/baseline_result_*.json \
     --physical-guard-txt results/physical_guard_set3_result_*.txt \
     --baseline-scene-graph scripts/baseline_updated_scene_graph.json \
     --physical-guard-scene-graph scripts/updated_scene_graph.json \
@@ -338,11 +354,13 @@ python scripts/physical_guard.py --scene-number 1 --model llama3.1 --tasks "put 
 ## 출력 파일
 
 ### JSON 파일
-- 경로: `results/ai2thor_progprompt_{timestamp}.json`
+- **Physical Guard**: `results/physical_guard_result_{timestamp}.json` (또는 `results/Kitchen/physical_guard_result_{timestamp}.json`)
+- **Baseline**: `results/baseline_result_{timestamp}.json` (또는 `results/Kitchen/baseline_result_{timestamp}.json`)
 - 형식: `{task: program_code}` 딕셔너리
+- **FloorPlan1.json 또는 FloorPlan2.json 실행 시**: 자동으로 `results/Kitchen/` 폴더에 저장
 
 ### 텍스트 파일
-- 경로: `results/physical_guard_set3_result_{task_name}_{timestamp}.txt`
+- 경로: `results/physical_guard_set3_result_{task_name}_{timestamp}.txt` (또는 `results/Kitchen/physical_guard_set3_result_{task_name}_{timestamp}.txt`)
 - 내용:
   - 작업별 프로그램 코드 (LLM 생성/시스템 생성 구분 표시)
   - 물리적 검증 요약 (통과/실패 액션 수)
@@ -552,7 +570,10 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 - **Knife vs ButterKnife**: `HOLDS(agent, 'Knife')` 검증 시 정확히 'Knife'만 매칭되며, ButterKnife는 제외됩니다.
 - **객체 매칭**: nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭이 우선됩니다.
 - **거리 계산**: `goto_object` 함수에서 거리 계산은 Agent에서 객체 중심까지의 거리를 사용합니다 (2D: X, Z 좌표만 사용).
+- **즉시 reached 판정**: `goto_object` 실행 시 루프 내에서 매 반복마다 거리를 확인하고, 목표 거리(`success_distance`)에 도달하면 즉시 성공 판정을 반환합니다.
 - **Contains 검증**: `evaluate_results.py`에서 `receptacleObjectIds`를 사용하여 수용체 내부 객체를 정확히 확인합니다.
+- **JSON 파일 실행**: `evaluate_results.py`는 이제 JSON 파일(`physical_guard_result_*.json`, `baseline_result_*.json`)을 읽어서 실행하며, 두 결과를 비교하여 출력합니다.
+- **Kitchen 폴더 우선 검색**: `evaluate_results.py`는 `results/Kitchen` 폴더를 우선적으로 검색합니다.
 
 ## 평가 지표
 
@@ -578,7 +599,7 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 ```bash
 # 직접 실행
 python scripts/evaluation.py \
-    --baseline-json results/ai2thor_progprompt_20260108-101853.json \
+    --baseline-json results/baseline_result_20260108-101853.json \
     --physical-guard-txt results/physical_guard_set3_result_Put_Tomato_and_Apple_and_Potato_in_Fridge_20260108-101831.txt \
     --baseline-scene-graph scripts/baseline_updated_scene_graph.json \
     --physical-guard-scene-graph scripts/updated_scene_graph.json \
