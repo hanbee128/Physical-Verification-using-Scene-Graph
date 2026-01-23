@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -1.25,
+        "x": -1.0,
         "y": 0.900999128818512,
-        "z": 1.0
+        "z": 0.0
       },
       "rotation": {
         "x": -0.0,
@@ -22,8 +22,8 @@
         "z": 0.0
       },
       "cameraHorizon": 0.0,
-      "isHolding": false,
-      "heldObjectId": null,
+      "isHolding": true,
+      "heldObjectId": "Vase|+01.56|+00.56|-02.50",
       "heldObjectPose": {
         "position": {
           "x": -1.380000114440918,
@@ -71,7 +71,7 @@
           "z": 0.02027934230864048
         },
         "parentReceptacles": [
-          "Fridge|-02.10|+00.50|+01.07"
+          "CounterTop|-00.08|+01.15|00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1924,7 +1924,7 @@
           "z": -0.0005083804135210812
         },
         "parentReceptacles": [
-          "Fridge|-02.10|+00.50|+01.07"
+          "CounterTop|-01.87|+00.95|-01.21"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2787,7 +2787,7 @@
           "z": 0.08418001979589462
         },
         "parentReceptacles": [
-          "Fridge|-02.10|+00.50|+01.07"
+          "CounterTop|-00.08|+01.15|00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2824,17 +2824,15 @@
           "y": 359.9891052246094,
           "z": 0.002068681176751852
         },
-        "parentReceptacles": [
-          "Shelf|+01.75|+00.55|-02.56"
-        ],
+        "parentReceptacles": [],
         "controlledObjects": null,
-        "isPickedUp": false,
+        "isPickedUp": true,
         "receptacleObjectIds": null,
         "mass": 1.0,
         "sliceable": false,
         "isSliced": false,
         "breakable": true,
-        "isBroken": false,
+        "isBroken": true,
         "cookable": false,
         "isCooked": false,
         "temperature": "RoomTemp",
@@ -3289,31 +3287,12 @@
       "targetObjectType": "Cabinet"
     },
     {
-      "edgeType": "IN",
-      "source": "Apple|-00.47|+01.15|+00.48",
-      "target": "Fridge|-02.10|+00.50|+01.07",
-      "sourceType": "Object",
+      "edgeType": "HOLDS",
+      "source": "agent_0",
+      "target": "Vase|+01.56|+00.56|-02.50",
+      "sourceType": "Agent",
       "targetType": "Object",
-      "sourceObjectType": "Apple",
-      "targetObjectType": "Fridge"
-    },
-    {
-      "edgeType": "IN",
-      "source": "Tomato|-00.39|+01.14|-00.81",
-      "target": "Fridge|-02.10|+00.50|+01.07",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Tomato",
-      "targetObjectType": "Fridge"
-    },
-    {
-      "edgeType": "IN",
-      "source": "Potato|-01.66|+00.93|-02.15",
-      "target": "Fridge|-02.10|+00.50|+01.07",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Potato",
-      "targetObjectType": "Fridge"
+      "targetObjectType": "Vase"
     }
   ]
 }

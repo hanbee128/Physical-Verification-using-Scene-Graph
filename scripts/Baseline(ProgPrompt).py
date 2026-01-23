@@ -1005,7 +1005,7 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     
     # JSON 출력 파일 경로 생성
-    output_path = Path(args.output_dir) / f"ai2thor_progprompt_{timestamp}.json"
+    output_path = Path(args.output_dir) / f"baseline_result_{timestamp}.json"
     
     # Scene Graph 경로 결정
     scene_graph_path = None

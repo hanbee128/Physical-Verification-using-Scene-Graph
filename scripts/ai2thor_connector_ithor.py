@@ -508,8 +508,18 @@ class AI2ThorExecutor:
                     closest_obj = None
                     min_distance = float('inf')
                     
+                    # Knife를 찾을 때는 ButterKnife 제외
+                    exclude_butter = (obj_type.lower() == "knife")
+                    
                     for obj in all_objects:
-                        obj_type_normalized = normalize_object_type(obj.get("objectType", ""))
+                        obj_type_actual = obj.get("objectType", "")
+                        obj_type_normalized = normalize_object_type(obj_type_actual)
+                        
+                        # Knife를 찾을 때 ButterKnife 제외
+                        if exclude_butter:
+                            if "butter" in obj_type_actual.lower():
+                                continue
+                        
                         if obj_type_normalized.lower() != obj_type.lower():
                             continue
                         
@@ -548,13 +558,61 @@ class AI2ThorExecutor:
                     # objectId가 아니면 타입 이름만 사용
                     object_name = parts[0]
         
-        # 정확한 매칭 먼저 시도
-        for obj_id in objs:
-            if object_name.lower() in obj_id.lower() or obj_id.lower().startswith(object_name.lower()):
-                return obj_id
+        # 정확한 매칭 먼저 시도 (objectType 기반)
+        object_name_lower = object_name.lower()
         
-        # 정규식 매칭
-        for obj_id in objs:
+        # Knife를 찾을 때는 ButterKnife 제외
+        exclude_butter = (object_name_lower == "knife")
+        
+        # 정확한 objectType 매칭 우선
+        exact_matches = []
+        partial_matches = []
+        
+        for obj in all_objects:
+            obj_id = obj.get("objectId", "")
+            obj_type = obj.get("objectType", "")
+            obj_type_lower = obj_type.lower()
+            obj_id_lower = obj_id.lower()
+            
+            # Knife를 찾을 때 ButterKnife 제외
+            if exclude_butter:
+                if "butter" in obj_type_lower or "butter" in obj_id_lower:
+                    continue
+            
+            # 정확한 objectType 매칭
+            if obj_type_lower == object_name_lower:
+                exact_matches.append(obj_id)
+            # objectId 매칭
+            elif object_name_lower == obj_id_lower or obj_id_lower.startswith(object_name_lower):
+                exact_matches.append(obj_id)
+            # 부분 매칭 (objectType)
+            elif object_name_lower in obj_type_lower:
+                if exclude_butter and "butter" in obj_type_lower:
+                    continue
+                partial_matches.append(obj_id)
+            # 부분 매칭 (objectId)
+            elif object_name_lower in obj_id_lower:
+                if exclude_butter and "butter" in obj_id_lower:
+                    continue
+                partial_matches.append(obj_id)
+        
+        # 정확한 매칭이 있으면 반환
+        if exact_matches:
+            return exact_matches[0]
+        
+        # 부분 매칭이 있으면 반환
+        if partial_matches:
+            return partial_matches[0]
+        
+        # 정규식 매칭 (기존 로직 유지, 하지만 ButterKnife 제외)
+        for obj in all_objects:
+            obj_id = obj.get("objectId", "")
+            obj_type = obj.get("objectType", "")
+            
+            if exclude_butter:
+                if "butter" in obj_type.lower() or "butter" in obj_id.lower():
+                    continue
+            
             if re.match(object_name, obj_id, re.IGNORECASE):
                 return obj_id
         
@@ -632,6 +690,11 @@ class AI2ThorExecutor:
             prev_dist_goal = dist_goal
             # agent에서 객체 중심까지의 거리 계산 (crp까지의 거리가 아님)
             dist_goal = distance_pts([location['x'], location['y'], location['z']], dest_obj_pos)
+            
+            # 목표 거리에 도달했는지 즉시 확인
+            if dist_goal <= success_distance:
+                print(f"✓ Reached: {object_name} (Distance: {dist_goal:.2f}m <= Success: {success_distance}m)")
+                return True
             
             dist_del = abs(dist_goal - prev_dist_goal)
             
@@ -1895,8 +1958,25 @@ if __name__ == "__main__":
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-    def put_egg_into_bowl():
-    GoToObject('Bowl')
+    def break_mug():
+        GoToObject('Apple')
+        PickupObject('Apple')
+        GoToObject('Fridge')
+        OpenObject('Fridge')
+        PutObject('Apple', 'Fridge')
+        CloseObject('Fridge')
+        GoToObject('Tomato')
+        PickupObject('Tomato')
+        GoToObject('Fridge')
+        OpenObject('Fridge')
+        PutObject('Tomato', 'Fridge')
+        CloseObject('Fridge')
+        GoToObject('Potato')
+        PickupObject('Potato')
+        GoToObject('Fridge')
+        OpenObject('Fridge')
+        PutObject('Potato', 'Fridge')
+        CloseObject('Fridge')
     """
     
     result = executor.execute_program(program)

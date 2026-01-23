@@ -23,9 +23,25 @@ sys.path.append(current_dir)
 # Return to AI2ThorExecutor
 from ai2thor_connector_ithor import AI2ThorExecutor
 
+def parse_json_plan_file(file_path: str) -> Dict[str, str]:
+    """
+    Parses the JSON plan file to extract tasks and their corresponding programs.
+    Returns a dictionary mapping task names to program code.
+    """
+    with open(file_path, 'r', encoding='utf-8') as f:
+        plan_dict = json.load(f)
+    
+    plans = {}
+    for task_name, program_code in plan_dict.items():
+        # Normalize task name to lowercase for robust matching
+        normalized_task = task_name.strip().lower()
+        plans[normalized_task] = program_code
+    
+    return plans
+
 def parse_plan_file(file_path: str) -> Dict[str, str]:
     """
-    Parses the plan file to extract tasks and their corresponding programs.
+    Parses the plan file (txt) to extract tasks and their corresponding programs.
     Returns a dictionary mapping task names to program code.
     """
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -235,330 +251,455 @@ def verify_object_state(executor: AI2ThorExecutor, expected_state: Dict[str, Any
 
     return passed_count, total_count
 
+def execute_and_evaluate_task(
+    executor: AI2ThorExecutor,
+    task_def: Dict[str, Any],
+    program_code: str,
+    method_name: str = "Unknown"
+) -> Dict[str, Any]:
+    """
+    Execute a task and evaluate the results.
+    Returns evaluation result dictionary.
+    """
+    task_name = task_def['task']
+    print(f"\n[{method_name}] Evaluating Task: {task_name}")
+    print("="*50)
+    
+    # Reset environment for each task to ensure clean state
+    executor.controller.reset(executor.scene)
+    
+    # Initialize agent again
+    executor.controller.step(dict(
+        action='Initialize',
+        agentMode="default",
+        snapGrid=False,
+        gridSize=0.25,
+        visibilityDistance=1.5,
+        fieldOfView=120,
+        agentCount=1
+    ))
+    
+    # Parse and execute actions
+    lines = program_code.split('\n')
+    execution_failed = False
+    
+    # Track executed actions for JSON report
+    executed_actions_log = []
+    
+    for line in lines:
+        line = line.strip()
+        if not line: 
+            continue
+        if line.startswith("#"):
+            continue  # Skip comments
+        
+        # Simple parsing regex
+        match = re.match(r"(\w+)\((.*)\)", line)
+        if match:
+            action = match.group(1)
+            args_str = match.group(2)
+            
+            # Split args by comma, ignoring commas inside quotes
+            try:
+                if args_str.strip():
+                    args = eval(f"({args_str},)") # Force tuple
+                else:
+                    args = ()
+                
+                target = args[0] if len(args) > 0 else None
+                receptacle = args[1] if len(args) > 1 else None
+                
+                print(f"  Running: {line}")
+                
+                success = False
+                
+                # snake_case mapping: PickupObject -> pickup_object
+                method_name_action = re.sub(r'(?<!^)(?=[A-Z])', '_', action).lower()
+                
+                if hasattr(executor, method_name_action):
+                    func = getattr(executor, method_name_action)
+                    try:
+                        if receptacle:
+                            success = func(target, receptacle)
+                        elif target:
+                            success = func(target)
+                        else:
+                            success = func()
+                    except Exception as e:
+                        print(f"    Error executing {method_name_action}: {e}")
+                        success = False
+                else:
+                    # Fallback for some common ones
+                    if action == "GoToObject" and hasattr(executor, "goto_object"):
+                         success = executor.goto_object(target, target_distance=0.5, success_distance=0.85)
+                    elif action == "PutObject" and hasattr(executor, "put_object"):
+                         success = executor.put_object(target, receptacle)
+                    elif action == "PickupObject" and hasattr(executor, "pickup_object"):
+                         success = executor.pickup_object(target)
+                    elif action == "OpenObject" and hasattr(executor, "open_object"):
+                         success = executor.open_object(target)
+                    elif action == "CloseObject" and hasattr(executor, "close_object"):
+                         success = executor.close_object(target)
+                    elif action == "SliceObject" and hasattr(executor, "slice_object"):
+                         success = executor.slice_object(target)
+                    elif action == "BreakObject" and hasattr(executor, "break_object"):
+                         success = executor.break_object(target)
+                    elif action == "ToggleObjectOn" and hasattr(executor, "toggle_object_on"):
+                         success = executor.toggle_object_on(target)
+                    elif action == "ToggleObjectOff" and hasattr(executor, "toggle_object_off"):
+                         success = executor.toggle_object_off(target)
+                    else:
+                         print(f"    Warn: Unknown action method '{method_name_action}' or '{action}'")
+                         success = False
+
+                if not success:
+                    print(f"    ❌ Action failed: {line}")
+                    execution_failed = True
+                
+                # Log action execution
+                last_event = executor.controller.last_event
+                last_action_success = last_event.metadata.get('lastActionSuccess', False) if last_event else success
+                error_message = last_event.metadata.get('errorMessage', '') if last_event else ''
+                if not success and not error_message:
+                    error_message = "Action method returned False"
+
+                executed_actions_log.append({
+                    "line": line,
+                    "action": action,
+                    "target_object": target,
+                    "receptacle": receptacle,
+                    "success": success,
+                    "lastActionSuccess": last_action_success,
+                    "errorMessage": error_message
+                })
+
+            except Exception as e:
+                print(f"    Error parsing/executing line '{line}': {e}")
+                execution_failed = True
+                executed_actions_log.append({
+                    "line": line,
+                    "error": str(e),
+                    "success": False
+                })
+    
+    # Verify final state
+    print(f"\n[{method_name}] Verifying object states...")
+    print("="*50)
+    all_passed = True
+    task_passed_conds = 0
+    task_total_conds = 0
+
+    for obj_state in task_def['object_states']:
+         print(f"  Checking: {obj_state['name']}")
+         p_count, t_count = verify_object_state(executor, obj_state)
+         task_passed_conds += p_count
+         task_total_conds += t_count
+         print(f"    → Passed: {p_count}/{t_count} conditions")
+    
+    if task_total_conds > 0:
+        gcr = (task_passed_conds / task_total_conds) * 100
+        if task_passed_conds < task_total_conds:
+            all_passed = False
+    else:
+        gcr = 0.0
+        print("    ⚠ No conditions to verify.")
+        
+    status = "PASSED" if all_passed and not execution_failed else "FAILED"
+    if execution_failed:
+         status += " (Execution Errors)"
+         
+    print(f"\n[{method_name}] Task Result: {status}")
+    print(f"[{method_name}] GCR: {gcr:.1f}% ({task_passed_conds}/{task_total_conds} conditions passed)")
+    
+    return {
+        "task": task_name,
+        "method": method_name,
+        "status": status,
+        "gcr": round(gcr, 2),
+        "passed_conditions": task_passed_conds,
+        "total_conditions": task_total_conds,
+        "verification_passed": all_passed,
+        "execution_clean": not execution_failed,
+        "executed_actions": executed_actions_log
+    }
+
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate Physical Guard Results")
-    parser.add_argument("--plan_file", type=str, help="Path to the result text file (optional, defaults to latest)")
+    parser = argparse.ArgumentParser(description="Evaluate Physical Guard and Baseline Results")
+    parser.add_argument("--physical_guard_json", type=str, help="Path to physical_guard_result JSON file (optional)")
+    parser.add_argument("--baseline_json", type=str, help="Path to baseline_result JSON file (optional)")
     parser.add_argument("--test_file", type=str, default="data/final_test/FloorPlan1.json", help="Path to the test definition JSON")
     args = parser.parse_args()
 
-    # resolve plan file
-    # resolve plan file
-    # If standard execution, load ALL plan files in the directory to cover all 5 tasks
-    # The existing logic only picked the single latest file.
+    # Find JSON files
+    # Priority 1: Check results/Kitchen folder first
+    kitchen_physical_guard_pattern = os.path.join(current_dir, "../results/Kitchen", "physical_guard_result_*.json")
+    kitchen_baseline_pattern = os.path.join(current_dir, "../results/Kitchen", "baseline_result_*.json")
     
-    plan_files = []
-    if args.plan_file:
-        plan_files = [args.plan_file]
-    else:
-        # Find ALL files matching pattern
-        search_pattern = os.path.join(current_dir, "../results", "physical_guard_set3_result_*.txt")
-        plan_files = glob.glob(search_pattern)
-        if not plan_files:
-             search_pattern = "results/physical_guard_set3_result_*.txt"
-             plan_files = glob.glob(search_pattern)
-             
-    if not plan_files:
-        print("❌ No plan files found.")
+    physical_guard_files = glob.glob(kitchen_physical_guard_pattern)
+    baseline_files = glob.glob(kitchen_baseline_pattern)
+    
+    if not physical_guard_files:
+        # Try relative path
+        kitchen_physical_guard_pattern = "results/Kitchen/physical_guard_result_*.json"
+        physical_guard_files = glob.glob(kitchen_physical_guard_pattern)
+    
+    if not baseline_files:
+        # Try relative path
+        kitchen_baseline_pattern = "results/Kitchen/baseline_result_*.json"
+        baseline_files = glob.glob(kitchen_baseline_pattern)
+    
+    # Priority 2: Check results folder if Kitchen folder has no files
+    if not physical_guard_files:
+        search_pattern = os.path.join(current_dir, "../results", "physical_guard_result_*.json")
+        physical_guard_files = glob.glob(search_pattern)
+        if not physical_guard_files:
+            search_pattern = "results/physical_guard_result_*.json"
+            physical_guard_files = glob.glob(search_pattern)
+    
+    if not baseline_files:
+        search_pattern = os.path.join(current_dir, "../results", "baseline_result_*.json")
+        baseline_files = glob.glob(search_pattern)
+        if not baseline_files:
+            search_pattern = "results/baseline_result_*.json"
+            baseline_files = glob.glob(search_pattern)
+    
+    # Use command line arguments if provided
+    if args.physical_guard_json:
+        physical_guard_files = [args.physical_guard_json]
+    if args.baseline_json:
+        baseline_files = [args.baseline_json]
+    
+    # Get latest files if multiple found
+    physical_guard_file = None
+    baseline_file = None
+    
+    if physical_guard_files:
+        physical_guard_file = max(physical_guard_files, key=os.path.getmtime)
+        print(f"📁 Physical Guard JSON: {physical_guard_file}")
+    
+    if baseline_files:
+        baseline_file = max(baseline_files, key=os.path.getmtime)
+        print(f"📁 Baseline JSON: {baseline_file}")
+    
+    if not physical_guard_file and not baseline_file:
+        print("❌ No JSON files found.")
+        print("   Searched for:")
+        print("     - results/Kitchen/physical_guard_result_*.json")
+        print("     - results/Kitchen/baseline_result_*.json")
+        print("     - results/physical_guard_result_*.json")
+        print("     - results/baseline_result_*.json")
         return
     
-    print(f"ℹ️ Found {len(plan_files)} plan files. Loading...")
-
-    # Load resources
-    print("Loading plans...")
-    plans = {}
-    for pf in plan_files:
-        p_data = parse_plan_file(pf)
-        # Merge, careful with duplicates (maybe prefer latest?)
-        # For now, just update.
-        plans.update(p_data)
-        
-    print(f"Loaded plans for {len(plans)} unique tasks.")
-    if plans:
-        print("Available plans:")
-        for task_key in plans.keys():
-            print(f"  - {task_key}")
+    # Load plans
+    physical_guard_plans = {}
+    baseline_plans = {}
     
-    print("\nLoading expected results...")
+    if physical_guard_file:
+        print(f"\n📖 Loading Physical Guard plans from: {physical_guard_file}")
+        physical_guard_plans = parse_json_plan_file(physical_guard_file)
+        print(f"   Loaded {len(physical_guard_plans)} tasks")
+    
+    if baseline_file:
+        print(f"\n📖 Loading Baseline plans from: {baseline_file}")
+        baseline_plans = parse_json_plan_file(baseline_file)
+        print(f"   Loaded {len(baseline_plans)} tasks")
+    
+    print("\n📋 Loading expected results...")
     expected_results = load_expected_results(args.test_file)
-    print(f"Expected tasks: {len(expected_results)}")
+    print(f"   Expected tasks: {len(expected_results)}")
     for task_def in expected_results:
-        print(f"  - {task_def['task']}")
+        print(f"     - {task_def['task']}")
     
-    # Initialize Executor
-    exe = AI2ThorExecutor(
-        scene="FloorPlan1",
-        headless=False, 
-        save_video=False 
-    )
-    exe.initialize()
-
-    results_summary = []
-
-    for task_def in expected_results: 
+    # Initialize Executors
+    print("\n🤖 Initializing AI2-THOR executors...")
+    physical_guard_exe = None
+    baseline_exe = None
+    
+    if physical_guard_plans:
+        physical_guard_exe = AI2ThorExecutor(
+            scene="FloorPlan1",
+            headless=False, 
+            save_video=False 
+        )
+        physical_guard_exe.initialize()
+        print("   ✓ Physical Guard executor initialized")
+    
+    if baseline_plans:
+        baseline_exe = AI2ThorExecutor(
+            scene="FloorPlan1",
+            headless=False, 
+            save_video=False 
+        )
+        baseline_exe.initialize()
+        print("   ✓ Baseline executor initialized")
+    
+    # Evaluate tasks
+    physical_guard_results = []
+    baseline_results = []
+    
+    for task_def in expected_results:
         task_name = task_def['task']
-        print(f"\n==================================================")
-        print(f"Evaluating Task: {task_name}")
-        print(f"==================================================")
-
-        # Normalize task name for lookup
         task_key = task_name.strip().lower()
         
-        # Try fuzzy matching if exact match fails
-        matched_key = None
-        if task_key not in plans:
-            # Try partial matching
-            for plan_key in plans.keys():
-                # Check if task name contains plan key or vice versa
-                if task_key in plan_key or plan_key in task_key:
-                    matched_key = plan_key
-                    print(f"  ℹ️ Using fuzzy match: '{plan_key}' for '{task_name}'")
-                    break
+        print(f"\n{'='*70}")
+        print(f"TASK: {task_name}")
+        print(f"{'='*70}")
+        
+        # Evaluate Physical Guard
+        if physical_guard_plans and physical_guard_exe:
+            matched_key = None
+            if task_key in physical_guard_plans:
+                matched_key = task_key
+            else:
+                # Try fuzzy matching
+                for plan_key in physical_guard_plans.keys():
+                    if task_key in plan_key or plan_key in task_key:
+                        matched_key = plan_key
+                        print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Physical Guard")
+                        break
             
-            if not matched_key:
-                print(f"⚠️ Plan for task '{task_name}' not available in the result file.")
-                print(f"   Available plans: {list(plans.keys())}")
-                print(f"   Skipping this task.")
-                print(f"   💡 Tip: Run physical_guard.py to generate plans for all tasks.")
-                results_summary.append({"task": task_name, "status": "SKIPPED", "reason": "No Plan"})
-                continue
-        else:
-            matched_key = task_key
-
-        program_code = plans[matched_key]
+            if matched_key:
+                program_code = physical_guard_plans[matched_key]
+                result = execute_and_evaluate_task(
+                    physical_guard_exe, task_def, program_code, "Physical Guard"
+                )
+                physical_guard_results.append(result)
+            else:
+                print(f"  ⚠️ Physical Guard: Plan not found for '{task_name}'")
+                physical_guard_results.append({
+                    "task": task_name,
+                    "method": "Physical Guard",
+                    "status": "SKIPPED",
+                    "reason": "No Plan"
+                })
         
-        # Reset environment for each task to ensure clean state
-        exe.controller.reset(exe.scene)
-        
-        # Initialize agent again
-        exe.controller.step(dict(
-            action='Initialize',
-            agentMode="default",
-            snapGrid=False,
-            gridSize=0.25,
-            visibilityDistance=1.5,
-            fieldOfView=120,
-            agentCount=1
-        ))
-        
-        # Also need to re-add cameras if needed, but for evaluation maybe not strictly necessary?
-        # ManipulaThorExecutor handles camera update internally during capture.
-
-        # Parse and execute actions
-        lines = program_code.split('\n')
-        execution_failed = False
-        
-        # Track executed actions for JSON report
-        executed_actions_log = []
-        
-        for line in lines:
-            line = line.strip()
-            if not line: continue
+        # Evaluate Baseline
+        if baseline_plans and baseline_exe:
+            matched_key = None
+            if task_key in baseline_plans:
+                matched_key = task_key
+            else:
+                # Try fuzzy matching
+                for plan_key in baseline_plans.keys():
+                    if task_key in plan_key or plan_key in task_key:
+                        matched_key = plan_key
+                        print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Baseline")
+                        break
             
-            # Need to implement Parse logic if ManipulaThorExecutor doesn't have it exposed 
-            # ManipulaThorExecutor doesn't seem to have parse_action_line based on my reading earlier.
-            # I must check if ManipulaThorExecutor has parse_action_line. 
-            # If not, I should copy it from AI2ThorExecutor or implement it here.
-            
-            # Let's assume for now I need to implement simple parsing
-            # Format: Action('Arg1', 'Arg2')
-            
-            # Simple parsing regex
-            match = re.match(r"(\w+)\((.*)\)", line)
-            if match:
-                action = match.group(1)
-                args_str = match.group(2)
-                
-                # Split args by comma, ignoring commas inside quotes
-                # Simple hack: use eval to parse args tuple
-                try:
-                    # Arg string might be "'Egg', 'Bowl'"
-                    # formatted as tuple
-                    if args_str.strip():
-                        args = eval(f"({args_str},)") # Force tuple
-                    else:
-                        args = ()
-                    
-                    target = args[0] if len(args) > 0 else None
-                    receptacle = args[1] if len(args) > 1 else None
-                    
-                    print(f"Running: {line}")
-                    
-                    # Need to map action names to ManipulaThorExecutor methods if they differ
-                    # Or check if ManipulaThorExecutor has execute_action method?
-                    # I didn't see execute_action in the view_file output (it ended at line 800).
-                    # I should assume I might need to implement mapping.
-                    
-                    # Let's check if the executor has the method 'action' (lowercase) or similar.
-                    # Usually executors have methods like 'pickup(obj)', 'goto(obj)'.
-                    
-                    # Since I can't verify ManipulaThorExecutor methods right now without viewing file again,
-                    # I will rely on standard methods or try to invoke controller step directly if needed.
-                    # BUT AI2ThorExecutor had a nice mapping. 
-                    
-                    # FOR SAFETY: I will use a helper to execute. 
-                    success = False
-                    
-                    # Mapping known plan actions
-                    if hasattr(exe, action.lower()): # e.g. exe.pickup(...)
-                        pass # TODO
-                    
-                    # Actually, let's just try to call the method on exe if it exists
-                    # snake_case mapping: PickupObject -> pickup_object
-                    method_name = re.sub(r'(?<!^)(?=[A-Z])', '_', action).lower()
-                    
-                    if hasattr(exe, method_name):
-                        func = getattr(exe, method_name)
-                        try:
-                            if receptacle:
-                                success = func(target, receptacle)
-                            elif target:
-                                success = func(target)
-                            else:
-                                success = func()
-                        except Exception as e:
-                            print(f"  Error executing {method_name}: {e}")
-                            success = False
-                    else:
-                        # Fallback for some common ones
-                        if action == "GoToObject" and hasattr(exe, "goto_object"):
-                             success = exe.goto_object(target, target_distance=0.5, success_distance=0.85)
-                        elif action == "PutObject" and hasattr(exe, "put_object"):
-                             success = exe.put_object(target, receptacle)
-                        elif action == "PickupObject" and hasattr(exe, "pickup_object"):
-                             success = exe.pickup_object(target)
-                        else:
-                             print(f"  Warn: Unknown action method '{method_name}' or '{action}'")
-                             success = False
-
-                    if not success:
-                        print(f"❌ Action failed: {line}")
-                        execution_failed = True
-                    
-                    # Log action execution
-                    last_event = exe.controller.last_event
-                    last_action_success = last_event.metadata.get('lastActionSuccess', False) if last_event else success
-                    error_message = last_event.metadata.get('errorMessage', '') if last_event else ''
-                    if not success and not error_message:
-                        error_message = "Action method returned False"
-
-                    executed_actions_log.append({
-                        "line": line,
-                        "action": action,
-                        "target_object": target,
-                        "receptacle": receptacle,
-                        "success": success,
-                        "lastActionSuccess": last_action_success,
-                        "errorMessage": error_message
-                    })
-
-                except Exception as e:
-                    print(f"Error parsing/executing line '{line}': {e}")
-                    execution_failed = True
-                    executed_actions_log.append({
-                        "line": line,
-                        "error": str(e),
-                        "success": False
-                    })
-            
-        # Verify final state
-        print("\n" + "="*50)
-        print("Verifying object states...")
-        print("="*50)
-        all_passed = True
-        task_passed_conds = 0
-        task_total_conds = 0
-
-        for obj_state in task_def['object_states']:
-             print(f"\nChecking: {obj_state['name']}")
-             p_count, t_count = verify_object_state(exe, obj_state)
-             task_passed_conds += p_count
-             task_total_conds += t_count
-             print(f"  → Passed: {p_count}/{t_count} conditions")
-        
-        if task_total_conds > 0:
-            gcr = (task_passed_conds / task_total_conds) * 100
-            if task_passed_conds < task_total_conds:
-                all_passed = False
-        else:
-            gcr = 0.0
-            print("  ⚠ No conditions to verify.")
-            
-        status = "PASSED" if all_passed and not execution_failed else "FAILED"
-        if execution_failed:
-             status += " (Execution Errors)"
-             
-        print("\n" + "="*50)
-        print(f"Task Result: {status}")
-        print(f"GCR (Goal Condition Rate): {gcr:.1f}% ({task_passed_conds}/{task_total_conds} conditions passed)")
-        print("="*50)
-        results_summary.append({
-            "task": task_name, 
-            "status": status,
-            "gcr": round(gcr, 2),
-            "passed_conditions": task_passed_conds,
-            "total_conditions": task_total_conds,
-            "verification_passed": all_passed,
-            "execution_clean": not execution_failed
-        })
-
-        # Save execution result to JSON
-        safe_task_name = re.sub(r'[^a-zA-Z0-9]', '_', task_name)
-        result_json_filename = f"execution_result_{safe_task_name}.json"
-        
-        final_meta = exe.controller.last_event.metadata.copy() if exe.controller and exe.controller.last_event else {}
-        # Remove heavy fields like image data from metadata to save space
-        if "thirdPartyCameraFrames" in final_meta: del final_meta["thirdPartyCameraFrames"]
-        if "third_party_camera_frames" in final_meta: del final_meta["third_party_camera_frames"]
-
-        execution_data = {
-            "episode_id": task_name,
-            "instruction": task_name,
-            "executed_actions": executed_actions_log,
-            "final_metadata": final_meta,
-            "failed_guards": [], # Placeholder as we are evaluating execution, not generating plans
-            "status": status,
-            "gcr": round(gcr, 2),
-            "passed_conditions": task_passed_conds,
-            "total_conditions": task_total_conds,
-            "expected_object_states": task_def.get('object_states', []),
-            "verification_passed": all_passed,
-            "execution_clean": not execution_failed
-        }
-        
-        with open(result_json_filename, "w", encoding='utf-8') as f:
-            json.dump(execution_data, f, indent=2, ensure_ascii=False)
-        print(f"Saved execution log to: {result_json_filename}")
-
-    # Print Summary
+            if matched_key:
+                program_code = baseline_plans[matched_key]
+                result = execute_and_evaluate_task(
+                    baseline_exe, task_def, program_code, "Baseline"
+                )
+                baseline_results.append(result)
+            else:
+                print(f"  ⚠️ Baseline: Plan not found for '{task_name}'")
+                baseline_results.append({
+                    "task": task_name,
+                    "method": "Baseline",
+                    "status": "SKIPPED",
+                    "reason": "No Plan"
+                })
+    
+    # Print Comparison Summary
     print("\n" + "="*70)
-    print("EVALUATION SUMMARY")
+    print("EVALUATION SUMMARY - COMPARISON")
     print("="*70)
     
-    total_gcr = 0
-    count_gcr = 0
-    total_passed_conds = 0
-    total_conds = 0
-    
-    for res in results_summary:
-        if 'gcr' in res:
-            status_icon = "✅" if res['status'] == "PASSED" else "❌"
-            print(f"{status_icon} {res['task']}")
-            print(f"   Status: {res['status']}")
-            print(f"   GCR: {res['gcr']:.1f}%")
-            if 'passed_conditions' in res and 'total_conditions' in res:
-                print(f"   Conditions: {res.get('passed_conditions', 0)}/{res.get('total_conditions', 0)} passed")
-            print()
-            total_gcr += res['gcr']
-            count_gcr += 1
-        else:
-            print(f"⚠️  {res['task']}: {res['status']}")
-            print()
-            
-    if count_gcr > 0:
-        avg_gcr = total_gcr / count_gcr
+    # Physical Guard Summary
+    if physical_guard_results:
+        print("\n📊 PHYSICAL GUARD RESULTS:")
         print("-" * 70)
-        print(f"AVERAGE GCR: {avg_gcr:.1f}%")
-        print(f"Tasks Evaluated: {count_gcr}")
+        total_gcr = 0
+        count_gcr = 0
+        total_passed_conds = 0
+        total_conds = 0
+        
+        for res in physical_guard_results:
+            if 'gcr' in res:
+                status_icon = "✅" if res['status'] == "PASSED" else "❌"
+                print(f"{status_icon} {res['task']}")
+                print(f"   Status: {res['status']}")
+                print(f"   GCR: {res['gcr']:.1f}%")
+                if 'passed_conditions' in res and 'total_conditions' in res:
+                    print(f"   Conditions: {res.get('passed_conditions', 0)}/{res.get('total_conditions', 0)} passed")
+                print()
+                total_gcr += res['gcr']
+                count_gcr += 1
+                total_passed_conds += res.get('passed_conditions', 0)
+                total_conds += res.get('total_conditions', 0)
+            else:
+                print(f"⚠️  {res['task']}: {res.get('status', 'SKIPPED')}")
+                print()
+        
+        if count_gcr > 0:
+            avg_gcr = total_gcr / count_gcr
+            print(f"   Average GCR: {avg_gcr:.1f}%")
+            print(f"   Overall Conditions: {total_passed_conds}/{total_conds} passed")
+    
+    # Baseline Summary
+    if baseline_results:
+        print("\n📊 BASELINE RESULTS:")
+        print("-" * 70)
+        total_gcr = 0
+        count_gcr = 0
+        total_passed_conds = 0
+        total_conds = 0
+        
+        for res in baseline_results:
+            if 'gcr' in res:
+                status_icon = "✅" if res['status'] == "PASSED" else "❌"
+                print(f"{status_icon} {res['task']}")
+                print(f"   Status: {res['status']}")
+                print(f"   GCR: {res['gcr']:.1f}%")
+                if 'passed_conditions' in res and 'total_conditions' in res:
+                    print(f"   Conditions: {res.get('passed_conditions', 0)}/{res.get('total_conditions', 0)} passed")
+                print()
+                total_gcr += res['gcr']
+                count_gcr += 1
+                total_passed_conds += res.get('passed_conditions', 0)
+                total_conds += res.get('total_conditions', 0)
+            else:
+                print(f"⚠️  {res['task']}: {res.get('status', 'SKIPPED')}")
+                print()
+        
+        if count_gcr > 0:
+            avg_gcr = total_gcr / count_gcr
+            print(f"   Average GCR: {avg_gcr:.1f}%")
+            print(f"   Overall Conditions: {total_passed_conds}/{total_conds} passed")
+    
+    # Side-by-side Comparison
+    if physical_guard_results and baseline_results:
+        print("\n📊 SIDE-BY-SIDE COMPARISON:")
+        print("=" * 70)
+        print(f"{'Task':<40} {'Physical Guard':<20} {'Baseline':<20}")
+        print("-" * 70)
+        
+        # Create task mapping
+        pg_dict = {r['task']: r for r in physical_guard_results}
+        bl_dict = {r['task']: r for r in baseline_results}
+        
+        all_tasks = set(pg_dict.keys()) | set(bl_dict.keys())
+        
+        for task in sorted(all_tasks):
+            pg_res = pg_dict.get(task, {})
+            bl_res = bl_dict.get(task, {})
+            
+            pg_gcr = pg_res.get('gcr', 0) if 'gcr' in pg_res else None
+            bl_gcr = bl_res.get('gcr', 0) if 'gcr' in bl_res else None
+            
+            pg_str = f"{pg_gcr:.1f}%" if pg_gcr is not None else "N/A"
+            bl_str = f"{bl_gcr:.1f}%" if bl_gcr is not None else "N/A"
+            
+            # Highlight winner
+            if pg_gcr is not None and bl_gcr is not None:
+                if pg_gcr > bl_gcr:
+                    pg_str = f"🏆 {pg_str}"
+                elif bl_gcr > pg_gcr:
+                    bl_str = f"🏆 {bl_str}"
+            
+            print(f"{task[:38]:<40} {pg_str:<20} {bl_str:<20}")
+        
         print("=" * 70)
 
 if __name__ == "__main__":

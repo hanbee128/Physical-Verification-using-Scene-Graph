@@ -936,7 +936,7 @@ def verify_guard_with_scene_graph(
             return False, f"객체 '{object_name}'가 Scene Graph에 존재하지 않음"
         return True, f"객체 '{object_name}' 존재 확인"
     
-    # REACHABLE(agent, object) 검증 - armBase 좌표계 기준 (손 위치 기준)
+    # REACHABLE 검증 - armBase 좌표계 기준 (손 위치 기준)
     if "REACHABLE" in guard_upper:
         # PutObject의 경우 receptacle을 타겟으로 사용
         if "RECEPTACLE" in guard_upper or action_type == "PutObject":
@@ -980,12 +980,12 @@ def verify_guard_with_scene_graph(
         # y 범위: -0.35 ~ 1 (상하)
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
-        x_range_min = -1 -0.5  #
-        x_range_max = +1 +0.5 #
-        y_range_min = -0.901     # 아래로 -0.35
-        y_range_max = 0.6  # 위로 1.0
-        z_range_min = -1 - 0.5 # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
-        z_range_max = +1 + 0.5 # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
+        x_range_min = - 1 - 0.5  #
+        x_range_max = + 1 + 0.5  #
+        y_range_min = - 0.901    # 아래로 -0.35
+        y_range_max = + 1 + 0.5  # 위로 1.0
+        z_range_min = - 1 - 0.5  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
+        z_range_max = + 1 + 0.5  # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
         
         # 손 위치 기준으로 범위 계산 (절대 좌표)
         x_min = agent_x + x_range_min
@@ -1060,7 +1060,7 @@ def verify_guard_with_scene_graph(
         dz = obj_z - agent_z
         distance = math.sqrt(dx**2 + dy**2 + dz**2)
         
-        # 2m 이내이면 통과
+        # 1.5 이내이면 통과
         proximity_threshold = 1.5
         if distance <= proximity_threshold:
             return True, f"Agent와 객체 간 거리: {distance:.3f}m <= {proximity_threshold}m (agent 위치: ({agent_x:.3f}, {agent_y:.3f}, {agent_z:.3f}), 객체 위치: ({obj_x:.3f}, {obj_y:.3f}, {obj_z:.3f}))"
@@ -1661,8 +1661,7 @@ def verify_action_with_scene_graph(
         guards = ["EXISTS(object)", "Proximity(agent, object)", "sliceable(object)", 
         "¬isSliced(object)", "REACHABLE(agent, object)", "HOLDS(agent, 'Knife')", "¬IN(object, closed_receptacle)"]
     elif action_type == "BreakObject":
-        guards = ["EXISTS(object)", "Proximity(agent, object)", "breakable(object)", 
-        "¬isBroken(object)", "REACHABLE(agent, object)", "¬IN(object, closed_receptacle)"]
+        guards = ["EXISTS(object)",  "breakable(object)", "¬isBroken(object)"]
     else:
         guards = ["EXISTS(object)"]
     
@@ -3683,6 +3682,16 @@ def main():
     # 시스템 프롬프트 구성 (객체, 액션, 예제 포함)
     prompt = build_prompt(objects, actions, examples, max_examples=args.max_examples)
 
+    # FloorPlan1.json 또는 FloorPlan2.json인 경우 Kitchen 폴더에 저장
+    if args.task_file:
+        task_file_path = Path(args.task_file)
+        task_file_name = task_file_path.name
+        if task_file_name in ["FloorPlan1.json", "FloorPlan2.json"]:
+            # Kitchen 폴더로 변경
+            kitchen_output_dir = Path(args.output_dir) / "Kitchen"
+            args.output_dir = str(kitchen_output_dir)
+            print(f"📁 FloorPlan1/FloorPlan2 감지: 결과를 {args.output_dir}에 저장합니다.")
+
     # 출력 디렉토리 생성 (없으면 생성)
     os.makedirs(args.output_dir, exist_ok=True)
     
@@ -3690,7 +3699,7 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     
     # JSON 출력 파일 경로 생성
-    output_path = Path(args.output_dir) / f"ai2thor_progprompt_{timestamp}.json"
+    output_path = Path(args.output_dir) / f"physical_guard_result_{timestamp}.json"
 
     # Scene Graph 로드 (물리적 검증용)
     # scene_graph_path는 이미 위에서 결정됨
@@ -4038,7 +4047,7 @@ def main():
             
             # Baseline JSON 파일 찾기 (가장 최근 파일)
             baseline_json_files = sorted(
-                Path(args.output_dir).glob("ai2thor_progprompt_*.json"),
+                Path(args.output_dir).glob("baseline_result_*.json"),
                 key=lambda p: p.stat().st_mtime,
                 reverse=True
             )

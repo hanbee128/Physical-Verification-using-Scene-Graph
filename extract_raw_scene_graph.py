@@ -11,7 +11,7 @@ Usage:
 Saves scene metadata JSON to `scene_graph_<scene>.json` and prints a short summary.
 """
 
-scene = "FloorPlan216"
+scene = "FloorPlan224"
 output_path = f"scene_graph_{scene}.json"
 
 controller = ai2thor.controller.Controller(
