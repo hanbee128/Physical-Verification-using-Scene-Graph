@@ -36,7 +36,7 @@
 
 #### PickupObject
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `pickupable(object)`: 객체가 pickupable 속성을 가지고 있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 - `¬HOLDS(agent, *)`: Agent가 현재 아무 객체도 들고 있지 않은지 확인
@@ -45,7 +45,7 @@
 #### PutObject
 - `EXISTS(object)`: 객체 존재 확인
 - `EXISTS(receptacle)`: 수용체 존재 확인
-- `Proximity(agent, receptacle)`: Agent와 수용체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, receptacle)`: Agent와 수용체 간 거리가 1.5m 이내인지 확인
 - `HOLDS(agent, object)`: Agent가 목표 객체를 들고 있는지 확인
 - `receptacle(receptacle)`: 수용체가 receptacle 타입인지 확인
 - `REACHABLE(agent, receptacle)`: Agent의 손 위치 기준으로 수용체가 도달 가능한 범위 내에 있는지 확인
@@ -54,21 +54,21 @@
 
 #### OpenObject
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `openable(object)`: 객체가 openable 속성을 가지고 있는지 확인
 - `¬OPENED(object)`: 객체가 이미 열려있지 않은지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 
 #### CloseObject
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `openable(object)`: 객체가 openable 속성을 가지고 있는지 확인
 - `OPENED(object)`: 객체가 열려있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 
 #### ToggleObjectOn
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `toggleable(object)`: 객체가 toggleable 속성을 가지고 있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 - `¬isToggled(object)`: 객체가 이미 켜져있지 않은지 확인
@@ -76,14 +76,14 @@
 
 #### ToggleObjectOff
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `toggleable(object)`: 객체가 toggleable 속성을 가지고 있는지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 - `isToggled(object)`: 객체가 켜져있는지 확인
 
 #### SliceObject
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
+- `Proximity(agent, object)`: Agent와 객체 간 거리가 1.5m 이내인지 확인
 - `sliceable(object)`: 객체가 sliceable 속성을 가지고 있는지 확인
 - `¬isSliced(object)`: 객체가 이미 잘려있지 않은지 확인
 - `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
@@ -92,11 +92,9 @@
 
 #### BreakObject
 - `EXISTS(object)`: 객체 존재 확인
-- `Proximity(agent, object)`: Agent와 객체 간 거리가 2m 이내인지 확인
 - `breakable(object)`: 객체가 breakable 속성을 가지고 있는지 확인
 - `¬isBroken(object)`: 객체가 이미 깨져있지 않은지 확인
-- `REACHABLE(agent, object)`: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
-- `¬IN(object, closed_receptacle)`: 객체가 닫힌 수용체 안에 있지 않은지 확인
+- **참고**: BreakObject는 Proximity, REACHABLE, ¬IN(object, closed_receptacle) 가드가 없습니다. 단, 복구 액션으로 `¬IN(object, closed_receptacle)` 실패 시 부모 수용체를 여는 `OpenObject` 액션이 추가됩니다.
 
 ### 4. 주요 가드 검증 상세
 
@@ -104,14 +102,15 @@
 - **목적**: Agent와 목표 객체 간 거리가 1.5m 이내인지 확인
 - **계산 방식**: Agent 위치와 객체 위치 간 3D 유클리드 거리 계산
 - **복구 액션**: 실패 시 NavMesh 상에서 목표 객체를 정면으로 보는 가장 가까운 위치로 이동하는 `GoToObject` 액션 추가
+- **복구 액션 메시지**: "Agent와 객체 간 거리가 2m를 초과하여 이동 필요" (메시지는 2m로 표시되지만 실제 threshold는 1.5m)
 
 #### REACHABLE 가드
 - **목적**: Agent의 손 위치 기준으로 객체가 도달 가능한 범위 내에 있는지 확인
 - **손 위치 계산**: Agent의 절대 좌표를 기준으로 손 위치 계산 (Agent 위치 = 손 위치)
 - **도달 가능 범위**:
-  - `x` 범위: Agent 위치 기준 -1.452m ~ +0.793m (좌우)
-  - `y` 범위: Agent 위치 기준 -0.275m ~ +0.853m (상하)
-  - `z` 범위: Agent 위치 기준 -1.620m ~ +0.646m (앞뒤)
+  - `x` 범위: Agent 위치 기준 -1.5m ~ +1.5m (좌우)
+  - `y` 범위: Agent 위치 기준 -0.901m ~ +1.5m (상하)
+  - `z` 범위: Agent 위치 기준 -1.5m ~ +1.5m (앞뒤)
 - **중요**: 
   - **REACHABLE만 실패한 경우**: 물리적 검증이 즉시 종료되며, 계획을 생성할 수 없습니다.
   - **Proximity와 REACHABLE이 모두 실패한 경우**: Proximity 복구 액션(GoToObject) 실행 후, REACHABLE 가드를 한 번만 재검사합니다. 재검사 통과 시 원래 액션을 통과한 것으로 처리합니다.
@@ -147,8 +146,12 @@
 - `HOLDS(agent, 'Knife')` 실패 → `GoToObject('Knife')` + `PickupObject('Knife')` 액션 추가
 - `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
 
-#### ToggleObjectOn, BreakObject 실패 시
+#### ToggleObjectOn 실패 시
 - `¬IN(object, closed_receptacle)` 실패 → 부모 수용체를 여는 `OpenObject` 액션 추가
+
+#### BreakObject 실패 시
+- **참고**: BreakObject는 기본적으로 Proximity, REACHABLE, ¬IN(object, closed_receptacle) 가드가 없습니다.
+- 코드상으로는 SliceObject와 동일하게 `¬IN(object, closed_receptacle)` 실패 시 부모 수용체를 여는 `OpenObject` 액션 추가 로직이 있지만, BreakObject에는 해당 가드가 없으므로 실제로는 실행되지 않습니다.
 
 #### PickupObject 성공 후
 - 부모 수용체가 열려있으면 자동으로 `CloseObject` 액션 추가
@@ -627,7 +630,7 @@ AI2-THOR 시뮬레이터와의 연결 및 액션 실행
 - **REACHABLE 가드 위반 시**: 
   - **REACHABLE만 실패**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
   - **Proximity + REACHABLE 모두 실패**: Proximity 복구 후 REACHABLE을 한 번만 재검사합니다. 재검사 통과 시 원래 액션을 통과한 것으로 처리합니다.
-- **Proximity 가드**: Agent와 목표 객체 간 거리가 2m를 초과하면 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject가 자동 추가됩니다.
+- **Proximity 가드**: Agent와 목표 객체 간 거리가 1.5m를 초과하면 NavMesh 상 목표 객체를 정면으로 보는 위치로 이동하는 GoToObject가 자동 추가됩니다.
 - **복구 액션 OpenObject**: 복구 액션으로 수용체를 열면, 원래 액션 실행 후 자동으로 닫힙니다.
 - **OpenObject 이미 열려있을 때**: OpenObject가 이미 열려있는 경우(`¬OPENED(object)` 가드 실패), 액션을 건너뛰고 다음 액션으로 진행합니다.
 - **실패한 액션**: 물리적 검증 실패한 액션은 주석처리되어 실행되지 않습니다.
