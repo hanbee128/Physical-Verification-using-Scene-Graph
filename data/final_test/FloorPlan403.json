@@ -1,7 +1,80 @@
 [
-    {"task": "Put papertowelroll on the countertop", "object_states": [{"name": "CounterTop", "contains": ["PaperTowelRoll"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Turn on the faucet and open the toilet", "object_states": [{"name": "Toilet", "contains": [], "state": "Opened"},{"name": "Faucet", "contains": [], "state": "On"}], "trans":0, "max_trans":0},
-    {"task": "Put ScrubBrush on the bathtub", "object_states": [{"name": "Bathtub", "contains": ["ScrubBrush"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Open the showerdoor and put spraybottle on the countertop", "object_states": [{"name": "CounterTop", "contains": ["SprayBottle"], "state": "None"}, {"name": "ShowerDoor", "contains": [], "state": "Opened"}], "trans":0, "max_trans":0},
-    {"task": "Put the cloth into the garbagecan", "object_states": [{"name": "GarbageCan", "contains": ["Cloth"], "state": "None"}], "trans":0, "max_trans":0}
+    {
+        "task": "Put papertowelroll on the countertop",
+        "object_states": [
+            {
+                "name": "CounterTop",
+                "contains": [
+                    "PaperTowelRoll"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Turn on the faucet and open the toilet",
+        "object_states": [
+            {
+                "name": "Toilet",
+                "contains": [],
+                "state": "Opened"
+            },
+            {
+                "name": "Faucet",
+                "contains": [],
+                "state": "On"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put ScrubBrush on the bathtub",
+        "object_states": [
+            {
+                "name": "BathtubBasin",
+                "contains": [
+                    "ScrubBrush"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Open the showerdoor and put spraybottle on the countertop",
+        "object_states": [
+            {
+                "name": "CounterTop",
+                "contains": [
+                    "SprayBottle"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "ShowerDoor",
+                "contains": [],
+                "state": "Opened"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put the cloth into the garbagecan",
+        "object_states": [
+            {
+                "name": "GarbageCan",
+                "contains": [
+                    "Cloth"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    }
 ]

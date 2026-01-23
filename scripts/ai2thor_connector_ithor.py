@@ -821,8 +821,57 @@ class AI2ThorExecutor:
         metadata = self.controller.last_event.events[self.agent_id].metadata
         robot_pos = metadata["agent"]["position"]
         robot_rot = metadata["agent"]["rotation"]["y"]
+        current_horizon = metadata["agent"]["cameraHorizon"]
         
+        # 수직 각도 조정: 객체가 위/아래에 있는지 확인
+        y_diff = dest_pos[1] - robot_pos['y']  # 객체와 agent의 y 좌표 차이
         robot_object_vec = [dest_pos[0] - robot_pos['x'], dest_pos[2] - robot_pos['z']]
+        distance_horizontal = np.linalg.norm(robot_object_vec)
+        
+        # 수직 각도 계산 (pitch)
+        if distance_horizontal > 0.01:  # 수평 거리가 충분히 있을 때만
+            pitch_angle_rad = math.atan2(y_diff, distance_horizontal)
+            pitch_angle_deg = math.degrees(pitch_angle_rad)
+            
+            # AI2-THOR의 cameraHorizon 동작:
+            # - horizon이 양수면 아래를 보고, 음수면 위를 봄
+            # - LookUp은 horizon을 감소시킴 (음수 방향)
+            # - LookDown은 horizon을 증가시킴 (양수 방향)
+            
+            # 목표 horizon 각도 계산 (객체를 정확히 보기 위한 각도)
+            # pitch_angle_deg > 0 (위를 향함)이면 target_horizon < 0 (위를 봐야 함)
+            # pitch_angle_deg < 0 (아래를 향함)이면 target_horizon > 0 (아래를 봐야 함)
+            target_horizon = -pitch_angle_deg  # AI2-THOR의 horizon은 반대 방향
+            
+            # 현재 horizon과 목표 horizon의 차이
+            horizon_diff = target_horizon - current_horizon
+            
+            # 15도 이상 차이가 있으면 조정
+            if abs(horizon_diff) > 15:
+                if horizon_diff < 0:
+                    # horizon_diff < 0이면 target_horizon < current_horizon
+                    # 즉, 현재보다 위를 봐야 함 → LookUp (horizon 감소)
+                    look_angle = min(15, abs(horizon_diff))
+                    look_event = self.controller.step(action="LookUp", degrees=look_angle, agentId=self.agent_id)
+                    self._capture_frame()
+                    if look_event.metadata.get('lastActionSuccess', True):
+                        print(f"  ↑ Looking up {look_angle:.1f}° (object is above, y_diff={y_diff:.3f})")
+                    time.sleep(0.1)
+                else:
+                    # horizon_diff > 0이면 target_horizon > current_horizon
+                    # 즉, 현재보다 아래를 봐야 함 → LookDown (horizon 증가)
+                    look_angle = min(15, abs(horizon_diff))
+                    look_event = self.controller.step(action="LookDown", degrees=look_angle, agentId=self.agent_id)
+                    self._capture_frame()
+                    if look_event.metadata.get('lastActionSuccess', True):
+                        print(f"  ↓ Looking down {look_angle:.1f}° (object is below, y_diff={y_diff:.3f})")
+                    time.sleep(0.1)
+                
+                # 수직 각도 조정 후 다시 보이는지 확인
+                if self._is_object_visible(object_id):
+                    print(f"  ✓ '{object_name}' is now visible after vertical adjustment")
+                    return True
+        
         if np.linalg.norm(robot_object_vec) < 0.01:
             # 이미 목표 위치에 매우 가까움
             return self._is_object_visible(object_id)
@@ -868,6 +917,34 @@ class AI2ThorExecutor:
                     consecutive_failures = 0
                 
                 time.sleep(0.2)
+                
+                # 회전 후 수직 각도 재조정 (객체가 위/아래에 있는지 다시 확인)
+                metadata_after_rot = self.controller.last_event.events[self.agent_id].metadata
+                robot_pos_after = metadata_after_rot["agent"]["position"]
+                current_horizon_after = metadata_after_rot["agent"]["cameraHorizon"]
+                y_diff_after = dest_pos[1] - robot_pos_after['y']
+                robot_object_vec_after = [dest_pos[0] - robot_pos_after['x'], dest_pos[2] - robot_pos_after['z']]
+                distance_horizontal_after = np.linalg.norm(robot_object_vec_after)
+                
+                if distance_horizontal_after > 0.01:
+                    pitch_angle_rad_after = math.atan2(y_diff_after, distance_horizontal_after)
+                    pitch_angle_deg_after = math.degrees(pitch_angle_rad_after)
+                    target_horizon_after = -pitch_angle_deg_after
+                    horizon_diff_after = target_horizon_after - current_horizon_after
+                    
+                    if abs(horizon_diff_after) > 15:
+                        if horizon_diff_after < 0:
+                            # 위를 봐야 함 → LookUp
+                            look_angle_after = min(15, abs(horizon_diff_after))
+                            look_event_after = self.controller.step(action="LookUp", degrees=look_angle_after, agentId=self.agent_id)
+                            self._capture_frame()
+                            time.sleep(0.1)
+                        else:
+                            # 아래를 봐야 함 → LookDown
+                            look_angle_after = min(15, abs(horizon_diff_after))
+                            look_event_after = self.controller.step(action="LookDown", degrees=look_angle_after, agentId=self.agent_id)
+                            self._capture_frame()
+                            time.sleep(0.1)
                 
                 # 회전 후 객체가 보이는지 확인
                 if self._is_object_visible(object_id):

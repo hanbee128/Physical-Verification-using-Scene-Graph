@@ -1,7 +1,81 @@
 [
-    {"task": "Turn off the alarmclock and desklamp", "object_states": [{"name": "AlarmClock", "contains": [], "state": "Off"}, {"name": "DeskLamp", "contains": [], "state": "Off"}], "trans":0, "max_trans":0},
-    {"task": "Put CD and Cellphone in the drawer", "object_states": [{"name": "Drawer", "contains": ["CD", "Cellphone"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Put the Pencil and the Book on the bed", "object_states": [{"name": "Bed", "contains": ["Pencil", "Book"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Put the vase into the garbagecan", "object_states": [{"name": "GarbageCan", "contains": ["Vase"], "state": "None"}], "trans":0, "max_trans":0},
-    {"task": "Turn on the lightswitch", "object_states": [{"name": "LightSwitch", "contains": [], "state": "On"}], "trans":0, "max_trans":0}
+    {
+        "task": "Turn on the cellphone and turn off the desklamp",
+        "object_states": [
+            {
+                "name": "CellPhone",
+                "contains": [],
+                "state": "On"
+            },
+            {
+                "name": "DeskLamp",
+                "contains": [],
+                "state": "Off"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put CD and Cellphone in the drawer",
+        "object_states": [
+            {
+                "name": "Drawer",
+                "contains": [
+                    "CD",
+                    "CellPhone"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put the Pencil and the pen and the Book on the bed",
+        "object_states": [
+            {
+                "name": "Bed",
+                "contains": [
+                    "Pencil",
+                    "Book",
+                    "Pen"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put the vase into the garbagecan and break the vase",
+        "object_states": [
+            {
+                "name": "GarbageCan",
+                "contains": [
+                    "Vase"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "Vase",
+                "contains": [],
+                "state": "Broken"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Turn off the lightswitch",
+        "object_states": [
+            {
+                "name": "LightSwitch",
+                "contains": [],
+                "state": "Off"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    }
 ]

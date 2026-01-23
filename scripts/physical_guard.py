@@ -473,6 +473,8 @@ def build_prompt(objects: List[str], actions: List[str], example_programs: Dict[
                 - Agent는 하나의 객체만 hold할 수 있음. 만약 2개 이상의 객체를 pickup해야 한다면, 먼저 하나를 pickup하고 해야 하는 액션을 수행 후, 다음 객체를 pickup 해야 함.
                 - 객체를 pickup하기 전에는 무조건 객체가 pickupable한지, parentReceptacle 안에 존재하는 객체인지 확인 후, IN edge가 존재하면 openobject를 먼저 수행해야 함.
                 - OpenObject 이후 필요한 액션을 수행하면 바로 CloseObject를 수행해야 함.
+                - Turn on 이라는 명령어가 있으면 ToggleObjectOn을 수행해야 함.
+                - Turn off 이라는 명령어가 있으면 ToggleObjectOff를 수행해야 함.
 
                 Below are exemplar programs showing the required layout:
 {textwrap.indent(example_block_section, "")}
@@ -3642,7 +3644,7 @@ def main():
         "--scene-number",
         type=int,
         default=None,
-        help="FloorPlan 번호 (예: 1, 201, 301, 401). --scene-graph가 지정되지 않으면 이 번호로 자동 경로 생성.",
+        help="FloorPlan 번호 (예: 1, 2, 216, 224, 325, 326, 403, 425). --scene-graph가 지정되지 않으면 이 번호로 자동 경로 생성.",
     )
 
     # 명령줄 인자 파싱
@@ -3668,7 +3670,7 @@ def main():
     # Scene 번호 입력 받기 (--scene-number이 없으면 사용자 입력)
     if args.scene_number is None:
         try:
-            scene_number = int(input("FloorPlan 번호를 입력하세요 (예: 1, 201, 301, 401): "))
+            scene_number = int(input("FloorPlan 번호를 입력하세요 (예: 1, 2, 216, 224, 325, 326, 403, 425): "))
         except (ValueError, KeyboardInterrupt):
             print("❌ 잘못된 입력입니다. 숫자를 입력해주세요.")
             sys.exit(1)
