@@ -261,12 +261,20 @@
 - **GCR (Goal Condition Rate)**: 실행된 액션에서 추출한 각 goal condition이 만족된 비율 계산
 - **Contains 검증**: `receptacleObjectIds`를 사용하여 수용체 내부 객체 확인
 - **상태 검증**: 객체의 상태 속성(`isSliced`, `isBroken`, `isOpen`, `isToggled` 등) 확인
+- **On/Off 상태 검증**: JSON 파일의 `"state": "On"` 또는 `"state": "Off"`를 `isToggled` 속성으로 검증
+  - `"On"` → `isToggled == True` 확인
+  - `"Off"` → `isToggled == False` 확인
 
-**파일 검색 우선순위:**
-1. `results/Kitchen/physical_guard_result_*.json` (우선)
-2. `results/Kitchen/baseline_result_*.json` (우선)
-3. `results/physical_guard_result_*.json` (fallback)
-4. `results/baseline_result_*.json` (fallback)
+**파일 검색:**
+- `--folder` 옵션으로 폴더 선택 가능 (Kitchen, LivingRoom, BedRoom, BathRoom)
+- `--fp-number` 옵션으로 FP 번호 지정 (예: 1, 2, 216, 224, 325, 326, 403, 425)
+- 지정하지 않으면 FP 번호를 입력받음
+- 검색 경로: `results/{folder}/FP{num}/physical_guard_result_*.json`
+- 폴더별 FloorPlan 자동 매핑:
+  - Kitchen → FloorPlan1.json, FloorPlan2.json
+  - LivingRoom → FloorPlan216.json, FloorPlan224.json
+  - BedRoom → FloorPlan325.json, FloorPlan326.json
+  - BathRoom → FloorPlan403.json, FloorPlan425.json
 
 **평가 지표:**
 1. **GCR (Goal Condition Rate)**: 목표 조건 만족 비율
@@ -280,13 +288,20 @@
 
 **사용 방법:**
 ```bash
-# 기본 사용 (JSON 파일 자동 검색 및 실행)
-python scripts/evaluate_results.py --test_file data/final_test/FloorPlan1.json
+# 폴더와 FP 번호 지정
+python scripts/evaluate_results.py --folder Kitchen --fp-number 1
 
-# 특정 JSON 파일 지정
+# 폴더만 지정하고 FP 번호는 입력받기
+python scripts/evaluate_results.py --folder Kitchen
+# → "FP 번호를 입력하세요: 1" 입력
+
+# 기본값 사용 (Kitchen, FP 번호 입력받기)
+python scripts/evaluate_results.py
+
+# 특정 JSON 파일 직접 지정
 python scripts/evaluate_results.py \
-    --physical_guard_json results/Kitchen/physical_guard_result_*.json \
-    --baseline_json results/Kitchen/baseline_result_*.json \
+    --physical_guard_json results/Kitchen/FP1/physical_guard_result_*.json \
+    --baseline_json results/Kitchen/FP1/baseline_result_*.json \
     --test_file data/final_test/FloorPlan1.json
 ```
 
@@ -355,16 +370,42 @@ python scripts/physical_guard.py --scene-number 1 --task-file tasks.json
 python scripts/physical_guard.py --scene-number 1 --model llama3.1 --tasks "put apple in fridge"
 ```
 
+### evaluate_results.py 사용법
+
+```bash
+# 폴더와 FP 번호 지정
+python scripts/evaluate_results.py --folder Kitchen --fp-number 1
+
+# 폴더만 지정하고 FP 번호는 입력받기
+python scripts/evaluate_results.py --folder Kitchen
+
+# 기본값 사용 (Kitchen, FP 번호 입력받기)
+python scripts/evaluate_results.py
+
+# 다른 폴더 사용
+python scripts/evaluate_results.py --folder LivingRoom --fp-number 216
+python scripts/evaluate_results.py --folder BedRoom --fp-number 325
+python scripts/evaluate_results.py --folder BathRoom --fp-number 403
+```
+
 ## 출력 파일
 
 ### JSON 파일
-- **Physical Guard**: `results/physical_guard_result_{timestamp}.json` (또는 `results/Kitchen/physical_guard_result_{timestamp}.json`)
-- **Baseline**: `results/baseline_result_{timestamp}.json` (또는 `results/Kitchen/baseline_result_{timestamp}.json`)
+- **Physical Guard**: `physical_guard_result_{timestamp}.json`
+- **Baseline**: `baseline_result_{timestamp}.json`
 - 형식: `{task: program_code}` 딕셔너리
-- **FloorPlan1.json 또는 FloorPlan2.json 실행 시**: 자동으로 `results/Kitchen/` 폴더에 저장
+- **저장 경로**: `results/{RoomType}/FP{num}/` 폴더에 저장
+  - FloorPlan1.json → `results/Kitchen/FP1/`
+  - FloorPlan2.json → `results/Kitchen/FP2/`
+  - FloorPlan216.json → `results/LivingRoom/FP216/`
+  - FloorPlan224.json → `results/LivingRoom/FP224/`
+  - FloorPlan325.json → `results/BedRoom/FP325/`
+  - FloorPlan326.json → `results/BedRoom/FP326/`
+  - FloorPlan403.json → `results/BathRoom/FP403/`
+  - FloorPlan425.json → `results/BathRoom/FP425/`
 
 ### 텍스트 파일
-- 경로: `results/physical_guard_set3_result_{task_name}_{timestamp}.txt` (또는 `results/Kitchen/physical_guard_set3_result_{task_name}_{timestamp}.txt`)
+- 경로: `results/{RoomType}/FP{num}/physical_guard_set3_result_{task_name}_{timestamp}.txt`
 - 내용:
   - 작업별 프로그램 코드 (LLM 생성/시스템 생성 구분 표시)
   - 물리적 검증 요약 (통과/실패 액션 수)
@@ -489,6 +530,17 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 - `receptacleObjectIds`를 사용한 contains 검증
 - 객체 상태 속성 검증 (`isSliced`, `isBroken`, `isOpen`, `isToggled` 등)
 - GCR, Exec, SR, TCR, Plan Length, Guard Trigger Distribution 계산
+- 폴더 및 FP 번호 선택 기능 (`--folder`, `--fp-number`)
+- Physical Guard와 Baseline 결과 동시 실행 및 비교
+
+### `ai2thor_connector_ithor.py`
+AI2-THOR 시뮬레이터와의 연결 및 액션 실행
+- 객체 찾기: `_find_object_id()` 함수로 객체 ID 찾기 (Knife vs ButterKnife 구분)
+- 시야 조정: `_ensure_object_visible()` 함수로 객체가 보이도록 회전 및 수직 각도 조정
+  - 수평 회전: 객체를 향하도록 회전
+  - 수직 각도 조정: 객체가 위/아래에 있을 때 15도씩 조정
+- 거리 계산: Agent에서 객체 중심까지의 거리 계산
+- 즉시 reached 판정: 목표 거리 도달 시 즉시 성공 판정
 
 ## 의존성
 
@@ -513,7 +565,13 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 
 4. **최대 검증 횟수**: 무한 루프 방지를 위해 최대 검증 횟수는 20회로 제한됩니다.
 
-5. **정보 소스**: 대부분의 정보는 Scene Graph structured JSON 파일에서 가져오며, NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
+5. **정보 소스**: 
+   - **LLM 프롬프트 생성 시**: `FP{num}_info.txt` 파일에서 객체 목록 가져오기
+     - `--task-file`로 `FloorPlan{num}.json`을 지정하면 자동으로 `FP{num}_info.txt` 선택
+     - 기본값: `data/all_plans_env0/info.txt`
+   - **물리적 검증 시**: `scene_graph_structured_FloorPlan{num}.json` 파일에서 객체 정보 가져오기
+     - 객체 위치, 속성, 상태 등 모든 정보는 Scene Graph에서 가져옴
+   - **NavMesh 검증**: `NAVIGABLE` 가드 검증을 위해서만 실시간 metadata를 사용합니다.
 
 ## 로그 출력
 
@@ -561,7 +619,10 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 
 ## 참고
 
-- **정보 소스**: 대부분의 정보는 Scene Graph structured JSON 파일에서 가져오며, NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
+- **정보 소스**: 
+  - **LLM 프롬프트 생성**: `FP{num}_info.txt` 파일에서 객체 목록 가져오기 (예: `data/all_plans_env0/FP1_info.txt`)
+  - **물리적 검증**: `scene_graph_structured_FloorPlan{num}.json` 파일에서 객체 정보 가져오기
+  - NavMesh 검증(`NAVIGABLE` 가드)을 위해서만 실시간 metadata를 사용합니다.
 - **REACHABLE 검증**: Agent의 손 위치를 기준으로 절대 좌표로 비교합니다.
 - **REACHABLE 가드 위반 시**: 
   - **REACHABLE만 실패**: 물체가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없으므로 검증이 즉시 종료됩니다.
@@ -575,9 +636,23 @@ Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 - **객체 매칭**: nodeId 형식 (예: `"Fridge|-01.76|+00.60|00.00"`)인 경우 정확한 nodeId 매칭이 우선됩니다.
 - **거리 계산**: `goto_object` 함수에서 거리 계산은 Agent에서 객체 중심까지의 거리를 사용합니다 (2D: X, Z 좌표만 사용).
 - **즉시 reached 판정**: `goto_object` 실행 시 루프 내에서 매 반복마다 거리를 확인하고, 목표 거리(`success_distance`)에 도달하면 즉시 성공 판정을 반환합니다.
+- **수직 각도 조정**: 객체가 시야 위/아래에 있을 때 자동으로 카메라 각도를 15도씩 조정합니다.
+  - 객체가 위에 있으면 `LookUp` 15도
+  - 객체가 아래에 있으면 `LookDown` 15도
+  - 수평 회전 후에도 수직 각도를 재조정하여 객체를 찾습니다.
 - **Contains 검증**: `evaluate_results.py`에서 `receptacleObjectIds`를 사용하여 수용체 내부 객체를 정확히 확인합니다.
-- **JSON 파일 실행**: `evaluate_results.py`는 이제 JSON 파일(`physical_guard_result_*.json`, `baseline_result_*.json`)을 읽어서 실행하며, 두 결과를 비교하여 출력합니다.
-- **Kitchen 폴더 우선 검색**: `evaluate_results.py`는 `results/Kitchen` 폴더를 우선적으로 검색합니다.
+- **상태 검증**: `evaluate_results.py`에서 객체 상태를 검증합니다.
+  - `"On"` / `"Off"` → `isToggled` 속성으로 검증
+  - `"Sliced"` → `isSliced` 속성으로 검증
+  - `"Broken"` → `isBroken` 속성으로 검증
+  - `"Opened"` / `"Closed"` → `isOpen` 속성으로 검증
+- **JSON 파일 실행**: `evaluate_results.py`는 JSON 파일(`physical_guard_result_*.json`, `baseline_result_*.json`)을 읽어서 실행하며, 두 결과를 비교하여 출력합니다.
+- **폴더 및 FP 번호 선택**: `evaluate_results.py`는 `--folder`와 `--fp-number` 옵션으로 특정 폴더와 FP 번호를 선택할 수 있습니다.
+  - 폴더 선택: Kitchen, LivingRoom, BedRoom, BathRoom
+  - FP 번호: 1, 2, 216, 224, 325, 326, 403, 425
+  - 선택한 폴더와 FP 번호에 맞는 FloorPlan JSON 파일을 자동으로 선택합니다.
+- **결과 저장 경로**: `physical_guard.py`는 FloorPlan 번호에 따라 결과를 `results/{RoomType}/FP{num}/` 폴더에 저장합니다.
+- **ToggleObjectOn/Off 실행**: `evaluate_results.py`에서 `ToggleObjectOn`/`ToggleObjectOff` 액션은 `toggle_on`/`toggle_off` 메서드를 사용하여 실행합니다.
 
 ## 평가 지표
 
