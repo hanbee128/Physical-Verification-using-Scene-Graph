@@ -1,0 +1,46 @@
+ACTION TEMPLATES:
+
+GoToObject <obj>
+PickupObject <obj>
+PutObject <obj> <recp>
+OpenObject <obj>
+CloseObject <obj>
+ToggleObjectOn <obj>
+ToggleObjectOff <obj>
+SliceObject <obj>
+BreakObject <obj>
+CookObject <obj>
+
+
+All OBJECTS and PROPERTIES:
+
+ArmChair: receptacle
+Book: pickupable, openable
+Box: pickupable, openable, receptacle
+Cabinet: openable, receptacle, breakable
+CellPhone: pickupable, toggleable, breakable
+Chair: receptacle
+CreditCard: pickupable
+DeskLamp: toggleable
+DogBed: receptacle
+Drawer: openable, receptacle
+Dresser: receptacle
+Floor: receptacle
+FloorLamp: toggleable
+GarbageCan: receptacle
+HousePlant:
+KeyChain: pickupable
+Laptop: pickupable, openable, toggleable, breakable
+LightSwitch: toggleable
+Newspaper: pickupable
+Painting:
+Pillow: pickupable
+RemoteControl: pickupable
+SideTable: receptacle
+Sofa: receptacle
+Statue: pickupable, breakable
+Stool: receptacle
+Television: toggleable, breakable
+Vase: pickupable, breakable
+WateringCan: pickupable
+Window: breakable

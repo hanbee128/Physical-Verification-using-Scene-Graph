@@ -331,7 +331,7 @@ def execute_and_evaluate_task(
                 else:
                     # Fallback for some common ones
                     if action == "GoToObject" and hasattr(executor, "goto_object"):
-                         success = executor.goto_object(target, target_distance=0.5, success_distance=0.85)
+                         success = executor.goto_object(target, target_distance=0.5, success_distance=1.0)
                     elif action == "PutObject" and hasattr(executor, "put_object"):
                          success = executor.put_object(target, receptacle)
                     elif action == "PickupObject" and hasattr(executor, "pickup_object"):

@@ -1,0 +1,44 @@
+ACTION TEMPLATES:
+
+GoToObject <obj>
+PickupObject <obj>
+PutObject <obj> <recp>
+OpenObject <obj>
+CloseObject <obj>
+ToggleObjectOn <obj>
+ToggleObjectOff <obj>
+SliceObject <obj>
+BreakObject <obj>
+CookObject <obj>
+
+
+All OBJECTS and PROPERTIES:
+
+Cabinet: openable, receptacle
+Candle: pickupable, toggleable
+Cloth: pickupable
+CounterTop: receptacle
+Faucet: toggleable
+Floor: receptacle
+GarbageCan: receptacle
+HandTowel: pickupable
+HandTowelHolder: receptacle
+LightSwitch: toggleable
+Mirror: breakable
+Plunger: pickupable
+ScrubBrush: pickupable
+ShowerDoor: openable, breakable
+ShowerGlass: breakable
+ShowerHead: toggleable
+Sink:
+SinkBasin: receptacle
+SoapBar: pickupable
+SoapBottle: pickupable
+SprayBottle: pickupable
+TissueBox: pickupable
+Toilet: openable, receptacle
+ToiletPaper: pickupable
+ToiletPaperHanger: receptacle
+Towel: pickupable
+TowelHolder: receptacle
+Window: breakable

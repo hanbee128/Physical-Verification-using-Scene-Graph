@@ -3,22 +3,14 @@ ACTION TEMPLATES:
 GoToObject <obj>
 PickupObject <obj>
 PutObject <obj><recp>
-DropHandObject
-ThrowObject 
-PushObject <obj>
-PullObject <obj>
 OpenObject <obj>
 CloseObject <obj>
 TiggleObjectOn <obj>
 ToggleObjectOff <obj>
 SliceObject <obj>
 BreakObject <obj>
-DirtyObject <obj>
-CleanObject <obj>
-FillObjectWithLiquid <obj><liquid>
-EmptyLiquidFromObject <obj>
-UseUpObject <obj>
-done
+CookObject <obj>
+
 
 
 

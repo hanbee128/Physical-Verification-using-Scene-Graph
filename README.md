@@ -153,6 +153,10 @@
 #### PickupObject 성공 후
 - 부모 수용체가 열려있으면 자동으로 `CloseObject` 액션 추가
 
+#### PutObject 성공 후
+- 수용체가 `openable=True`이고 `isOpen=True`이면 자동으로 `CloseObject` 액션 추가
+- PutObject 실행 후 수용체를 자동으로 닫아 상태를 정리
+
 #### 복구 액션으로 OpenObject 추가 시
 - 복구 액션으로 `OpenObject`가 추가되면, 원래 액션 이후에 자동으로 `CloseObject` 액션 추가
 

@@ -28,7 +28,7 @@
     "max_trans": 0
   },
   {
-    "task": "Put Apple, Tomato and Potato into Fridge",
+    "task": "Put Apple and Tomato and Potato into Fridge",
     "object_states": [
       {
         "name": "Fridge",

@@ -626,7 +626,7 @@ class AI2ThorExecutor:
         return None
     
     
-    def goto_object(self, object_name: str, target_distance: float = 0.5, success_distance: float = 0.85, max_steps: int = 50) -> bool:
+    def goto_object(self, object_name: str, target_distance: float = 0.5, success_distance: float = 1.0, max_steps: int = 50) -> bool:
         """
         객체로 이동 (SMART-LLM 방식: ObjectNavExpertAction 사용)
         

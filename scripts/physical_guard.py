@@ -176,25 +176,12 @@ DEFAULT_EXAMPLES = {
         """\
         def put_apple_in_fridge():
         \t# Step 1: Find an apple and pick it up
-        \tassert('Apple' visible)
-        \t\telse: GoToObject('Apple')
         \tGoToObject('Apple')
-        \tassert('close' to 'Apple')
-        \t\telse: GoToObject('Apple')
         \tPickupObject('Apple')
         \t# Step 2: Move to the fridge and open it
         \tGoToObject('Fridge')
-        \tassert('close' to 'Fridge')
-        \t\telse: GoToObject('Fridge')
-        \tassert('Fridge' is 'closed')
-        \t\telse: CloseObject('Fridge')
         \tOpenObject('Fridge')
         \t# Step 3: Place the apple inside and close the door
-        \tassert('Apple' in 'hands')
-        \t\telse: GoToObject('Apple')
-        \t\telse: PickupObject('Apple')
-        \tassert('Fridge' is 'opened')
-        \t\telse: OpenObject('Fridge')
         \tPutObject('Apple', 'Fridge')
         \tCloseObject('Fridge')
         """
@@ -205,17 +192,10 @@ DEFAULT_EXAMPLES = {
         def slice_bread():
         \t# Step 1: Retrieve the knife
         \tGoToObject('Knife')
-        \tassert('close' to 'Knife')
-        \t\telse: GoToObject('Knife')
         \tPickupObject('Knife')
         \t# Step 2: Locate the bread loaf
         \tGoToObject('Bread')
-        \t# Step 3: Slice the bread with precondition checks
-        \tassert('Knife' in 'hands')
-        \t\telse: GoToObject('Knife')
-        \t\telse: PickupObject('Knife')
-        \tassert('close' to 'Bread')
-        \t\telse: GoToObject('Bread')
+        \t# Step 3: Slice the bread
         \tSliceObject('Bread')
         """
     ),
@@ -225,18 +205,12 @@ DEFAULT_EXAMPLES = {
         def wash_mug():
         \t# Step 1: Find and pick up the mug
         \tGoToObject('Mug')
-        \tassert('close' to 'Mug')
-        \t\telse: GoToObject('Mug')
         \tPickupObject('Mug')
         \t# Step 2: Move to the sink and drop the mug inside
         \tGoToObject('Sink')
-        \tassert('close' to 'Sink')
-        \t\telse: GoToObject('Sink')
         \tPutObject('Mug', 'SinkBasin')
         \t# Step 3: Turn on the faucet and clean
         \tGoToObject('Faucet')
-        \tassert('Faucet' is 'off')
-        \t\telse: ToggleObjectOff('Faucet')
         \tToggleObjectOn('Faucet')
         \tGoToObject('Mug')
         \tCleanObject('Mug')
@@ -251,13 +225,8 @@ DEFAULT_EXAMPLES = {
         def break_mug():
         \t# Step 1: Find and pick up the mug
         \tGoToObject('Mug')
-        \tassert('close' to 'Mug')
-        \t\telse: GoToObject('Mug')
         \tPickupObject('Mug')
         \t# Step 2: Break the mug
-        \tassert('Mug' in 'hands')
-        \t\telse: GoToObject('Mug')
-        \t\telse: PickupObject('Mug')
         \tBreakObject('Mug')
         """
     ),
@@ -281,6 +250,16 @@ DEFAULT_EXAMPLES = {
         \tToggleObjectOn('StoveKnob')
         \tCookObject('EggCracked')
         \tToggleObjectOff('StoveKnob')
+        """
+    ),
+    # 예제 6: Turn on the Television
+    "Turn on the Television": textwrap.dedent(
+        """\
+        def turn_on_television():
+        \t# Step 1: Go to the television
+        \tGoToObject('Television')
+        \t# Step 2: Turn on the television
+        \tToggleObjectOn('Television')
         """
     )
 }
@@ -478,7 +457,7 @@ def build_prompt(objects: List[str], actions: List[str], example_programs: Dict[
                 • If you want to slice the object, you don't need to pickup the object. Just bring Knife to the object and slice it.
                 - Agent는 하나의 객체만 hold할 수 있음. 만약 2개 이상의 객체를 pickup해야 한다면, 먼저 하나를 pickup하고 해야 하는 액션을 수행 후, 다음 객체를 pickup 해야 함.
                 - 객체를 pickup하기 전에는 무조건 객체가 pickupable한지, parentReceptacle 안에 존재하는 객체인지 확인 후, IN edge가 존재하면 openobject를 먼저 수행해야 함.
-                
+                - OpenObject 이후 필요한 액션을 수행하면 바로 CloseObject를 수행해야 함.
 
                 Below are exemplar programs showing the required layout:
 {textwrap.indent(example_block_section, "")}
@@ -3168,6 +3147,51 @@ def generate_final_plan_with_physical_verification(
                             logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}')")
                             break  # 첫 번째 열린 수용체만 처리
             
+            # PutObject가 통과한 경우, receptacle이 openable이고 열려있으면 CloseObject 추가
+            if action_type == "PutObject" and receptacle_name:
+                # 수용체 찾기
+                recp_obj = None
+                if find_target_object:
+                    matched_receptacles = find_target_object(scene_graph, receptacle_name)
+                    if matched_receptacles:
+                        matched_recp = matched_receptacles[0]
+                        matched_recp_node_id = matched_recp.get("nodeId")
+                        if scene_graph:
+                            object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                            for obj_node in object_nodes:
+                                if obj_node.get("nodeId") == matched_recp_node_id:
+                                    recp_obj = obj_node
+                                    break
+                
+                # find_target_object가 없거나 실패한 경우 직접 찾기
+                if recp_obj is None and scene_graph:
+                    receptacle_name_lower = receptacle_name.lower()
+                    object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                    for obj_node in object_nodes:
+                        obj_type = obj_node.get("objectType", "")
+                        obj_id = obj_node.get("nodeId", "")
+                        if receptacle_name_lower in obj_type.lower() or receptacle_name_lower in obj_id.lower():
+                            recp_obj = obj_node
+                            break
+                
+                # 수용체가 openable이고 열려있으면 CloseObject 추가
+                if recp_obj and recp_obj.get("openable", False) and recp_obj.get("isOpen", False):
+                    recp_id = recp_obj.get("nodeId", "")
+                    close_action = {
+                        "type": "CloseObject",
+                        "args": {"o": recp_id},  # nodeId 전체 사용
+                        "line": f"CloseObject('{recp_id}')",  # nodeId 전체 포함
+                        "nodeId": recp_id,  # nodeId를 별도로 저장
+                        "reason": f"수용체 '{recp_id}' 닫기 (PutObject 후)",
+                        "is_original": False,
+                        "is_recovery": True,
+                        "failed_guards": [],
+                        "recovery_reason": f"PutObject 후 수용체 '{recp_id}' 자동 닫기"
+                    }
+                    # 다음 액션 위치에 CloseObject 삽입
+                    plan_actions.insert(i + 1, close_action)
+                    logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}') (PutObject 후)")
+            
             # 다음 액션 검증을 위해 업데이트된 JSON 파일 다시 로드
             if scene_graph_path:
                 scene_graph = load_scene_graph(scene_graph_path)
@@ -3218,6 +3242,12 @@ def generate_final_plan_with_physical_verification(
                 
                 if has_proximity_recovery and has_reachable_failure:
                     logger.info(f"  → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사")
+                    
+                    # 원래 액션에서 object_name과 receptacle_name 추출
+                    action_type = action.get("type", "")
+                    action_args = action.get("args", {})
+                    object_name = action_args.get("o")
+                    receptacle_name = action_args.get("r")
                     
                     # Proximity 복구 액션만 먼저 실행
                     proximity_recovery = None
@@ -3691,6 +3721,34 @@ def main():
             kitchen_output_dir = Path(args.output_dir) / "Kitchen"
             args.output_dir = str(kitchen_output_dir)
             print(f"📁 FloorPlan1/FloorPlan2 감지: 결과를 {args.output_dir}에 저장합니다.")
+    # FloorPlan216.json 또는 FloorPlan224.json인 경우 LivingRoom 폴더에 저장
+    if args.task_file:
+        task_file_path = Path(args.task_file)
+        task_file_name = task_file_path.name
+        if task_file_name in ["FloorPlan216.json", "FloorPlan224.json"]:
+            # Kitchen 폴더로 변경
+            kitchen_output_dir = Path(args.output_dir) / "LivingRoom"
+            args.output_dir = str(kitchen_output_dir)
+            print(f"📁 FloorPlan216/FloorPlan224 감지: 결과를 {args.output_dir}에 저장합니다.")
+    # FloorPlan325.json 또는 FloorPlan326.json인 경우 Bedroom 폴더에 저장
+    if args.task_file:
+        task_file_path = Path(args.task_file)
+        task_file_name = task_file_path.name
+        if task_file_name in ["FloorPlan325.json", "FloorPlan326.json"]:
+            # Bedroom 폴더로 변경
+            bedroom_output_dir = Path(args.output_dir) / "BedRoom"
+            args.output_dir = str(bedroom_output_dir)
+            print(f"📁 FloorPlan325/FloorPlan326 감지: 결과를 {args.output_dir}에 저장합니다.")
+    # FloorPlan403.json 또는 FloorPlan425.json인 경우 Bathroom 폴더에 저장
+    if args.task_file:
+        task_file_path = Path(args.task_file)
+        task_file_name = task_file_path.name
+        if task_file_name in ["FloorPlan403.json", "FloorPlan425.json"]:
+            # Bathroom 폴더로 변경
+            bathroom_output_dir = Path(args.output_dir) / "BathRoom"
+            args.output_dir = str(bathroom_output_dir)
+            print(f"📁 FloorPlan403/FloorPlan425 감지: 결과를 {args.output_dir}에 저장합니다.")
+    
 
     # 출력 디렉토리 생성 (없으면 생성)
     os.makedirs(args.output_dir, exist_ok=True)
@@ -4039,49 +4097,6 @@ def main():
         
         subprocess.run(cmd, cwd=str(script_dir))
         print(f"✅ Baseline(ProgPrompt).py 스크립트 실행 완료")
-        
-        # Baseline 실행 후 평가 스크립트 실행
-        evaluation_path = script_dir / "evaluation.py"
-        if evaluation_path.exists():
-            print(f"\n📊 Baseline과 Physical Guard 결과 비교 평가 중...")
-            
-            # Baseline JSON 파일 찾기 (가장 최근 파일)
-            baseline_json_files = sorted(
-                Path(args.output_dir).glob("baseline_result_*.json"),
-                key=lambda p: p.stat().st_mtime,
-                reverse=True
-            )
-            
-            if baseline_json_files:
-                baseline_json = baseline_json_files[0]  # 가장 최근 파일
-                physical_guard_txt = txt_output_path
-                
-                # 평가 결과 저장 경로
-                eval_output_path = Path(args.output_dir) / f"evaluation_comparison_{timestamp}.txt"
-                
-                eval_cmd = [
-                    "python", str(evaluation_path),
-                    "--baseline-json", str(baseline_json.resolve()),
-                    "--physical-guard-txt", str(physical_guard_txt.resolve()),
-                    "--output", str(eval_output_path.resolve())
-                ]
-                
-                # Scene Graph 파일 경로 추가 (존재하는 경우)
-                baseline_sg_path = Path(__file__).parent / "baseline_updated_scene_graph.json"
-                pg_sg_path = Path(__file__).parent / "updated_scene_graph.json"
-                
-                if baseline_sg_path.exists() and pg_sg_path.exists():
-                    eval_cmd.extend([
-                        "--baseline-scene-graph", str(baseline_sg_path.resolve()),
-                        "--physical-guard-scene-graph", str(pg_sg_path.resolve())
-                    ])
-                
-                subprocess.run(eval_cmd, cwd=str(script_dir))
-                print(f"✅ 평가 결과가 {eval_output_path}에 저장되었습니다.")
-            else:
-                print(f"⚠️  Baseline JSON 파일을 찾을 수 없습니다.")
-        else:
-            print(f"⚠️  evaluation.py를 찾을 수 없습니다: {evaluation_path}")
     else:
         print(f"⚠️  Baseline(ProgPrompt).py를 찾을 수 없습니다: {baseline_progprompt_path}")
 

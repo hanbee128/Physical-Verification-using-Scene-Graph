@@ -1,0 +1,65 @@
+ACTION TEMPLATES:
+
+GoToObject <obj>
+PickupObject <obj>
+PutObject <obj> <recp>
+OpenObject <obj>
+CloseObject <obj>
+ToggleObjectOn <obj>
+ToggleObjectOff <obj>
+SliceObject <obj>
+BreakObject <obj>
+CookObject <obj>
+
+
+All OBJECTS and PROPERTIES:
+
+Apple: pickupable, sliceable
+Book: pickupable, openable
+Bottle: pickupable, breakable
+Bowl: pickupable, receptacle, breakable
+Bread: pickupable, sliceable
+ButterKnife: pickupable
+Cabinet: openable, receptacle
+CoffeeMachine: receptacle, toggleable
+CounterTop: receptacle
+CreditCard: pickupable
+Cup: pickupable, receptacle, breakable
+DishSponge: pickupable
+Drawer: openable, receptacle
+Egg: pickupable, sliceable, breakable
+Faucet: toggleable
+Floor: receptacle
+Fork: pickupable
+Fridge: openable, receptacle
+GarbageCan: receptacle
+HousePlant:
+Kettle: pickupable, openable
+Knife: pickupable
+Lettuce: pickupable, sliceable
+LightSwitch: toggleable
+Microwave: openable, receptacle, toggleable
+Mug: pickupable, receptacle, breakable
+Pan: pickupable, receptacle
+PaperTowelRoll: pickupable
+PepperShaker: pickupable
+Plate: pickupable, receptacle, breakable
+Pot: pickupable, receptacle
+Potato: pickupable, sliceable, cookable
+SaltShaker: pickupable
+Shelf: receptacle
+ShelvingUnit:
+Sink:
+SinkBasin: receptacle
+SoapBottle: pickupable
+Spatula: pickupable
+Spoon: pickupable
+Statue: pickupable, breakable
+Stool: receptacle
+StoveBurner: receptacle
+StoveKnob: toggleable
+Toaster: receptacle, toggleable
+Tomato: pickupable, sliceable
+Vase: pickupable, breakable
+Window: breakable
+WineBottle: pickupable, breakable
