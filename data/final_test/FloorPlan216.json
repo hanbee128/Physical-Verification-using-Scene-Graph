@@ -12,13 +12,14 @@
         "max_trans": 0
     },
     {
-        "task": "Put the remotecontrol and creditcard in the drawer",
+        "task": "Put the remotecontrol and creditcard and keychain in the drawer",
         "object_states": [
             {
                 "name": "Drawer",
                 "contains": [
                     "RemoteControl",
-                    "CreditCard"
+                    "CreditCard",
+                    "KeyChain"
                 ],
                 "state": "None"
             }
@@ -27,7 +28,7 @@
         "max_trans": 0
     },
     {
-        "task": "Turn on the Laptop and Turn off the Desklamp",
+        "task": "Turn off the Desklamp and Turn on the Laptop",
         "object_states": [
             {
                 "name": "Laptop",

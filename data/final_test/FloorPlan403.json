@@ -45,7 +45,7 @@
         "max_trans": 0
     },
     {
-        "task": "Open the showerdoor and put spraybottle on the countertop",
+        "task": "Put spraybottle on the countertop",
         "object_states": [
             {
                 "name": "CounterTop",
@@ -64,12 +64,13 @@
         "max_trans": 0
     },
     {
-        "task": "Put the cloth into the garbagecan",
+        "task": "Put the cloth and handtowel into the sinkbasin",
         "object_states": [
             {
-                "name": "GarbageCan",
+                "name": "SinkBasin",
                 "contains": [
-                    "Cloth"
+                    "Cloth",
+                    "HandTowel"
                 ],
                 "state": "None"
             }

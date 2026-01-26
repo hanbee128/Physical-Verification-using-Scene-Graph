@@ -56,12 +56,14 @@
     "max_trans": 0
   },
   {
-    "task": "Break the vase",
+    "task": "Put the Mug in the SinkBasin and Wash the Mug",
     "object_states": [
       {
-        "name": "Vase",
-        "contains": [],
-        "state": "Broken"
+        "name": "SinkBasin",
+        "contains": [
+          "Mug"
+        ],
+        "state": "None"
       }
     ],
     "trans": 0,

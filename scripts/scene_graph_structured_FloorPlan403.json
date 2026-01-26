@@ -572,7 +572,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "GarbageCan|-00.06|00.50|+03.13",
+          "GarbageCan|00.01|00.50|+03.13",
           "ToiletPaper|-00.10|+00.04|+03.14",
           "Plunger|-00.22|+00.01|+00.49",
           "ShowerDoor|-02.48|+01.77|+02.39",
@@ -592,7 +592,7 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "GarbageCan|-00.06|00.50|+03.13",
+        "nodeId": "GarbageCan|00.01|00.50|+03.13",
         "objectType": "GarbageCan",
         "pickupable": false,
         "openable": false,
@@ -1370,7 +1370,7 @@
         },
         "parentReceptacles": [
           "Floor|+00.00|+00.00|+00.00",
-          "GarbageCan|-00.06|00.50|+03.13"
+          "GarbageCan|00.01|00.50|+03.13"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1713,7 +1713,7 @@
     },
     {
       "edgeType": "ON",
-      "source": "GarbageCan|-00.06|00.50|+03.13",
+      "source": "GarbageCan|00.01|00.50|+03.13",
       "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
@@ -1858,7 +1858,7 @@
     {
       "edgeType": "ON",
       "source": "ToiletPaper|-00.10|+00.04|+03.14",
-      "target": "GarbageCan|-00.06|00.50|+03.13",
+      "target": "GarbageCan|00.01|00.50|+03.13",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "ToiletPaper",

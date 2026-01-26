@@ -223,9 +223,8 @@ DEFAULT_EXAMPLES = {
     "break_mug": textwrap.dedent(
         """\
         def break_mug():
-        \t# Step 1: Find and pick up the mug
+        \t# Step 1: Find the mug
         \tGoToObject('Mug')
-        \tPickupObject('Mug')
         \t# Step 2: Break the mug
         \tBreakObject('Mug')
         """
@@ -427,7 +426,7 @@ def build_prompt(objects: List[str], actions: List[str], example_programs: Dict[
     example_block_section = "\n".join(example_block_lines)  # 줄바꿈으로 연결
 
     prompt = f"""
-                You are ProgPrompt, an AI2-THOR task planner operating in scene FloorPlan1.
+                You are ProgPrompt, an AI2-THOR task planner operating in scene FloorPlan1,2,216,224,325,326,403,425.
                 The user will describe a household task. You must return a PYTHON-LIKE PROGRAM that:
                 • Uses ONLY the whitelisted actions listed below.
                 • Includes structured natural-language comments before each action block (Stage 2).
@@ -473,8 +472,8 @@ def build_prompt(objects: List[str], actions: List[str], example_programs: Dict[
                 - Agent는 하나의 객체만 hold할 수 있음. 만약 2개 이상의 객체를 pickup해야 한다면, 먼저 하나를 pickup하고 해야 하는 액션을 수행 후, 다음 객체를 pickup 해야 함.
                 - 객체를 pickup하기 전에는 무조건 객체가 pickupable한지, parentReceptacle 안에 존재하는 객체인지 확인 후, IN edge가 존재하면 openobject를 먼저 수행해야 함.
                 - OpenObject 이후 필요한 액션을 수행하면 바로 CloseObject를 수행해야 함.
-                - Turn on 이라는 명령어가 있으면 ToggleObjectOn을 수행해야 함.
-                - Turn off 이라는 명령어가 있으면 ToggleObjectOff를 수행해야 함.
+                - Turn on 이라는 명령어가 있으면 GoToObect 이후 ToggleObjectOn을 수행해야 함.
+                - Turn off 이라는 명령어가 있으면 GoToObect 이후 ToggleObjectOff를 수행해야 함.
 
                 Below are exemplar programs showing the required layout:
 {textwrap.indent(example_block_section, "")}
@@ -2828,6 +2827,49 @@ def verify_task_completion_with_llm(
 2. 최종 plan에서 실제로 수행되는 task를 추출하세요.
 3. 자연어 목표에서 요구하지만 plan에서 수행되지 않은 task를 찾아서 리스트로 정리하세요.
 
+중요 사항:
+- 누락된 task는 자연어 목표에서 요구하는 구체적인 액션이어야 합니다.
+- 누락된 task는 반드시 자연어로 명확하게 표현되어야 합니다 (예: "Break the Mug", "Turn off the FloorLamp").
+- "?"나 불명확한 표현은 사용하지 마세요.
+- 누락된 task가 없다면 빈 리스트를 반환하세요.
+
+================================================
+<예시 1>
+자연어 목표: "Turn off the Desklamp and FloorLamp"
+최종 생성된 Plan:
+def turn_off_desklamp_and_floorlamp():
+    GoToObject('DeskLamp')
+    ToggleObjectOff('DeskLamp')
+    GoToObject('FloorLamp')
+
+검증 결과: 누락 task = "Turn off the FloorLamp"
+
+누락된 task planning:
+def turn_off_floorlamp():
+    # Step 1: Go to the floor lamp
+    GoToObject('FloorLamp')
+    # Step 2: Turn off the floor lamp
+    ToggleObjectOff('FloorLamp')
+
+<예시 2>
+자연어 목표: "Break the Mug"
+최종 생성된 Plan:
+def break_the_mug():
+    PickupObject('Tomato')
+    GoToObject('Bread')
+    # ... (Mug와 관련 없는 액션들)
+
+검증 결과: 누락 task = "Break the Mug" (원본 목표 자체가 plan에 반영되지 않음)
+누락된 task planning:
+
+def break_the_mug():
+    # Step 1: Find the mug
+    GoToObject('Mug')
+    # Step 2: Break the mug
+    BreakObject('Mug')
+
+================================================
+
 응답 형식 (JSON):
 {{
     "allTasksCompleted": true/false,
@@ -2842,7 +2884,7 @@ def verify_task_completion_with_llm(
     "reasoning": "모든 필요한 task가 plan에 포함되어 있습니다."
 }}
 
-JSON 형식으로만 응답하세요:"""
+JSON 형식으로만 응답하세요. 누락된 task는 반드시 자연어로 명확하게 표현하세요:"""
 
     try:
         messages = [
@@ -2882,8 +2924,25 @@ JSON 형식으로만 응답하세요:"""
         missing_tasks = result.get("missingTasks", [])
         reasoning = result.get("reasoning", "")
         
+        # 누락된 task 필터링: 유효하지 않은 값 제거
+        if missing_tasks:
+            filtered_missing_tasks = []
+            for mt in missing_tasks:
+                if mt and isinstance(mt, str) and mt.strip() and mt.strip() != "?":
+                    filtered_missing_tasks.append(mt.strip())
+            missing_tasks = filtered_missing_tasks
+            
+            # 필터링 후 빈 리스트가 되면 모든 task 완료로 처리
+            if not missing_tasks:
+                all_completed = True
+                reasoning = "모든 필요한 task가 plan에 포함되어 있습니다."
+        
         return all_completed, missing_tasks, reasoning
         
+    except json.JSONDecodeError as e:
+        logger.warning(f"LLM task 완료 검증 JSON 파싱 실패: {e}")
+        logger.warning(f"응답 텍스트: {result_text[:500]}")
+        return False, [], f"JSON 파싱 실패: {e}"
     except Exception as e:
         logger.warning(f"LLM task 완료 검증 실패: {e}")
         return False, [], f"검증 실패: {e}"
@@ -3933,11 +3992,18 @@ def main():
                 print(f"\n📝 검증 결과: {reasoning}")
                 
                 # Step 4: 누락된 task들에 대한 plan 생성 (논리적 + 물리적 검증)
-                print(f"\n🔧 누락된 task들에 대한 plan 생성 중...")
-                missing_task_plans = []
+                # 유효하지 않은 task 필터링
+                valid_missing_tasks = [mt for mt in missing_tasks if mt and isinstance(mt, str) and mt.strip() and mt.strip() != "?"]
                 
-                for missing_task in missing_tasks:
-                    print(f"\n  📋 누락된 task 처리 중: '{missing_task}'")
+                if not valid_missing_tasks:
+                    print(f"\n⚠️  유효한 누락된 task가 없습니다. (필터링된 task: {missing_tasks})")
+                    missing_task_plans = []
+                else:
+                    print(f"\n🔧 누락된 task들에 대한 plan 생성 중... (총 {len(valid_missing_tasks)}개)")
+                    missing_task_plans = []
+                    
+                    for missing_task in valid_missing_tasks:
+                        print(f"\n  📋 누락된 task 처리 중: '{missing_task}'")
                     
                     # 논리적 검증 - LLM을 사용하여 프로그램 생성
                     missing_initial_program = generate_program(
