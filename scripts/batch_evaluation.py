@@ -210,7 +210,7 @@ def run_single_evaluation(
     if physical_guard_plans:
         physical_guard_exe = AI2ThorExecutor(
             scene=scene_name,
-            headless=True,  # 배치 실행이므로 headless 모드
+            headless=False,  # 시각화 활성화
             save_video=False
         )
         physical_guard_exe.initialize()
@@ -218,7 +218,7 @@ def run_single_evaluation(
     if baseline_plans:
         baseline_exe = AI2ThorExecutor(
             scene=scene_name,
-            headless=True,
+            headless=False,  # 시각화 활성화
             save_video=False
         )
         baseline_exe.initialize()
@@ -500,6 +500,50 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], output_file: str
     wb.save(output_file)
     print(f"\n✅ Excel 파일 저장 완료: {output_file}")
 
+def format_time(seconds: float) -> str:
+    """초를 읽기 쉬운 시간 형식으로 변환"""
+    if seconds < 60:
+        return f"{int(seconds)}초"
+    elif seconds < 3600:
+        minutes = int(seconds // 60)
+        secs = int(seconds % 60)
+        return f"{minutes}분 {secs}초"
+    else:
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        return f"{hours}시간 {minutes}분 {secs}초"
+
+def print_progress(current: int, total: int, start_time: datetime, current_task: str = ""):
+    """진행 상황 출력"""
+    elapsed = (datetime.now() - start_time).total_seconds()
+    progress = (current / total) * 100
+    
+    if current > 0:
+        avg_time_per_task = elapsed / current
+        remaining_tasks = total - current
+        estimated_remaining = avg_time_per_task * remaining_tasks
+        estimated_total = elapsed + estimated_remaining
+    else:
+        estimated_remaining = 0
+        estimated_total = 0
+    
+    print(f"\n{'='*70}")
+    print(f"📊 진행 상황: {current}/{total} ({progress:.1f}%)")
+    print(f"⏱️  경과 시간: {format_time(elapsed)}")
+    if estimated_remaining > 0:
+        print(f"⏳ 예상 남은 시간: {format_time(estimated_remaining)}")
+        print(f"🕐 예상 완료 시간: {format_time(estimated_total)}")
+    if current_task:
+        print(f"🔄 현재 작업: {current_task}")
+    print(f"{'='*70}\n")
+    
+    # 진행 바 표시
+    bar_length = 50
+    filled = int(bar_length * current / total)
+    bar = "█" * filled + "░" * (bar_length - filled)
+    print(f"[{bar}] {progress:.1f}%")
+
 def main():
     """메인 함수"""
     print("\n" + "="*70)
@@ -511,14 +555,19 @@ def main():
     floor_plans = [1, 216, 325, 403]
     num_runs = 10
     
+    # 전체 작업 수 계산
+    total_tasks = len(floor_plans) * num_runs
+    current_task_num = 0
+    start_time = datetime.now()
+    
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
     
     all_scene_results = {}
     
-    for fp_number in floor_plans:
+    for fp_idx, fp_number in enumerate(floor_plans, 1):
         print(f"\n{'#'*70}")
-        print(f"# FloorPlan{fp_number} 평가 시작")
+        print(f"# FloorPlan{fp_number} 평가 시작 ({fp_idx}/{len(floor_plans)})")
         print(f"{'#'*70}")
         
         folder = get_folder_from_fp_number(fp_number)
@@ -531,6 +580,12 @@ def main():
         # 10번 실행
         all_results = []
         for run_num in range(1, num_runs + 1):
+            current_task_num += 1
+            current_task = f"FloorPlan{fp_number} - Run {run_num}/{num_runs}"
+            
+            # 진행 상황 출력
+            print_progress(current_task_num, total_tasks, start_time, current_task)
+            
             try:
                 result = run_single_evaluation(
                     fp_number=fp_number,
@@ -539,8 +594,9 @@ def main():
                     run_number=run_num
                 )
                 all_results.append(result)
+                print(f"✅ {current_task} 완료")
             except Exception as e:
-                print(f"❌ Run {run_num} 실패: {e}")
+                print(f"❌ {current_task} 실패: {e}")
                 import traceback
                 traceback.print_exc()
                 continue
@@ -553,16 +609,22 @@ def main():
         avg_results = calculate_averages(all_results)
         all_scene_results[f"FloorPlan{fp_number}"] = avg_results
         
-        print(f"\n✅ FloorPlan{fp_number} 완료")
+        print(f"\n✅ FloorPlan{fp_number} 완료 ({fp_idx}/{len(floor_plans)})")
         print(f"   Physical Guard 평균 GCR: {avg_results['scene_avg']['physical_guard']:.2f}%")
         print(f"   Baseline 평균 GCR: {avg_results['scene_avg']['baseline']:.2f}%")
     
     # Excel 파일로 저장
+    print(f"\n💾 Excel 파일 저장 중...")
     output_file = project_root / "result_half_test.xlsx"
     save_to_excel(all_scene_results, str(output_file))
     
+    # 최종 진행 상황
+    total_elapsed = (datetime.now() - start_time).total_seconds()
+    print_progress(total_tasks, total_tasks, start_time, "모든 작업 완료")
+    
     print("\n" + "="*70)
     print("✅ 모든 평가 완료!")
+    print(f"⏱️  총 소요 시간: {format_time(total_elapsed)}")
     print("="*70)
 
 if __name__ == "__main__":

@@ -231,6 +231,10 @@
 
 - 누락된 작업이 발견되면 자동으로 해당 작업에 대한 플랜을 생성하고 기존 플랜에 추가
 - 누락된 task plan은 `[LLM 생성 - 누락 Task 보완]` 마커로 표시됨
+- **프롬프트 개선**: 누락된 task를 찾는 프롬프트가 개선되어 더 명확한 task 추출 및 필터링 수행
+  - 유효하지 않은 값("?", 빈 문자열 등) 자동 필터링
+  - 자연어로 명확하게 표현된 task만 반환
+  - 예시를 포함한 프롬프트로 정확도 향상
 
 ### 9. 검증 종료 조건
 
@@ -373,6 +377,67 @@ python scripts/physical_guard.py --scene-number 1 --task-file tasks.json
 python scripts/physical_guard.py --scene-number 1 --model llama3.1 --tasks "put apple in fridge"
 ```
 
+### unified_execution.py 사용법 (권장)
+
+`unified_execution.py`는 `physical_guard.py`와 `evaluate_results.py`를 순차적으로 실행하는 통합 스크립트입니다.
+
+**기능:**
+- FloorPlan 번호 입력 시 자동으로 작업 파일 감지
+- `physical_guard.py` 실행 → `evaluate_results.py` 실행 순차 수행
+- 모든 실행 로그를 `total_log.txt` 파일로 저장
+
+**사용 방법:**
+```bash
+python scripts/unified_execution.py
+# → FloorPlan 번호 입력 (예: 1, 216, 325, 403)
+```
+
+**출력:**
+- 실행 시작/종료 시간
+- 총 실행 시간
+- 모든 출력 로그가 `total_log.txt`에 저장됨
+
+### batch_evaluation.py 사용법
+
+`batch_evaluation.py`는 각 FloorPlan을 10번씩 실행하여 평균 GCR을 계산하고 Excel 파일로 저장하는 배치 평가 스크립트입니다.
+
+**기능:**
+- FloorPlan1, FloorPlan216, FloorPlan325, FloorPlan403 각각 10번 실행
+- 각 실행마다 `physical_guard.py`와 `Baseline(ProgPrompt).py` 실행
+- 각 task별 10회 시도 평균 GCR 계산
+- 각 Scene별 평균 GCR 계산 및 Baseline과 비교
+- 진행 상황 실시간 표시 (진행률, 경과 시간, 예상 남은 시간)
+- `result_half_test.xlsx` 파일에 결과 저장
+
+**사용 방법:**
+```bash
+python scripts/batch_evaluation.py
+```
+
+**출력 파일:**
+- `result_half_test.xlsx`: Excel 파일
+  - Summary 시트: 모든 Scene의 평균 GCR 비교
+  - FloorPlan1 시트: 각 task별 상세 결과
+  - FloorPlan216 시트: 각 task별 상세 결과
+  - FloorPlan325 시트: 각 task별 상세 결과
+  - FloorPlan403 시트: 각 task별 상세 결과
+
+**각 시트 내용:**
+- Task 이름
+- Physical Guard 평균 GCR (%)
+- Baseline 평균 GCR (%)
+- 차이 (PG - BL)
+- Physical Guard GCR (10회 상세)
+- Baseline GCR (10회 상세)
+- Scene 평균
+
+**진행 상황 표시:**
+- 현재 진행률 (퍼센트)
+- 경과 시간
+- 예상 남은 시간
+- 현재 작업 (FloorPlan 번호 및 Run 번호)
+- 시각적 진행 바
+
 ### evaluate_results.py 사용법
 
 ```bash
@@ -426,6 +491,16 @@ python scripts/evaluate_results.py --folder BathRoom --fp-number 403
 ### Baseline Scene Graph 파일
 - 경로: `scripts/baseline_updated_scene_graph.json`
 - Baseline(ProgPrompt).py 실행 시 생성되는 Scene Graph 파일
+
+### 통합 실행 로그 파일
+- 경로: `total_log.txt` (프로젝트 루트)
+- `unified_execution.py` 실행 시 생성
+- 실행 시작/종료 시간, 총 실행 시간, 모든 출력 로그 포함
+
+### 배치 평가 결과 파일
+- 경로: `result_half_test.xlsx` (프로젝트 루트)
+- `batch_evaluation.py` 실행 시 생성
+- Excel 형식으로 각 FloorPlan별 상세 결과 및 Summary 포함
 
 ## Scene Graph 파일 구조
 
@@ -485,8 +560,12 @@ Scene Graph는 다음 구조를 가집니다:
 6. **최종 플랜 생성**: 통과한 액션과 실패한 액션(주석처리)을 포함한 최종 플랜 생성
    - LLM 생성/시스템 생성 구분 표시
 7. **Task 완료 검증**: LLM을 사용하여 누락된 작업 확인 및 추가 플랜 생성
+   - 프롬프트 개선으로 더 정확한 누락 task 추출
+   - 유효하지 않은 값 자동 필터링
 8. **Baseline 비교 평가**: Baseline 실행 후 자동으로 평가 수행
 9. **실행 결과 평가**: `evaluate_results.py`를 사용하여 실제 실행 결과와 기대 결과 비교 (GCR 계산)
+10. **통합 실행**: `unified_execution.py`를 사용하여 `physical_guard.py`와 `evaluate_results.py`를 순차 실행
+11. **배치 평가**: `batch_evaluation.py`를 사용하여 각 FloorPlan을 10번씩 실행하여 평균 GCR 계산 및 Excel 저장
 
 ## 주요 함수
 
@@ -526,6 +605,21 @@ LLM을 사용하여 물리적 검증 실패 이유를 분석하고 주석 생성
 ### `evaluation.py`
 Baseline과 Physical Guard 결과를 비교하여 평가 지표 계산 및 Scene Graph 비교
 
+### `unified_execution.py`
+`physical_guard.py`와 `evaluate_results.py`를 순차적으로 실행하는 통합 스크립트
+- FloorPlan 번호 입력 시 자동으로 작업 파일 감지
+- 두 스크립트를 순차적으로 실행
+- 모든 실행 로그를 `total_log.txt`에 저장
+
+### `batch_evaluation.py`
+각 FloorPlan을 10번씩 실행하여 평균 GCR을 계산하고 Excel 파일로 저장
+- 각 FloorPlan마다 10번 반복 실행
+- 각 실행마다 `physical_guard.py`와 `Baseline(ProgPrompt).py` 실행
+- 각 task별 평균 GCR 계산
+- 각 Scene별 평균 GCR 계산 및 Baseline과 비교
+- 진행 상황 실시간 표시
+- Excel 파일로 결과 저장
+
 ### `evaluate_results.py`
 Physical Guard 결과를 실행하고 GCR(Goal Condition Rate)을 평가
 - Plan 파일 파싱 및 실행
@@ -551,6 +645,7 @@ AI2-THOR 시뮬레이터와의 연결 및 액션 실행
 - `openai`: OpenAI 호환 API 클라이언트 (Ollama와 통신)
 - `scipy`: 3D 좌표 변환 (scipy.spatial.transform.Rotation)
 - `numpy`: 수치 계산
+- `openpyxl`: Excel 파일 생성 (batch_evaluation.py 사용 시)
 - `scene_graph_extractor`: Scene Graph 추출 모듈 (선택사항)
 - `ai2thor_connector`: AI2-THOR 실행 커넥터
 
@@ -656,6 +751,10 @@ AI2-THOR 시뮬레이터와의 연결 및 액션 실행
   - 선택한 폴더와 FP 번호에 맞는 FloorPlan JSON 파일을 자동으로 선택합니다.
 - **결과 저장 경로**: `physical_guard.py`는 FloorPlan 번호에 따라 결과를 `results/{RoomType}/FP{num}/` 폴더에 저장합니다.
 - **ToggleObjectOn/Off 실행**: `evaluate_results.py`에서 `ToggleObjectOn`/`ToggleObjectOff` 액션은 `toggle_on`/`toggle_off` 메서드를 사용하여 실행합니다.
+- **통합 실행 스크립트**: `unified_execution.py`를 사용하면 `physical_guard.py`와 `evaluate_results.py`를 한 번에 실행할 수 있습니다.
+- **배치 평가**: `batch_evaluation.py`를 사용하면 각 FloorPlan을 10번씩 실행하여 평균 GCR을 계산하고 Excel 파일로 저장할 수 있습니다.
+  - 진행 상황이 실시간으로 표시됩니다 (진행률, 경과 시간, 예상 남은 시간)
+  - 각 실행마다 새로운 plan이 생성됩니다
 
 ## 평가 지표
 
