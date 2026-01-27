@@ -23,6 +23,19 @@ sys.path.append(current_dir)
 # Return to AI2ThorExecutor
 from ai2thor_connector_ithor import AI2ThorExecutor
 
+# Excel 파일 생성을 위한 라이브러리
+try:
+    import openpyxl
+    from openpyxl.styles import Font, Alignment, PatternFill
+    from openpyxl.utils import get_column_letter
+except ImportError:
+    print("❌ openpyxl이 설치되지 않았습니다. 설치 중...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "openpyxl"])
+    import openpyxl
+    from openpyxl.styles import Font, Alignment, PatternFill
+    from openpyxl.utils import get_column_letter
+
 def parse_json_plan_file(file_path: str) -> Dict[str, str]:
     """
     Parses the JSON plan file to extract tasks and their corresponding programs.
@@ -299,10 +312,15 @@ def execute_and_evaluate_task(
             action = match.group(1)
             args_str = match.group(2)
             
+            # assert 문은 실행하지 않음 (Logical precondition, AI2-THOR 액션이 아님)
+            if action == "assert":
+                continue
+            
             # Split args by comma, ignoring commas inside quotes
             try:
                 if args_str.strip():
-                    args = eval(f"({args_str},)") # Force tuple
+                    # eval 사용 시 "is" with literal SyntaxWarning 방지: 인자만 추출
+                    args = eval(f"({args_str},)")  # Force tuple
                 else:
                     args = ()
                 
@@ -432,29 +450,438 @@ def execute_and_evaluate_task(
         "executed_actions": executed_actions_log
     }
 
+def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: List[Dict], fp_number: str, output_file: str):
+    """평가 결과를 Excel 파일로 저장"""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Results"
+    
+    # 스타일 정의
+    header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    center_align = Alignment(horizontal="center", vertical="center")
+    
+    # 헤더 작성
+    headers = ["Task", "Physical Guard GCR (%)", "Baseline GCR (%)", "차이 (PG - BL)", "Physical Guard Status", "Baseline Status"]
+    for col_idx, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_idx, value=header)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = center_align
+    
+    # 데이터 작성
+    pg_dict = {r['task']: r for r in physical_guard_results}
+    bl_dict = {r['task']: r for r in baseline_results}
+    
+    all_tasks = set(pg_dict.keys()) | set(bl_dict.keys())
+    row = 2
+    
+    total_pg_gcr = 0
+    total_bl_gcr = 0
+    count_pg = 0
+    count_bl = 0
+    
+    for task_name in sorted(all_tasks):
+        pg_res = pg_dict.get(task_name, {})
+        bl_res = bl_dict.get(task_name, {})
+        
+        pg_gcr = pg_res.get('gcr', 0) if 'gcr' in pg_res else None
+        bl_gcr = bl_res.get('gcr', 0) if 'gcr' in bl_res else None
+        
+        pg_status = pg_res.get('status', 'N/A')
+        bl_status = bl_res.get('status', 'N/A')
+        
+        diff = (pg_gcr - bl_gcr) if (pg_gcr is not None and bl_gcr is not None) else None
+        
+        ws.cell(row=row, column=1, value=task_name)
+        ws.cell(row=row, column=2, value=round(pg_gcr, 2) if pg_gcr is not None else "N/A")
+        ws.cell(row=row, column=3, value=round(bl_gcr, 2) if bl_gcr is not None else "N/A")
+        ws.cell(row=row, column=4, value=round(diff, 2) if diff is not None else "N/A")
+        ws.cell(row=row, column=5, value=pg_status)
+        ws.cell(row=row, column=6, value=bl_status)
+        
+        if pg_gcr is not None:
+            total_pg_gcr += pg_gcr
+            count_pg += 1
+        if bl_gcr is not None:
+            total_bl_gcr += bl_gcr
+            count_bl += 1
+        
+        row += 1
+    
+    # 평균 행 추가
+    row += 1
+    avg_pg_gcr = total_pg_gcr / count_pg if count_pg > 0 else 0
+    avg_bl_gcr = total_bl_gcr / count_bl if count_bl > 0 else 0
+    avg_diff = avg_pg_gcr - avg_bl_gcr
+    
+    ws.cell(row=row, column=1, value="평균")
+    ws.cell(row=row, column=2, value=round(avg_pg_gcr, 2))
+    ws.cell(row=row, column=3, value=round(avg_bl_gcr, 2))
+    ws.cell(row=row, column=4, value=round(avg_diff, 2))
+    
+    # 평균 행 스타일
+    for col in range(1, 5):
+        cell = ws.cell(row=row, column=col)
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
+    
+    # 열 너비 조정
+    ws.column_dimensions['A'].width = 40
+    ws.column_dimensions['B'].width = 25
+    ws.column_dimensions['C'].width = 25
+    ws.column_dimensions['D'].width = 20
+    ws.column_dimensions['E'].width = 25
+    ws.column_dimensions['F'].width = 25
+    
+    # 기본 시트 제거
+    if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
+        wb.remove(wb["Sheet"])
+    
+    # 파일 저장
+    wb.save(output_file)
+    print(f"\n✅ Excel 파일 저장 완료: {output_file}")
+
+def evaluate_single_fp(fp_number: str, folder_name: str, test_file: str) -> Tuple[List[Dict], List[Dict]]:
+    """단일 FP에 대한 평가 실행"""
+    fp_folder = f"FP{fp_number}"
+    
+    # Find JSON files
+    folder_physical_guard_pattern = os.path.join(current_dir, "../results", folder_name, fp_folder, "physical_guard_result_*.json")
+    folder_baseline_pattern = os.path.join(current_dir, "../results", folder_name, fp_folder, "baseline_result_*.json")
+    
+    physical_guard_files = glob.glob(folder_physical_guard_pattern)
+    baseline_files = glob.glob(folder_baseline_pattern)
+    
+    # Try relative path if absolute path didn't work
+    if not physical_guard_files:
+        folder_physical_guard_pattern = os.path.join("results", folder_name, fp_folder, "physical_guard_result_*.json")
+        physical_guard_files = glob.glob(folder_physical_guard_pattern)
+    
+    if not baseline_files:
+        folder_baseline_pattern = os.path.join("results", folder_name, fp_folder, "baseline_result_*.json")
+        baseline_files = glob.glob(folder_baseline_pattern)
+    
+    # Fallback: Check parent folder
+    if not physical_guard_files:
+        search_pattern = os.path.join(current_dir, "../results", folder_name, "physical_guard_result_*.json")
+        physical_guard_files = glob.glob(search_pattern)
+        if not physical_guard_files:
+            search_pattern = os.path.join("results", folder_name, "physical_guard_result_*.json")
+            physical_guard_files = glob.glob(search_pattern)
+    
+    if not baseline_files:
+        search_pattern = os.path.join(current_dir, "../results", folder_name, "baseline_result_*.json")
+        baseline_files = glob.glob(search_pattern)
+        if not baseline_files:
+            search_pattern = os.path.join("results", folder_name, "baseline_result_*.json")
+            baseline_files = glob.glob(search_pattern)
+    
+    # Get latest files if multiple found
+    physical_guard_file = None
+    baseline_file = None
+    
+    if physical_guard_files:
+        physical_guard_file = max(physical_guard_files, key=os.path.getmtime)
+    
+    if baseline_files:
+        baseline_file = max(baseline_files, key=os.path.getmtime)
+    
+    if not physical_guard_file and not baseline_file:
+        print(f"⚠️  FP{fp_number}: 결과 파일을 찾을 수 없습니다.")
+        return [], []
+    
+    # Load plans
+    physical_guard_plans = {}
+    baseline_plans = {}
+    
+    if physical_guard_file:
+        physical_guard_plans = parse_json_plan_file(physical_guard_file)
+    
+    if baseline_file:
+        baseline_plans = parse_json_plan_file(baseline_file)
+    
+    # Load expected results
+    expected_results = load_expected_results(test_file)
+    
+    # Initialize Executors
+    scene_name = f"FloorPlan{fp_number}"
+    physical_guard_exe = None
+    baseline_exe = None
+    
+    if physical_guard_plans:
+        physical_guard_exe = AI2ThorExecutor(
+            scene=scene_name,
+            headless=False,
+            save_video=False
+        )
+        physical_guard_exe.initialize()
+    
+    if baseline_plans:
+        baseline_exe = AI2ThorExecutor(
+            scene=scene_name,
+            headless=False,
+            save_video=False
+        )
+        baseline_exe.initialize()
+    
+    # Evaluate tasks
+    physical_guard_results = []
+    baseline_results = []
+    
+    def _norm_task(s: str) -> str:
+        return (s or "").lower().strip().replace(" ", "")
+
+    for task_def in expected_results:
+        task_name = task_def['task']
+        task_key = task_name.strip().lower()
+        
+        # Evaluate Physical Guard
+        if physical_guard_plans and physical_guard_exe:
+            matched_key = None
+            if task_key in physical_guard_plans:
+                matched_key = task_key
+            else:
+                task_n = _norm_task(task_name)
+                for plan_key in physical_guard_plans.keys():
+                    if _norm_task(plan_key) == task_n:
+                        matched_key = plan_key
+                        break
+                if not matched_key:
+                    for plan_key in physical_guard_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            break
+            
+            if matched_key:
+                program_code = physical_guard_plans[matched_key]
+                result = execute_and_evaluate_task(
+                    physical_guard_exe, task_def, program_code, "Physical Guard"
+                )
+                physical_guard_results.append(result)
+            else:
+                physical_guard_results.append({
+                    "task": task_name,
+                    "method": "Physical Guard",
+                    "status": "SKIPPED",
+                    "reason": "No Plan"
+                })
+        
+        # Evaluate Baseline
+        if baseline_plans and baseline_exe:
+            matched_key = None
+            if task_key in baseline_plans:
+                matched_key = task_key
+            else:
+                task_n = _norm_task(task_name)
+                for plan_key in baseline_plans.keys():
+                    if _norm_task(plan_key) == task_n:
+                        matched_key = plan_key
+                        break
+                if not matched_key:
+                    for plan_key in baseline_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            break
+            
+            if matched_key:
+                program_code = baseline_plans[matched_key]
+                result = execute_and_evaluate_task(
+                    baseline_exe, task_def, program_code, "Baseline"
+                )
+                baseline_results.append(result)
+            else:
+                baseline_results.append({
+                    "task": task_name,
+                    "method": "Baseline",
+                    "status": "SKIPPED",
+                    "reason": "No Plan"
+                })
+    
+    # Cleanup
+    if physical_guard_exe:
+        physical_guard_exe.close()
+    if baseline_exe:
+        baseline_exe.close()
+    
+    return physical_guard_results, baseline_results
+
 def main():
     parser = argparse.ArgumentParser(description="Evaluate Physical Guard and Baseline Results")
     parser.add_argument("--physical_guard_json", type=str, help="Path to physical_guard_result JSON file (optional)")
     parser.add_argument("--baseline_json", type=str, help="Path to baseline_result JSON file (optional)")
-    parser.add_argument("--test_file", type=str, default="data/final_test/FloorPlan1.json", help="Path to the test definition JSON")
+    parser.add_argument("--test_file", type=str, default=None, help="Path to the test definition JSON")
     parser.add_argument("--folder", type=str, default="Kitchen", 
                        choices=["Kitchen", "LivingRoom", "BedRoom", "BathRoom"],
                        help="Folder name in results/ directory to search for JSON files (default: Kitchen)")
     parser.add_argument("--fp-number", type=str, default=None,
-                       help="FP number (e.g., 1, 2, 216, 224, 325, 326, 403, 425). If not provided, will prompt for input.")
+                       help="FP number (e.g., 1, 2, 216, 224, 325, 326, 403, 425). If not provided, will process all FPs in folder.")
+    parser.add_argument("--all-fps", action="store_true",
+                       help="Process all FPs in the selected folder")
     args = parser.parse_args()
 
-    # Get FP number
-    fp_number = args.fp_number
-    if not fp_number:
-        try:
-            fp_number = input(f"📋 FP 번호를 입력하세요 (예: 1, 2, 216, 224, 325, 326, 403, 425): ").strip()
-            if not fp_number:
-                print("❌ FP 번호가 입력되지 않았습니다.")
-                return
-        except (KeyboardInterrupt, EOFError):
-            print("\n❌ 입력이 취소되었습니다.")
+    folder_name = args.folder
+    
+    # 폴더 안의 모든 FP 폴더 찾기
+    folder_dir = os.path.join(current_dir, "../results", folder_name)
+    if not os.path.exists(folder_dir):
+        folder_dir = os.path.join("results", folder_name)
+    
+    if not os.path.exists(folder_dir):
+        print(f"❌ 폴더를 찾을 수 없습니다: {folder_dir}")
+        return
+    
+    # FP 폴더 찾기 (FP{num} 형식)
+    fp_folders = []
+    if os.path.exists(folder_dir):
+        for item in os.listdir(folder_dir):
+            item_path = os.path.join(folder_dir, item)
+            if os.path.isdir(item_path) and item.startswith("FP"):
+                # FP{num} 형식에서 숫자 추출
+                match = re.match(r'FP(\d+)', item)
+                if match:
+                    fp_folders.append((item, match.group(1)))
+    
+    if not fp_folders:
+        print(f"❌ {folder_dir}에 FP 폴더를 찾을 수 없습니다.")
+        return
+    
+    # FP 번호 필터링
+    if args.fp_number:
+        fp_folders = [(folder, num) for folder, num in fp_folders if num == args.fp_number]
+        if not fp_folders:
+            print(f"❌ FP{args.fp_number} 폴더를 찾을 수 없습니다.")
             return
+    
+    print(f"\n📂 {folder_name} 폴더에서 {len(fp_folders)}개의 FP 폴더를 찾았습니다:")
+    for folder, num in fp_folders:
+        print(f"   - {folder} (FloorPlan{num})")
+    
+    # 각 FP에 대해 평가 실행
+    for folder, fp_number in fp_folders:
+        print(f"\n{'='*70}")
+        print(f"🔄 FloorPlan{fp_number} 평가 시작")
+        print(f"{'='*70}")
+        
+        # Test file 자동 선택
+        test_file = args.test_file
+        if not test_file:
+            test_file_path = os.path.join("data/final_test", f"FloorPlan{fp_number}.json")
+            if os.path.exists(test_file_path):
+                test_file = test_file_path
+            else:
+                print(f"⚠️  Test 파일을 찾을 수 없습니다: {test_file_path}")
+                continue
+        
+            # 평가 실행
+        try:
+            physical_guard_results, baseline_results = evaluate_single_fp(
+                fp_number=fp_number,
+                folder_name=folder_name,
+                test_file=test_file
+            )
+            
+            if not physical_guard_results and not baseline_results:
+                print(f"⚠️  FloorPlan{fp_number}: 평가 결과가 없습니다.")
+                continue
+            
+            # 기존 출력 형식으로 요약 출력
+            print("\n" + "="*70)
+            print("EVALUATION SUMMARY - COMPARISON")
+            print("="*70)
+            
+            # Physical Guard Summary
+            if physical_guard_results:
+                print("\n📊 PHYSICAL GUARD RESULTS:")
+                print("-" * 70)
+                total_gcr = 0
+                count_gcr = 0
+                for res in physical_guard_results:
+                    if 'gcr' in res:
+                        status_icon = "✅" if res['status'] == "PASSED" else "❌"
+                        print(f"{status_icon} {res['task']}")
+                        print(f"   Status: {res['status']}")
+                        print(f"   GCR: {res['gcr']:.1f}%")
+                        print()
+                        total_gcr += res['gcr']
+                        count_gcr += 1
+                
+                if count_gcr > 0:
+                    avg_gcr = total_gcr / count_gcr
+                    print(f"   Average GCR: {avg_gcr:.1f}%")
+            
+            # Baseline Summary
+            if baseline_results:
+                print("\n📊 BASELINE RESULTS:")
+                print("-" * 70)
+                total_gcr = 0
+                count_gcr = 0
+                for res in baseline_results:
+                    if 'gcr' in res:
+                        status_icon = "✅" if res['status'] == "PASSED" else "❌"
+                        print(f"{status_icon} {res['task']}")
+                        print(f"   Status: {res['status']}")
+                        print(f"   GCR: {res['gcr']:.1f}%")
+                        print()
+                        total_gcr += res['gcr']
+                        count_gcr += 1
+                
+                if count_gcr > 0:
+                    avg_gcr = total_gcr / count_gcr
+                    print(f"   Average GCR: {avg_gcr:.1f}%")
+            
+            # Side-by-side Comparison
+            if physical_guard_results and baseline_results:
+                print("\n📊 SIDE-BY-SIDE COMPARISON:")
+                print("=" * 70)
+                print(f"{'Task':<40} {'Physical Guard':<20} {'Baseline':<20}")
+                print("-" * 70)
+                
+                pg_dict = {r['task']: r for r in physical_guard_results}
+                bl_dict = {r['task']: r for r in baseline_results}
+                all_tasks = set(pg_dict.keys()) | set(bl_dict.keys())
+                
+                for task in sorted(all_tasks):
+                    pg_res = pg_dict.get(task, {})
+                    bl_res = bl_dict.get(task, {})
+                    
+                    pg_gcr = pg_res.get('gcr', 0) if 'gcr' in pg_res else None
+                    bl_gcr = bl_res.get('gcr', 0) if 'gcr' in bl_res else None
+                    
+                    pg_str = f"{pg_gcr:.1f}%" if pg_gcr is not None else "N/A"
+                    bl_str = f"{bl_gcr:.1f}%" if bl_gcr is not None else "N/A"
+                    
+                    if pg_gcr is not None and bl_gcr is not None:
+                        if pg_gcr > bl_gcr:
+                            pg_str = f"🏆 {pg_str}"
+                        elif bl_gcr > pg_gcr:
+                            bl_str = f"🏆 {bl_str}"
+                    
+                    print(f"{task[:38]:<40} {pg_str:<20} {bl_str:<20}")
+                
+                print("=" * 70)
+            
+            # Excel 파일로 저장
+            project_root = Path(current_dir).parent
+            output_file = project_root / f"FP{fp_number}_result.xlsx"
+            
+            print(f"\n💾 Excel 파일 저장 중...")
+            save_results_to_excel(
+                physical_guard_results,
+                baseline_results,
+                fp_number,
+                str(output_file)
+            )
+            
+        except Exception as e:
+            print(f"❌ FloorPlan{fp_number} 평가 실패: {e}")
+            import traceback
+            traceback.print_exc()
+            continue
+    
+    print(f"\n{'='*70}")
+    print(f"✅ 모든 평가 완료! ({len(fp_folders)}개 FP)")
+    print(f"{'='*70}")
     
     # Auto-select test_file based on FP number if not specified
     if not args.test_file or args.test_file == "data/final_test/FloorPlan1.json":
@@ -612,18 +1039,30 @@ def main():
         print(f"TASK: {task_name}")
         print(f"{'='*70}")
         
+        # 공백/대소문자 무시 정규화 (sinkbasin vs sink basin 등)
+        def _norm(s: str) -> str:
+            return (s or "").lower().strip().replace(" ", "")
+
         # Evaluate Physical Guard
         if physical_guard_plans and physical_guard_exe:
             matched_key = None
             if task_key in physical_guard_plans:
                 matched_key = task_key
             else:
-                # Try fuzzy matching
+                # 정규화 후 일치 시 매칭
+                task_norm = _norm(task_name)
                 for plan_key in physical_guard_plans.keys():
-                    if task_key in plan_key or plan_key in task_key:
+                    if _norm(plan_key) == task_norm:
                         matched_key = plan_key
-                        print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Physical Guard")
+                        print(f"  ℹ️ Using normalized match: '{plan_key}' for Physical Guard")
                         break
+                if not matched_key:
+                    # 기존 fuzzy (포함 관계)
+                    for plan_key in physical_guard_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Physical Guard")
+                            break
             
             if matched_key:
                 program_code = physical_guard_plans[matched_key]
@@ -633,6 +1072,9 @@ def main():
                 physical_guard_results.append(result)
             else:
                 print(f"  ⚠️ Physical Guard: Plan not found for '{task_name}'")
+                if physical_guard_plans:
+                    all_keys = list(physical_guard_plans.keys())
+                    print(f"     (로드된 plan 키 {len(all_keys)}개: {all_keys})")
                 physical_guard_results.append({
                     "task": task_name,
                     "method": "Physical Guard",
@@ -646,12 +1088,18 @@ def main():
             if task_key in baseline_plans:
                 matched_key = task_key
             else:
-                # Try fuzzy matching
+                task_norm = _norm(task_name)
                 for plan_key in baseline_plans.keys():
-                    if task_key in plan_key or plan_key in task_key:
+                    if _norm(plan_key) == task_norm:
                         matched_key = plan_key
-                        print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Baseline")
+                        print(f"  ℹ️ Using normalized match: '{plan_key}' for Baseline")
                         break
+                if not matched_key:
+                    for plan_key in baseline_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            print(f"  ℹ️ Using fuzzy match: '{plan_key}' for Baseline")
+                            break
             
             if matched_key:
                 program_code = baseline_plans[matched_key]
@@ -661,6 +1109,9 @@ def main():
                 baseline_results.append(result)
             else:
                 print(f"  ⚠️ Baseline: Plan not found for '{task_name}'")
+                if baseline_plans:
+                    all_keys = list(baseline_plans.keys())
+                    print(f"     (로드된 plan 키 {len(all_keys)}개: {all_keys})")
                 baseline_results.append({
                     "task": task_name,
                     "method": "Baseline",

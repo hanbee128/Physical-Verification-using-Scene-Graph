@@ -2030,30 +2030,79 @@ class AI2ThorExecutor:
 
 # 사용 예시
 if __name__ == "__main__":
-    executor = AI2ThorExecutor(scene="FloorPlan1", headless=False)
+    executor = AI2ThorExecutor(scene="FloorPlan403", headless=False)
     executor.initialize()
     
     # ProgPrompt 형식 프로그램 (assert/else 포함)
     program = """
-    def break_mug():
-        GoToObject('Apple')
-        PickupObject('Apple')
-        GoToObject('Fridge')
-        OpenObject('Fridge')
-        PutObject('Apple', 'Fridge')
-        CloseObject('Fridge')
-        GoToObject('Tomato')
-        PickupObject('Tomato')
-        GoToObject('Fridge')
-        OpenObject('Fridge')
-        PutObject('Tomato', 'Fridge')
-        CloseObject('Fridge')
-        GoToObject('Potato')
-        PickupObject('Potato')
-        GoToObject('Fridge')
-        OpenObject('Fridge')
-        PutObject('Potato', 'Fridge')
-        CloseObject('Fridge')
+    def put_the_cloth_on_the_countertop_and_put_the_handtowel_into_the_sinkbasin():
+	# Task: Put the cloth on the countertop and put the handtowel into the sinkbasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.750, 0.909, 1.500)
+	GoToObject('Cloth')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Cloth')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-2.000, 0.909, 2.500)
+	GoToObject('SinkBasin')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'HandTowel'로 이동
+	# 이동할 좌표: (0.250, 0.909, 2.750)
+	GoToObject('HandTowel')
+	# Step 5
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'SinkBasin' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.250, 0.909, 2.750)
+	GoToObject('SinkBasin')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Agent의 위치 기준 범위 밖으로 HandTowel이 SinkBasin에 접근할 수 없음 (거리: 2.203m, 벗어난 축: x=-1.926)
+	# PutObject('HandTowel', 'SinkBasin')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused this one to fail)
+	# PutObject('HandTowel', 'SinkBasin')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단
+# This action failed physical verification because it was halted due to a previous action verification failure. In other words, the system encountered an issue with a previous action and as a result, this action could not be verified successfully.
+	# CloseObject('SinkBasin')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put the handtowel into the sinkbasin
+	# Task: Put the handtowel into the sinkbasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (0.250, 0.909, 2.750)
+	GoToObject('HandTowel')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('HandTowel')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-2.000, 0.909, 2.500)
+	GoToObject('SinkBasin')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('HandTowel', 'SinkBasin')
+
     """
     
     result = executor.execute_program(program)

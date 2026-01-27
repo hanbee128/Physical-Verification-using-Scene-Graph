@@ -298,28 +298,45 @@ def load_task_list(task_file: Optional[str], inline_tasks: List[str]) -> List[st
 
     # 파일에서 작업 목록 읽기
     with open(task_file, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()  # 앞뒤 공백 제거
-            if not line:  # 빈 줄은 건너뛰기
+        content = f.read()
+
+    # 먼저 전체 파일을 하나의 JSON으로 파싱 시도 (FloorPlan*.json 등 다중 줄 JSON)
+    try:
+        data = json.loads(content)
+        if isinstance(data, list):
+            # FloorPlan 형식: [{"task": "...", "object_states": ...}, ...]
+            for item in data:
+                if isinstance(item, dict) and "task" in item:
+                    tasks.append(item["task"])
+                elif isinstance(item, str):
+                    tasks.append(item)
+        elif isinstance(data, dict):
+            # {"task": "..."} 단일 객체 또는 키가 task 이름인 경우
+            if "task" in data:
+                tasks.append(data["task"])
+            else:
+                tasks.extend(data.keys())
+        elif isinstance(data, str):
+            tasks.append(data)
+    except json.JSONDecodeError:
+        # 전체 파싱 실패 시 JSONL/줄 단위 처리
+        for line in content.splitlines():
+            line = line.strip()
+            if not line:
                 continue
             try:
-                # JSON 형식으로 파싱 시도
                 data = json.loads(line)
+                if isinstance(data, dict):
+                    if "task" in data:
+                        tasks.append(data["task"])
+                    else:
+                        tasks.extend(data.keys())
+                elif isinstance(data, list):
+                    tasks.extend(data)
+                elif isinstance(data, str):
+                    tasks.append(data)
             except json.JSONDecodeError:
-                # JSON이 아니면 일반 텍스트로 처리하여 작업 목록에 추가
                 tasks.append(line)
-                continue
-            
-            # 파싱된 데이터 타입에 따라 처리
-            if isinstance(data, dict):
-                # 딕셔너리인 경우 키들을 작업으로 사용
-                tasks.extend(data.keys())
-            elif isinstance(data, list):
-                # 리스트인 경우 모든 요소를 작업으로 사용
-                tasks.extend(data)
-            elif isinstance(data, str):
-                # 문자열인 경우 그대로 작업으로 추가
-                tasks.append(data)
     return tasks
 
 
@@ -1007,34 +1024,6 @@ def main():
     # JSON 출력 파일 경로 생성
     output_path = Path(args.output_dir) / f"baseline_result_{timestamp}.json"
     
-    # Scene Graph 경로 결정
-    scene_graph_path = None
-    baseline_updated_scene_graph_path = None
-    
-    if args.scene_number is not None or args.scene_graph is not None:
-        if args.scene_graph:
-            # 명령줄에서 직접 지정된 경우
-            scene_graph_path = Path(args.scene_graph)
-        else:
-            # Scene 번호에 따라 자동 생성
-            scene_number = args.scene_number
-            scene_graph_path = Path(f"scripts/scene_graph_structured_FloorPlan{scene_number}.json")
-            print(f"🔍 FloorPlan {scene_number}의 Scene Graph 사용: {scene_graph_path}")
-        
-        # 상대 경로인 경우 절대 경로로 변환
-        if not scene_graph_path.is_absolute():
-            scene_graph_path = Path(__file__).parent.parent / scene_graph_path
-        
-        # Scene Graph 파일 존재 확인
-        if not scene_graph_path.exists():
-            print(f"⚠️  Scene Graph 파일을 찾을 수 없습니다: {scene_graph_path.absolute()}")
-            print(f"   Scene Graph 업데이트를 건너뜁니다.")
-            scene_graph_path = None
-        else:
-            # Baseline용 업데이트된 Scene Graph 파일 경로 생성
-            baseline_updated_scene_graph_path = scene_graph_path.parent / "baseline_updated_scene_graph.json"
-            print(f"📋 Baseline용 Scene Graph 업데이트 파일: {baseline_updated_scene_graph_path}")
-
     # 각 작업에 대한 프로그램 생성
     plan_dict: Dict[str, str] = {}  # 작업명: 프로그램 코드 딕셔너리
     for task in tasks:
@@ -1059,23 +1048,6 @@ def main():
         # 생성된 프로그램 출력 (콘솔 확인용)
         print(program)
         print("-" * 80)  # 구분선
-        
-        # Scene Graph 업데이트 (Baseline용)
-        if scene_graph_path and baseline_updated_scene_graph_path:
-            # 각 task 시작 전에 원본 Scene Graph를 baseline_updated_scene_graph.json으로 복사 (원본으로 리셋)
-            shutil.copy2(str(scene_graph_path), str(baseline_updated_scene_graph_path))
-            logger.info(f"원본 Scene Graph를 {baseline_updated_scene_graph_path}로 복사 완료 (task 시작 전 리셋)")
-            
-            # 업데이트된 Scene Graph 로드
-            scene_graph = load_scene_graph(str(baseline_updated_scene_graph_path))
-            logger.info(f"업데이트된 Scene Graph 로드 완료: {baseline_updated_scene_graph_path}")
-            
-            # Plan을 실행하여 Scene Graph 업데이트
-            logger.info(f"📋 Plan 실행 및 Scene Graph 업데이트 중: '{task}'")
-            scene_graph = update_scene_graph_from_plan(
-                scene_graph, program, str(baseline_updated_scene_graph_path)
-            )
-            logger.info(f"✓ Scene Graph 업데이트 완료: '{task}'")
 
     # JSON 파일로 계획 저장
     with open(output_path, "w", encoding="utf-8") as f:

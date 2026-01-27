@@ -17,12 +17,12 @@
         "max_trans": 0
     },
     {
-        "task": "Put CD and Cellphone in the drawer",
+        "task": "Put CreditCard and Cellphone in the drawer",
         "object_states": [
             {
                 "name": "Drawer",
                 "contains": [
-                    "CD",
+                    "CreditCard",
                     "CellPhone"
                 ],
                 "state": "None"
@@ -32,10 +32,10 @@
         "max_trans": 0
     },
     {
-        "task": "Put the Pencil and the pen and the Book on the bed",
+        "task": "Put the Pencil and the pen and the Book on the Dresser",
         "object_states": [
             {
-                "name": "Bed",
+                "name": "Dresser",
                 "contains": [
                     "Pencil",
                     "Book",
@@ -48,19 +48,17 @@
         "max_trans": 0
     },
     {
-        "task": "Put the vase into the garbagecan and break the vase",
+        "task": "Turn off the lightswitch and open the book",
         "object_states": [
             {
-                "name": "GarbageCan",
-                "contains": [
-                    "Vase"
-                ],
-                "state": "None"
+                "name": "LightSwitch",
+                "contains": [],
+                "state": "Off"
             },
             {
-                "name": "Vase",
+                "name": "Book",
                 "contains": [],
-                "state": "Broken"
+                "state": "Opened"
             }
         ],
         "trans": 0,

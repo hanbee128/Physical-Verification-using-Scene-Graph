@@ -1,0 +1,16 @@
+[
+  {
+    "task": "Put Toiletpaper in the cabinet",
+    "object_states": [
+      {
+        "name": "Cabinet",
+        "contains": [
+          "ToiletPaper"
+        ],
+        "state": "None"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  }
+]

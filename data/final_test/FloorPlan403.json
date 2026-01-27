@@ -45,32 +45,26 @@
         "max_trans": 0
     },
     {
-        "task": "Put spraybottle on the countertop",
+        "task": "Put Toiletpaper in the cabinet",
         "object_states": [
             {
-                "name": "CounterTop",
+                "name": "Cabinet",
                 "contains": [
-                    "SprayBottle"
+                    "ToiletPaper"
                 ],
                 "state": "None"
-            },
-            {
-                "name": "ShowerDoor",
-                "contains": [],
-                "state": "Opened"
             }
         ],
         "trans": 0,
         "max_trans": 0
     },
     {
-        "task": "Put the cloth and handtowel into the sinkbasin",
+        "task": "Put the dishsponge in the sinkbasin",
         "object_states": [
             {
                 "name": "SinkBasin",
                 "contains": [
-                    "Cloth",
-                    "HandTowel"
+                    "DishSponge"
                 ],
                 "state": "None"
             }
