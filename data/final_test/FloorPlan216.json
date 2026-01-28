@@ -12,10 +12,10 @@
         "max_trans": 0
     },
     {
-        "task": "Put the remotecontrol and creditcard and keychain in the drawer",
+        "task": "Put the remotecontrol and creditcard and keychain in the box",
         "object_states": [
             {
-                "name": "Drawer",
+                "name": "Box",
                 "contains": [
                     "RemoteControl",
                     "CreditCard",

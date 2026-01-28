@@ -45,12 +45,19 @@
         "max_trans": 0
     },
     {
-        "task": "Put Toiletpaper in the cabinet",
+        "task": "Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop",
         "object_states": [
             {
                 "name": "Cabinet",
                 "contains": [
-                    "ToiletPaper"
+                    "Plunger"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "CounterTop",
+                "contains": [
+                    "PaperTowelRoll"
                 ],
                 "state": "None"
             }

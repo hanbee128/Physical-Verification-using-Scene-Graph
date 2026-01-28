@@ -17,13 +17,13 @@
         "max_trans": 0
     },
     {
-        "task": "Put CreditCard and Cellphone in the drawer",
+        "task": "Put the Cellphone and pencil on the shelf",
         "object_states": [
             {
-                "name": "Drawer",
+                "name": "Shelf",
                 "contains": [
-                    "CreditCard",
-                    "CellPhone"
+                    "CellPhone",
+                    "Pencil"
                 ],
                 "state": "None"
             }

@@ -975,12 +975,12 @@ def verify_guard_with_scene_graph(
         # y 범위: -0.35 ~ 1 (상하)
         # z 범위: 0 ~ 1 (앞뒤)
         # 손 위치에서 ± 범위로 계산
-        x_range_min = - 1 - 0.5  #
-        x_range_max = + 1 + 0.5  #
-        y_range_min = - 0.901    # 아래로 -0.35
-        y_range_max = + 1 + 0.5  # 위로 1.0
-        z_range_min = - 1 - 0.5  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
-        z_range_max = + 1 + 0.5  # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
+        x_range_min = - 1 - 0.8  #
+        x_range_max = + 1 + 0.8  #
+        y_range_min = - 1.0    # 아래로 -0.35
+        y_range_max = + 1 + 0.8  # 위로 1.0
+        z_range_min = - 1 - 0.8  # 뒤로 0 (뒤) - 기본 1.5에 handSpereRadius=0.2로 했을 때
+        z_range_max = + 1 + 0.8  # 앞으로 1.0 (앞) - 기본 0.5에 handSpereRadius=0.2로 했을 때
         
         # 손 위치 기준으로 범위 계산 (절대 좌표)
         x_min = agent_x + x_range_min
@@ -3283,6 +3283,8 @@ def generate_final_plan_with_physical_verification(
             # PickupObject이고 ¬HOLDS(agent, *) 가드가 실패한 경우 (이미 손에 물체가 있음)
             # 해당 액션을 건너뛰고 다음 액션으로 진행
             action_type = action.get("type", "")
+            action_args = action.get("args", {})
+            object_name = action_args.get("o", "?")  # OpenObject/CloseObject 등에서 로그용
             if action_type == "PickupObject" and "¬HOLDS(agent, *)" in failed_guards:
                 logger.info(f"  ⏭️  PickupObject 건너뛰기: 이미 손에 물체가 있음")
                 logger.info(f"     → 다음 액션으로 진행")
