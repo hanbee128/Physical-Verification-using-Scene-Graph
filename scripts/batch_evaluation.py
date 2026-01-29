@@ -515,6 +515,8 @@ def calculate_averages(all_results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     pg_task_results = defaultdict(list)
     bl_task_results = defaultdict(list)
+    pg_task_exec = defaultdict(list)
+    bl_task_exec = defaultdict(list)
     
     # 각 실행 결과를 task별로 그룹화
     for run_result in all_results:
@@ -522,36 +524,50 @@ def calculate_averages(all_results: List[Dict[str, Any]]) -> Dict[str, Any]:
             task_name = pg_res.get("task", "Unknown")
             if "gcr" in pg_res:
                 pg_task_results[task_name].append(pg_res["gcr"])
+            if "exec" in pg_res:
+                pg_task_exec[task_name].append(pg_res["exec"])
         
         for bl_res in run_result.get("baseline", []):
             task_name = bl_res.get("task", "Unknown")
             if "gcr" in bl_res:
                 bl_task_results[task_name].append(bl_res["gcr"])
+            if "exec" in bl_res:
+                bl_task_exec[task_name].append(bl_res["exec"])
     
     # 평균 계산
     pg_avg = {}
     for task_name, gcr_list in pg_task_results.items():
+        exec_list = pg_task_exec.get(task_name, [])
         pg_avg[task_name] = {
             "avg_gcr": sum(gcr_list) / len(gcr_list),
             "gcr_list": gcr_list,
+            "avg_exec": sum(exec_list) / len(exec_list) if exec_list else 0.0,
+            "exec_list": exec_list,
             "count": len(gcr_list)
         }
     
     bl_avg = {}
     for task_name, gcr_list in bl_task_results.items():
+        exec_list = bl_task_exec.get(task_name, [])
         bl_avg[task_name] = {
             "avg_gcr": sum(gcr_list) / len(gcr_list),
             "gcr_list": gcr_list,
+            "avg_exec": sum(exec_list) / len(exec_list) if exec_list else 0.0,
+            "exec_list": exec_list,
             "count": len(gcr_list)
         }
     
     # Scene 평균 계산
     all_pg_gcr = [r["avg_gcr"] for r in pg_avg.values()]
     all_bl_gcr = [r["avg_gcr"] for r in bl_avg.values()]
+    all_pg_exec = [r["avg_exec"] for r in pg_avg.values()]
+    all_bl_exec = [r["avg_exec"] for r in bl_avg.values()]
     
     scene_avg = {
         "physical_guard": sum(all_pg_gcr) / len(all_pg_gcr) if all_pg_gcr else 0.0,
-        "baseline": sum(all_bl_gcr) / len(all_bl_gcr) if all_bl_gcr else 0.0
+        "baseline": sum(all_bl_gcr) / len(all_bl_gcr) if all_bl_gcr else 0.0,
+        "physical_guard_exec": sum(all_pg_exec) / len(all_pg_exec) if all_pg_exec else 0.0,
+        "baseline_exec": sum(all_bl_exec) / len(all_bl_exec) if all_bl_exec else 0.0
     }
     
     return {
@@ -586,8 +602,12 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
             sheet_name = f"{fp_name}_R{run_num}"[:31]
             ws = wb.create_sheet(title=sheet_name)
             
-            # 헤더 작성
-            headers = ["Task", "Physical Guard GCR (%)", "Baseline GCR (%)", "차이 (PG - BL)"]
+            # 헤더 작성 (GCR + Exec 동일 구조)
+            headers = [
+                "Task",
+                "Physical Guard GCR (%)", "Baseline GCR (%)", "차이 (PG - BL)",
+                "Physical Guard Exec (%)", "Baseline Exec (%)", "차이 Exec (PG - BL)"
+            ]
             for col_idx, header in enumerate(headers, 1):
                 cell = ws.cell(row=1, column=col_idx, value=header)
                 cell.fill = header_fill
@@ -607,36 +627,48 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
                 
                 pg_gcr = pg_res.get("gcr", 0.0) if pg_res else None
                 bl_gcr = bl_res.get("gcr", 0.0) if bl_res else None
+                pg_exec = pg_res.get("exec", 0.0) if pg_res else None
+                bl_exec = bl_res.get("exec", 0.0) if bl_res else None
                 
                 pg_gcr_val = pg_gcr if pg_gcr is not None else 0.0
                 bl_gcr_val = bl_gcr if bl_gcr is not None else 0.0
-                diff = pg_gcr_val - bl_gcr_val
+                diff_gcr = pg_gcr_val - bl_gcr_val
+                pg_exec_val = pg_exec if pg_exec is not None else 0.0
+                bl_exec_val = bl_exec if bl_exec is not None else 0.0
+                diff_exec = pg_exec_val - bl_exec_val
                 
                 ws.cell(row=row, column=1, value=task_name)
                 ws.cell(row=row, column=2, value=round(pg_gcr_val, 2) if pg_gcr is not None else "N/A")
                 ws.cell(row=row, column=3, value=round(bl_gcr_val, 2) if bl_gcr is not None else "N/A")
-                ws.cell(row=row, column=4, value=round(diff, 2) if (pg_gcr is not None and bl_gcr is not None) else "N/A")
+                ws.cell(row=row, column=4, value=round(diff_gcr, 2) if (pg_gcr is not None and bl_gcr is not None) else "N/A")
+                ws.cell(row=row, column=5, value=round(pg_exec_val, 2) if pg_exec is not None else "N/A")
+                ws.cell(row=row, column=6, value=round(bl_exec_val, 2) if bl_exec is not None else "N/A")
+                ws.cell(row=row, column=7, value=round(diff_exec, 2) if (pg_exec is not None and bl_exec is not None) else "N/A")
                 
                 row += 1
             
             # 열 너비 조정
             ws.column_dimensions['A'].width = 40
-            ws.column_dimensions['B'].width = 25
-            ws.column_dimensions['C'].width = 25
-            ws.column_dimensions['D'].width = 20
+            for col in ['B', 'C', 'D', 'E', 'F', 'G']:
+                ws.column_dimensions[col].width = 25
     
     # 각 Scene별 평균 시트 생성
     for fp_name, scene_data in all_scene_results.items():
         ws = wb.create_sheet(title=f"{fp_name}_Avg"[:31])
         
-        # 헤더 작성
+        # 헤더 작성 (GCR + Exec 동일 구조)
         headers = [
             "Task",
             "Physical Guard 평균 GCR (%)",
             "Baseline 평균 GCR (%)",
             "차이 (PG - BL)",
             "Physical Guard GCR (10회)",
-            "Baseline GCR (10회)"
+            "Baseline GCR (10회)",
+            "Physical Guard 평균 Exec (%)",
+            "Baseline 평균 Exec (%)",
+            "차이 Exec (PG - BL)",
+            "Physical Guard Exec (10회)",
+            "Baseline Exec (10회)"
         ]
         
         for col_idx, header in enumerate(headers, 1):
@@ -656,23 +688,34 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
             pg_info = pg_data.get(task_name, {})
             bl_info = bl_data.get(task_name, {})
             
-            pg_avg = pg_info.get("avg_gcr", 0.0)
-            bl_avg = bl_info.get("avg_gcr", 0.0)
-            diff = pg_avg - bl_avg
+            pg_gcr_avg = pg_info.get("avg_gcr", 0.0)
+            bl_gcr_avg = bl_info.get("avg_gcr", 0.0)
+            diff_gcr = pg_gcr_avg - bl_gcr_avg
             
-            pg_list = pg_info.get("gcr_list", [])
-            bl_list = bl_info.get("gcr_list", [])
+            pg_gcr_list = pg_info.get("gcr_list", [])
+            bl_gcr_list = bl_info.get("gcr_list", [])
+            pg_exec_avg = pg_info.get("avg_exec", 0.0)
+            bl_exec_avg = bl_info.get("avg_exec", 0.0)
+            diff_exec = pg_exec_avg - bl_exec_avg
+            pg_exec_list = pg_info.get("exec_list", [])
+            bl_exec_list = bl_info.get("exec_list", [])
             
-            # GCR 리스트를 문자열로 변환
-            pg_list_str = ", ".join([f"{g:.1f}" for g in pg_list]) if pg_list else "N/A"
-            bl_list_str = ", ".join([f"{g:.1f}" for g in bl_list]) if bl_list else "N/A"
+            pg_gcr_str = ", ".join([f"{g:.1f}" for g in pg_gcr_list]) if pg_gcr_list else "N/A"
+            bl_gcr_str = ", ".join([f"{g:.1f}" for g in bl_gcr_list]) if bl_gcr_list else "N/A"
+            pg_exec_str = ", ".join([f"{e:.1f}" for e in pg_exec_list]) if pg_exec_list else "N/A"
+            bl_exec_str = ", ".join([f"{e:.1f}" for e in bl_exec_list]) if bl_exec_list else "N/A"
             
             ws.cell(row=row, column=1, value=task_name)
-            ws.cell(row=row, column=2, value=round(pg_avg, 2))
-            ws.cell(row=row, column=3, value=round(bl_avg, 2))
-            ws.cell(row=row, column=4, value=round(diff, 2))
-            ws.cell(row=row, column=5, value=pg_list_str)
-            ws.cell(row=row, column=6, value=bl_list_str)
+            ws.cell(row=row, column=2, value=round(pg_gcr_avg, 2))
+            ws.cell(row=row, column=3, value=round(bl_gcr_avg, 2))
+            ws.cell(row=row, column=4, value=round(diff_gcr, 2))
+            ws.cell(row=row, column=5, value=pg_gcr_str)
+            ws.cell(row=row, column=6, value=bl_gcr_str)
+            ws.cell(row=row, column=7, value=round(pg_exec_avg, 2))
+            ws.cell(row=row, column=8, value=round(bl_exec_avg, 2))
+            ws.cell(row=row, column=9, value=round(diff_exec, 2))
+            ws.cell(row=row, column=10, value=pg_exec_str)
+            ws.cell(row=row, column=11, value=bl_exec_str)
             
             row += 1
         
@@ -683,20 +726,20 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
         ws.cell(row=row, column=2, value=round(scene_avg["physical_guard"], 2))
         ws.cell(row=row, column=3, value=round(scene_avg["baseline"], 2))
         ws.cell(row=row, column=4, value=round(scene_avg["physical_guard"] - scene_avg["baseline"], 2))
+        ws.cell(row=row, column=7, value=round(scene_avg.get("physical_guard_exec", 0), 2))
+        ws.cell(row=row, column=8, value=round(scene_avg.get("baseline_exec", 0), 2))
+        ws.cell(row=row, column=9, value=round(scene_avg.get("physical_guard_exec", 0) - scene_avg.get("baseline_exec", 0), 2))
         
         # Scene 평균 행 스타일
-        for col in range(1, 5):
+        for col in range(1, 12):
             cell = ws.cell(row=row, column=col)
             cell.font = Font(bold=True)
             cell.fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
         
         # 열 너비 조정
         ws.column_dimensions['A'].width = 40
-        ws.column_dimensions['B'].width = 25
-        ws.column_dimensions['C'].width = 25
-        ws.column_dimensions['D'].width = 20
-        ws.column_dimensions['E'].width = 30
-        ws.column_dimensions['F'].width = 30
+        for c in range(2, 12):
+            ws.column_dimensions[get_column_letter(c)].width = 25
     
     # 요약 시트 생성
     summary_ws = wb.create_sheet(title="Summary", index=0)
@@ -706,7 +749,11 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
         "Physical Guard 평균 GCR (%)",
         "Baseline 평균 GCR (%)",
         "차이 (PG - BL)",
-        "개선율 (%)"
+        "개선율 (%)",
+        "Physical Guard 평균 Exec (%)",
+        "Baseline 평균 Exec (%)",
+        "차이 Exec (PG - BL)",
+        "개선율 Exec (%)"
     ]
     
     for col_idx, header in enumerate(summary_headers, 1):
@@ -718,39 +765,56 @@ def save_to_excel(all_scene_results: Dict[str, Dict[str, Any]], all_run_results:
     row = 2
     for fp_name in sorted(all_scene_results.keys()):
         scene_avg = all_scene_results[fp_name]["scene_avg"]
-        pg_avg = scene_avg["physical_guard"]
-        bl_avg = scene_avg["baseline"]
-        diff = pg_avg - bl_avg
-        improvement = ((pg_avg - bl_avg) / bl_avg * 100) if bl_avg > 0 else 0.0
+        pg_gcr = scene_avg["physical_guard"]
+        bl_gcr = scene_avg["baseline"]
+        diff_gcr = pg_gcr - bl_gcr
+        improvement_gcr = ((pg_gcr - bl_gcr) / bl_gcr * 100) if bl_gcr > 0 else 0.0
+        pg_exec = scene_avg.get("physical_guard_exec", 0)
+        bl_exec = scene_avg.get("baseline_exec", 0)
+        diff_exec = pg_exec - bl_exec
+        improvement_exec = ((pg_exec - bl_exec) / bl_exec * 100) if bl_exec > 0 else 0.0
         
         summary_ws.cell(row=row, column=1, value=fp_name)
-        summary_ws.cell(row=row, column=2, value=round(pg_avg, 2))
-        summary_ws.cell(row=row, column=3, value=round(bl_avg, 2))
-        summary_ws.cell(row=row, column=4, value=round(diff, 2))
-        summary_ws.cell(row=row, column=5, value=round(improvement, 2))
+        summary_ws.cell(row=row, column=2, value=round(pg_gcr, 2))
+        summary_ws.cell(row=row, column=3, value=round(bl_gcr, 2))
+        summary_ws.cell(row=row, column=4, value=round(diff_gcr, 2))
+        summary_ws.cell(row=row, column=5, value=round(improvement_gcr, 2))
+        summary_ws.cell(row=row, column=6, value=round(pg_exec, 2))
+        summary_ws.cell(row=row, column=7, value=round(bl_exec, 2))
+        summary_ws.cell(row=row, column=8, value=round(diff_exec, 2))
+        summary_ws.cell(row=row, column=9, value=round(improvement_exec, 2))
         row += 1
     
     # 전체 평균
     row += 1
-    total_pg_avg = sum(r["scene_avg"]["physical_guard"] for r in all_scene_results.values()) / len(all_scene_results)
-    total_bl_avg = sum(r["scene_avg"]["baseline"] for r in all_scene_results.values()) / len(all_scene_results)
-    total_diff = total_pg_avg - total_bl_avg
-    total_improvement = ((total_pg_avg - total_bl_avg) / total_bl_avg * 100) if total_bl_avg > 0 else 0.0
+    n = len(all_scene_results)
+    total_pg_gcr = sum(r["scene_avg"]["physical_guard"] for r in all_scene_results.values()) / n
+    total_bl_gcr = sum(r["scene_avg"]["baseline"] for r in all_scene_results.values()) / n
+    total_diff_gcr = total_pg_gcr - total_bl_gcr
+    total_improvement_gcr = ((total_pg_gcr - total_bl_gcr) / total_bl_gcr * 100) if total_bl_gcr > 0 else 0.0
+    total_pg_exec = sum(r["scene_avg"].get("physical_guard_exec", 0) for r in all_scene_results.values()) / n
+    total_bl_exec = sum(r["scene_avg"].get("baseline_exec", 0) for r in all_scene_results.values()) / n
+    total_diff_exec = total_pg_exec - total_bl_exec
+    total_improvement_exec = ((total_pg_exec - total_bl_exec) / total_bl_exec * 100) if total_bl_exec > 0 else 0.0
     
     summary_ws.cell(row=row, column=1, value="전체 평균")
-    summary_ws.cell(row=row, column=2, value=round(total_pg_avg, 2))
-    summary_ws.cell(row=row, column=3, value=round(total_bl_avg, 2))
-    summary_ws.cell(row=row, column=4, value=round(total_diff, 2))
-    summary_ws.cell(row=row, column=5, value=round(total_improvement, 2))
+    summary_ws.cell(row=row, column=2, value=round(total_pg_gcr, 2))
+    summary_ws.cell(row=row, column=3, value=round(total_bl_gcr, 2))
+    summary_ws.cell(row=row, column=4, value=round(total_diff_gcr, 2))
+    summary_ws.cell(row=row, column=5, value=round(total_improvement_gcr, 2))
+    summary_ws.cell(row=row, column=6, value=round(total_pg_exec, 2))
+    summary_ws.cell(row=row, column=7, value=round(total_bl_exec, 2))
+    summary_ws.cell(row=row, column=8, value=round(total_diff_exec, 2))
+    summary_ws.cell(row=row, column=9, value=round(total_improvement_exec, 2))
     
     # 전체 평균 행 스타일
-    for col in range(1, 6):
+    for col in range(1, 10):
         cell = summary_ws.cell(row=row, column=col)
         cell.font = Font(bold=True, size=12)
         cell.fill = PatternFill(start_color="FFC000", end_color="FFC000", fill_type="solid")
     
     # 열 너비 조정
-    for col in range(1, 6):
+    for col in range(1, 10):
         summary_ws.column_dimensions[get_column_letter(col)].width = 25
     
     # 기본 시트 제거
@@ -825,11 +889,24 @@ def main():
         default=None,
         help="평가할 FloorPlan 번호 (예: 1, 216, 325, 403). 지정하지 않으면 모든 FloorPlan 실행"
     )
-    
-    args = parser.parse_args()
-    
+
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
+
+    args = parser.parse_args()
+
+    # 시작하면 results/ 안의 모든 하위 폴더(재귀) 안의 파일 삭제
+    results_dir = project_root / "results"
+    if results_dir.exists():
+        for root, dirs, files in os.walk(results_dir, topdown=False):
+            for name in files:
+                path = Path(root) / name
+                try:
+                    path.unlink()
+                    print(f"🗑️ {path} 삭제 완료")
+                except OSError as e:
+                    print(f"⚠️ 삭제 실패 {path}: {e}")
+        print("🗑️ results/ 안의 모든 하위 폴더 내 파일 삭제 완료")
     
     print("\n" + "="*70)
     print("🔄 Batch Evaluation Script")

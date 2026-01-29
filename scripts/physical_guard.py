@@ -3844,10 +3844,15 @@ def main():
                 base_folder = None
             
             if base_folder:
-                # base_folder에 이미 전체 경로가 포함되어 있음 (예: "Kitchen/FP1")
-                fp_output_dir = Path(args.output_dir) / base_folder
-                args.output_dir = str(fp_output_dir)
-                print(f"📁 FloorPlan{floorplan_num} 감지: 결과를 {args.output_dir}에 저장합니다.")
+                # 호출자(batch_evaluation 등)가 이미 전체 경로를 넘긴 경우(예: results/Kitchen/FP1)에는
+                # base_folder를 붙이지 않음. 기본값 "results"일 때만 base_folder를 붙여서 하위 경로 생성.
+                default_output = "results"
+                if args.output_dir == default_output or Path(args.output_dir).resolve() == Path(default_output).resolve():
+                    fp_output_dir = Path(args.output_dir) / base_folder
+                    args.output_dir = str(fp_output_dir)
+                    print(f"📁 FloorPlan{floorplan_num} 감지: 결과를 {args.output_dir}에 저장합니다.")
+                else:
+                    print(f"📁 출력 디렉토리(호출자 지정): {args.output_dir}")
             else:
                 print(f"⚠️  알 수 없는 FloorPlan 번호: {floorplan_num}, 기본 출력 디렉토리 사용")
     

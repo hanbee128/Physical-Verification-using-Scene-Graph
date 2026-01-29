@@ -296,6 +296,20 @@ def execute_and_evaluate_task(
     lines = program_code.split('\n')
     execution_failed = False
     
+    # 총 생성된 action 수 계산 (assert 제외)
+    total_generated_actions = 0
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("#"):
+            continue  # Skip comments
+        match = re.match(r"(\w+)\((.*)\)", line)
+        if match:
+            action = match.group(1)
+            if action != "assert":  # assert는 액션이 아님
+                total_generated_actions += 1
+    
     # Track executed actions for JSON report
     executed_actions_log = []
     
@@ -435,14 +449,30 @@ def execute_and_evaluate_task(
     if execution_failed:
          status += " (Execution Errors)"
          
+    # Exec 계산: 총 생성된 action 수 대비 성공적으로 실행된 action 비율 (실패한 액션은 제외)
+    executed_actions_count = len(executed_actions_log)
+    successful_actions_count = sum(
+        1 for a in executed_actions_log
+        if a.get("lastActionSuccess") is True or (a.get("success") is True and a.get("lastActionSuccess") is not False)
+    )
+    if total_generated_actions > 0:
+        exec_value = (successful_actions_count / total_generated_actions) * 100
+    else:
+        exec_value = 0.0 if successful_actions_count == 0 else 100.0
+    
     print(f"\n[{method_name}] Task Result: {status}")
     print(f"[{method_name}] GCR: {gcr:.1f}% ({task_passed_conds}/{task_total_conds} conditions passed)")
+    print(f"[{method_name}] Exec: {exec_value:.1f}% ({successful_actions_count}/{total_generated_actions} actions succeeded)")
     
     return {
         "task": task_name,
         "method": method_name,
         "status": status,
         "gcr": round(gcr, 2),
+        "exec": round(exec_value, 2),
+        "executed_actions_count": executed_actions_count,
+        "successful_actions_count": successful_actions_count,
+        "total_generated_actions": total_generated_actions,
         "passed_conditions": task_passed_conds,
         "total_conditions": task_total_conds,
         "verification_passed": all_passed,
@@ -462,7 +492,7 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
     center_align = Alignment(horizontal="center", vertical="center")
     
     # 헤더 작성
-    headers = ["Task", "Physical Guard GCR (%)", "Baseline GCR (%)", "차이 (PG - BL)", "Physical Guard Status", "Baseline Status"]
+    headers = ["Task", "Physical Guard GCR (%)", "Baseline GCR (%)", "차이 (PG - BL)", "Physical Guard Exec (%)", "Baseline Exec (%)", "Physical Guard Status", "Baseline Status"]
     for col_idx, header in enumerate(headers, 1):
         cell = ws.cell(row=1, column=col_idx, value=header)
         cell.fill = header_fill
@@ -478,8 +508,12 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
     
     total_pg_gcr = 0
     total_bl_gcr = 0
+    total_pg_exec = 0
+    total_bl_exec = 0
     count_pg = 0
     count_bl = 0
+    count_pg_exec = 0
+    count_bl_exec = 0
     
     for task_name in sorted(all_tasks):
         pg_res = pg_dict.get(task_name, {})
@@ -487,6 +521,8 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
         
         pg_gcr = pg_res.get('gcr', 0) if 'gcr' in pg_res else None
         bl_gcr = bl_res.get('gcr', 0) if 'gcr' in bl_res else None
+        pg_exec = pg_res.get('exec', 0) if 'exec' in pg_res else None
+        bl_exec = bl_res.get('exec', 0) if 'exec' in bl_res else None
         
         pg_status = pg_res.get('status', 'N/A')
         bl_status = bl_res.get('status', 'N/A')
@@ -497,8 +533,10 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
         ws.cell(row=row, column=2, value=round(pg_gcr, 2) if pg_gcr is not None else "N/A")
         ws.cell(row=row, column=3, value=round(bl_gcr, 2) if bl_gcr is not None else "N/A")
         ws.cell(row=row, column=4, value=round(diff, 2) if diff is not None else "N/A")
-        ws.cell(row=row, column=5, value=pg_status)
-        ws.cell(row=row, column=6, value=bl_status)
+        ws.cell(row=row, column=5, value=round(pg_exec, 2) if pg_exec is not None else "N/A")
+        ws.cell(row=row, column=6, value=round(bl_exec, 2) if bl_exec is not None else "N/A")
+        ws.cell(row=row, column=7, value=pg_status)
+        ws.cell(row=row, column=8, value=bl_status)
         
         if pg_gcr is not None:
             total_pg_gcr += pg_gcr
@@ -506,6 +544,12 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
         if bl_gcr is not None:
             total_bl_gcr += bl_gcr
             count_bl += 1
+        if pg_exec is not None:
+            total_pg_exec += pg_exec
+            count_pg_exec += 1
+        if bl_exec is not None:
+            total_bl_exec += bl_exec
+            count_bl_exec += 1
         
         row += 1
     
@@ -513,15 +557,19 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
     row += 1
     avg_pg_gcr = total_pg_gcr / count_pg if count_pg > 0 else 0
     avg_bl_gcr = total_bl_gcr / count_bl if count_bl > 0 else 0
+    avg_pg_exec = total_pg_exec / count_pg_exec if count_pg_exec > 0 else 0
+    avg_bl_exec = total_bl_exec / count_bl_exec if count_bl_exec > 0 else 0
     avg_diff = avg_pg_gcr - avg_bl_gcr
     
     ws.cell(row=row, column=1, value="평균")
     ws.cell(row=row, column=2, value=round(avg_pg_gcr, 2))
     ws.cell(row=row, column=3, value=round(avg_bl_gcr, 2))
     ws.cell(row=row, column=4, value=round(avg_diff, 2))
+    ws.cell(row=row, column=5, value=round(avg_pg_exec, 2))
+    ws.cell(row=row, column=6, value=round(avg_bl_exec, 2))
     
     # 평균 행 스타일
-    for col in range(1, 5):
+    for col in range(1, 7):
         cell = ws.cell(row=row, column=col)
         cell.font = Font(bold=True)
         cell.fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
@@ -533,6 +581,8 @@ def save_results_to_excel(physical_guard_results: List[Dict], baseline_results: 
     ws.column_dimensions['D'].width = 20
     ws.column_dimensions['E'].width = 25
     ws.column_dimensions['F'].width = 25
+    ws.column_dimensions['G'].width = 25
+    ws.column_dimensions['H'].width = 25
     
     # 기본 시트 제거
     if "Sheet" in wb.sheetnames and len(wb.sheetnames) > 1:
@@ -802,6 +852,8 @@ def main():
                         print(f"{status_icon} {res['task']}")
                         print(f"   Status: {res['status']}")
                         print(f"   GCR: {res['gcr']:.1f}%")
+                        if 'exec' in res:
+                            print(f"   Exec: {res['exec']:.1f}% ({res.get('successful_actions_count', res.get('executed_actions_count', 0))}/{res.get('total_generated_actions', 0)} actions succeeded)")
                         print()
                         total_gcr += res['gcr']
                         count_gcr += 1
@@ -822,6 +874,8 @@ def main():
                         print(f"{status_icon} {res['task']}")
                         print(f"   Status: {res['status']}")
                         print(f"   GCR: {res['gcr']:.1f}%")
+                        if 'exec' in res:
+                            print(f"   Exec: {res['exec']:.1f}% ({res.get('successful_actions_count', res.get('executed_actions_count', 0))}/{res.get('total_generated_actions', 0)} actions succeeded)")
                         print()
                         total_gcr += res['gcr']
                         count_gcr += 1
@@ -1139,6 +1193,8 @@ def main():
                 print(f"{status_icon} {res['task']}")
                 print(f"   Status: {res['status']}")
                 print(f"   GCR: {res['gcr']:.1f}%")
+                if 'exec' in res:
+                    print(f"   Exec: {res['exec']:.1f}% ({res.get('successful_actions_count', res.get('executed_actions_count', 0))}/{res.get('total_generated_actions', 0)} actions succeeded)")
                 if 'passed_conditions' in res and 'total_conditions' in res:
                     print(f"   Conditions: {res.get('passed_conditions', 0)}/{res.get('total_conditions', 0)} passed")
                 print()
@@ -1170,6 +1226,8 @@ def main():
                 print(f"{status_icon} {res['task']}")
                 print(f"   Status: {res['status']}")
                 print(f"   GCR: {res['gcr']:.1f}%")
+                if 'exec' in res:
+                    print(f"   Exec: {res['exec']:.1f}% ({res.get('successful_actions_count', res.get('executed_actions_count', 0))}/{res.get('total_generated_actions', 0)} actions succeeded)")
                 if 'passed_conditions' in res and 'total_conditions' in res:
                     print(f"   Conditions: {res.get('passed_conditions', 0)}/{res.get('total_conditions', 0)} passed")
                 print()
