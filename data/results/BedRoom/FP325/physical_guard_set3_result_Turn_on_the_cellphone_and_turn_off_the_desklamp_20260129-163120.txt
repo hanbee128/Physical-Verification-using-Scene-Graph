@@ -1,0 +1,240 @@
+Task: Turn on the cellphone and turn off the desklamp
+================================================================================
+def turn_on_the_cellphone_and_turn_off_the_desklamp():
+	# Task: Turn on the cellphone and turn off the desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (3.000, 0.950, -1.250)
+	GoToObject('CellPhone')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('CellPhone')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('CellPhone')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (3.500, 0.950, 0.750)
+	GoToObject('DeskLamp')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('DeskLamp')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CellPhone', 'Table')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'DeskLamp'로 이동
+	# 이동할 좌표: (3.500, 0.950, 0.750)
+	GoToObject('DeskLamp')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # ```
+# 물리적 검증 실패: 객체 'DeskLamp'는 pickupable 조건을 만족하지 못함
+# ```
+	# PickupObject('DeskLamp')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused a halt)
+	# PutObject('DeskLamp', 'Table')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Turn off the desklamp
+	# Task: Turn off the desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (3.500, 0.950, 0.750)
+	GoToObject('DeskLamp')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	ToggleObjectOff('DeskLamp')
+
+
+Physical Verification Summary:
+  Total Actions: 10
+  Passed Actions: 7
+  Failed Actions: 2
+
+Failed Actions:
+  - PickupObject('DeskLamp'): FAIL: 1개 가드 실패: pickupable(object)
+  - PutObject('DeskLamp', 'Table'): 이전 액션 검증 실패로 인한 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Turn off the desklamp
+  Reasoning: The plan only includes turning on the cellphone and turning off the desklamp, but it does not include turning off the desklamp as a separate task. This task is necessary to complete the natural language goal.
+
+================================================================================
+
+Task: Put the Cellphone and pencil on the shelf
+================================================================================
+def put_the_cellphone_and_pencil_on_the_shelf():
+	# Task: Put the Cellphone and pencil on the shelf
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (3.000, 0.950, -1.250)
+	GoToObject('CellPhone')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('CellPhone')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.950, 2.750)
+	GoToObject('Shelf')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CellPhone', 'Shelf')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pencil')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.950, 2.750)
+	GoToObject('Shelf')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+
+
+Physical Verification Summary:
+  Total Actions: 8
+  Passed Actions: 8
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Put the Pencil and the pen and the Book on the Dresser
+================================================================================
+def put_the_pencil_and_the_pen_and_the_book_on_the_dresser():
+	# Task: Put the Pencil and the pen and the Book on the Dresser
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.250, 0.950, -1.250)
+	GoToObject('Pen')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.950, 0.250)
+	GoToObject('Book')
+
+
+Physical Verification Summary:
+  Total Actions: 3
+  Passed Actions: 3
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Turn off the lightswitch and open the book
+================================================================================
+def turn_off_the_lightswitch_and_open_the_book():
+	# Task: Turn off the lightswitch and open the book
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'LightSwitch' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.750, 0.950, 1.250)
+	GoToObject('LightSwitch')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('LightSwitch')
+	# Step 3
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Book' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 0.250)
+	GoToObject('Book')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Book')
+
+
+Physical Verification Summary:
+  Total Actions: 4
+  Passed Actions: 4
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Turn off the lightswitch
+================================================================================
+def turn_off_the_lightswitch():
+	# Task: Turn off the lightswitch
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'LightSwitch' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.750, 0.950, 1.250)
+	GoToObject('LightSwitch')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('LightSwitch')
+
+
+Physical Verification Summary:
+  Total Actions: 2
+  Passed Actions: 2
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+

@@ -1,0 +1,527 @@
+Task: Turn on the Television
+================================================================================
+def turn_on_the_television():
+	# Task: Turn on the Television
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.901, 0.750)
+	GoToObject('Television')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Television')
+
+
+Physical Verification Summary:
+  Total Actions: 2
+  Passed Actions: 2
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Put the remotecontrol and creditcard and keychain in the box
+================================================================================
+def put_the_remotecontrol_and_creditcard_and_keychain_in_the_box():
+	# Task: Put the remotecontrol and creditcard and keychain in the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('RemoteControl')
+	# Step 3
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Table' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.000)
+	GoToObject('Table')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Table')
+	# Step 5
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl'로 이동
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl' 집기
+	PickupObject('RemoteControl')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Table' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.000)
+	GoToObject('Table')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Table')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl'로 이동
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl' 집기
+	PickupObject('RemoteControl')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Table' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.000)
+	GoToObject('Table')
+	# Step 12
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Table')
+	# Step 13
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl'로 이동
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl' 집기
+	PickupObject('RemoteControl')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Table' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.000)
+	GoToObject('Table')
+	# Step 16
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Table')
+	# Step 17
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl'로 이동
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'RemoteControl' 집기
+	PickupObject('RemoteControl')
+	# Step 19
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Table' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.000)
+	GoToObject('Table')
+	# Step 20
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Table')
+	# Step 21
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts: 20)
+	# GoToObject('RemoteControl')
+	# Step 22
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts)
+	# PickupObject('RemoteControl')
+	# Step 23
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # ```
+# 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단
+# ```
+# "Physical verification failure: exceeded maximum verification attempts (20)"
+# This indicates that the action "PutObject('RemoteControl', 'Table')" failed physical verification because it took more than 20 attempts to verify the action, exceeding the maximum allowed number of attempts.
+	# PutObject('RemoteControl', 'Table')
+	# Step 24
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts: 20)
+	# GoToObject('CreditCard')
+	# Step 25
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts)
+	# PickupObject('CreditCard')
+	# Step 26
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts)
+	# PutObject('CreditCard', 'Table')
+	# Step 27
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts)
+	# GoToObject('KeyChain')
+	# Step 28
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts)
+	# PickupObject('KeyChain')
+	# Step 29
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts: 20)
+	# PutObject('KeyChain', 'Box')
+	# Step 30
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (max verification attempts exceeded)
+	# GoToObject('RemoteControl')
+	# Step 31
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts: 20)
+	# PutObject('RemoteControl', 'Box')
+	# Step 32
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (exceeded maximum verification attempts: 20)
+	# GoToObject('CreditCard')
+	# Step 33
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과로 검증 중단 (max verification attempts exceeded)
+	# PutObject('CreditCard', 'Box')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put the creditcard and keychain in the box
+	# Task: Put the creditcard and keychain in the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('CreditCard')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 5
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain'로 이동
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain' 집기
+	PickupObject('KeyChain')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Box|-03.78|+01.30|+00.46' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-2.750, 0.901, 0.000)
+	GoToObject('Box|-03.78|+01.30|+00.46')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 11
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 13
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 객체 'Box|-03.78|+01.30|+00.46'가 열려 있지 않음 (OPENED(object) guard failure)
+	# CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 14
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused this to fail)
+	# CloseObject('Box')
+
+
+Physical Verification Summary:
+  Total Actions: 28
+  Passed Actions: 20
+  Failed Actions: 13
+
+Failed Actions:
+  - GoToObject('RemoteControl'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PickupObject('RemoteControl'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PutObject('RemoteControl', 'Table'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - GoToObject('CreditCard'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PickupObject('CreditCard'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PutObject('CreditCard', 'Table'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - GoToObject('KeyChain'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PickupObject('KeyChain'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PutObject('KeyChain', 'Box'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - GoToObject('RemoteControl'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PutObject('RemoteControl', 'Box'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - GoToObject('CreditCard'): 최대 검증 횟수(20회) 초과로 검증 중단
+  - PutObject('CreditCard', 'Box'): 최대 검증 횟수(20회) 초과로 검증 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put the creditcard and keychain in the box
+  Reasoning: The plan does not include tasks to put the credit card and keychain into the box, which are required by the natural language goal. The plan only includes actions related to putting the remote control into the box.
+
+================================================================================
+
+Task: Turn off the Desklamp and Turn on the Laptop
+================================================================================
+def turn_off_the_desklamp_and_turn_on_the_laptop():
+	# Task: Turn off the Desklamp and Turn on the Laptop
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'DeskLamp' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('DeskLamp')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Agent의 위치 기준 범위 밖으로, DeskLamp까지의 거리가 2.660m를 초과함 (Agent location: x=-0.750, y=0.901, z=-0.500, DeskLamp location: x=1.657, y=0.654, z=-1.605)
+	# ToggleObjectOff('DeskLamp')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused this failure)
+	# ToggleObjectOff('DeskLamp')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused this failure)
+	# ToggleObjectOn('Laptop')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Turn off the Desklamp
+	# Task: Turn off the Desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -0.750)
+	GoToObject('DeskLamp')
+
+
+Physical Verification Summary:
+  Total Actions: 3
+  Passed Actions: 1
+  Failed Actions: 3
+
+Failed Actions:
+  - ToggleObjectOff('DeskLamp'): 
+ Agent 위치 기준 범위 밖 (agent 위치: x=-0.750, y=0.901, z=-0.500, 객체 위치: x=1.657, y=0.654, z=-1.605, 거리=2.660m, 벗어난 축: x=1.657 (범위: -2.550~1.050))
+  - ToggleObjectOff('DeskLamp'): 이전 액션 검증 실패로 인한 중단
+  - ToggleObjectOn('Laptop'): 이전 액션 검증 실패로 인한 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Turn off the Desklamp
+  Reasoning: The original goal was to 'Turn off the Desklamp and Turn on the Laptop', but the plan only includes turning off the Desklamp. The task of turning on the Laptop is missing.
+
+================================================================================
+
+Task: Turn off the floorlamp and desklamp
+================================================================================
+def turn_off_the_floorlamp_and_desklamp():
+	# Task: Turn off the floorlamp and desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'FloorLamp' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-4.000, 0.901, -1.250)
+	GoToObject('FloorLamp')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('FloorLamp')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: FloorLamp가 이미_TOGGLE_OFF 상태여서 toggle 가능 위치에 도달할 수 없음 (isToggled(object) 가드 실패)
+	# ToggleObjectOff('FloorLamp')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (previous action verification failure caused a halt)
+	# ToggleObjectOff('DeskLamp')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Turn off the desklamp
+	# Task: Turn off the desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -0.750)
+	GoToObject('DeskLamp')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	ToggleObjectOff('DeskLamp')
+
+
+Physical Verification Summary:
+  Total Actions: 3
+  Passed Actions: 2
+  Failed Actions: 2
+
+Failed Actions:
+  - ToggleObjectOff('FloorLamp'): FAIL: 1개 가드 실패: isToggled(object)
+  - ToggleObjectOff('DeskLamp'): 이전 액션 검증 실패로 인한 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Turn off the desklamp
+  Reasoning: The plan only includes turning off the floorlamp, but not the desklamp. The original goal requires both lamps to be turned off.
+
+================================================================================
+
+Task: Put Keychain and CreditCard into the box
+================================================================================
+def put_keychain_and_creditcard_into_the_box():
+	# Task: Put Keychain and CreditCard into the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('KeyChain')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 10
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 12
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 객체 'Box|-03.78|+01.30|+00.46'가 열려 있어 접근 불가 (guard: OPENED(object))
+	# CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused this failure)
+	# CloseObject('Box')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put CreditCard into the box
+	# Task: Put CreditCard into the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('CreditCard')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 5
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 6
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Box가 이미 열려있어 CloseObject 액션을 수행할 수 없음 (guard: OPENED(object))
+	# CloseObject('Box')
+
+
+Physical Verification Summary:
+  Total Actions: 15
+  Passed Actions: 11
+  Failed Actions: 2
+
+Failed Actions:
+  - CloseObject('Box|-03.78|+01.30|+00.46'): FAIL: 1개 가드 실패: OPENED(object)
+  - CloseObject('Box'): 이전 액션 검증 실패로 인한 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put CreditCard into the box
+  Reasoning: The plan does not include the task 'Put CreditCard into the box', which is required by the natural language goal. The plan only includes the task of putting the Keychain into the box, but not the CreditCard.
+
+================================================================================
+

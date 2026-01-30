@@ -1,0 +1,331 @@
+Task: Put egg into the bowl
+================================================================================
+def put_egg_into_the_bowl():
+	# Task: Put egg into the bowl
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, 1.750)
+	GoToObject('Egg')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Fridge|-02.10|+00.50|+01.07' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Egg')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-02.10|+00.50|+01.07') 이후 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.250, 0.901, -1.250)
+	GoToObject('Bowl')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Egg', 'Bowl')
+
+
+Physical Verification Summary:
+  Total Actions: 6
+  Passed Actions: 6
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Bring Plate to CounterTop
+================================================================================
+def bring_plate_to_countertop():
+	# Task: Bring Plate to CounterTop
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -2.000)
+	GoToObject('Plate')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Cabinet|+00.72|+02.02|-02.46' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Cabinet|+00.72|+02.02|-02.46')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Plate')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Cabinet|+00.72|+02.02|-02.46') 이후 자동 닫기
+	CloseObject('Cabinet|+00.72|+02.02|-02.46')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.750, 0.901, -1.750)
+	GoToObject('CounterTop')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Plate', 'CounterTop')
+
+
+Physical Verification Summary:
+  Total Actions: 6
+  Passed Actions: 6
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Put Apple and Tomato and Potato into Fridge
+================================================================================
+def put_apple_and_tomato_and_potato_into_fridge():
+	# Task: Put Apple and Tomato and Potato into Fridge
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.500)
+	GoToObject('Apple')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Apple')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.750)
+	GoToObject('Potato')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Fridge')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Apple', 'Fridge')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Tomato'로 이동
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Tomato' 집기
+	PickupObject('Tomato')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Fridge|-02.10|+00.50|+01.07' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-1.250, 0.901, 0.000)
+	GoToObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Fridge|-02.10|+00.50|+01.07' 열기
+	OpenObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Tomato', 'Fridge')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 15
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Target object 'Fridge|-02.10|+00.50|+01.07' is not in an opened state (OPENED(object) guard failed)
+	# CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 16
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단
+# This action failed physical verification because it was blocked by a previous action's failure, indicating that there was an issue with the sequence of actions.
+	# PutObject('Potato', 'Fridge')
+	# Step 17
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 이전 액션 검증 실패로 인한 중단 (Previous action verification failure caused a halt)
+	# CloseObject('Fridge')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put Potato into Fridge
+	# Task: Put Potato into Fridge
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.750)
+	GoToObject('Potato')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('Potato')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	OpenObject('Fridge')
+	# Step 5
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('Potato', 'Fridge')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 7
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Fridge 객체가 이미 OPENED 상태여서 CloseObject 액션을 수행할 수 없음
+	# CloseObject('Fridge')
+
+
+Physical Verification Summary:
+  Total Actions: 19
+  Passed Actions: 14
+  Failed Actions: 3
+
+Failed Actions:
+  - CloseObject('Fridge|-02.10|+00.50|+01.07'): FAIL: 1개 가드 실패: OPENED(object)
+  - PutObject('Potato', 'Fridge'): 이전 액션 검증 실패로 인한 중단
+  - CloseObject('Fridge'): 이전 액션 검증 실패로 인한 중단
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put Potato into Fridge
+  Reasoning: The plan does not include the action 'Put Potato into Fridge' which is required to complete the natural language goal. The plan only includes actions for putting Apple and Tomato into the fridge, but not Potato.
+
+================================================================================
+
+Task: Slice the Bread
+================================================================================
+def slice_the_bread():
+	# Task: Slice the Bread
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -0.250)
+	GoToObject('Knife')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Drawer|-01.56|+00.84|-00.20' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Drawer|-01.56|+00.84|-00.20')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Knife')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Drawer|-01.56|+00.84|-00.20') 이후 자동 닫기
+	CloseObject('Drawer|-01.56|+00.84|-00.20')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.000)
+	GoToObject('Bread')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	SliceObject('Bread')
+
+
+Physical Verification Summary:
+  Total Actions: 6
+  Passed Actions: 6
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+
+Task: Put the Mug in the SinkBasin and Wash the Mug
+================================================================================
+def put_the_mug_in_the_sinkbasin_and_wash_the_mug():
+	# Task: Put the Mug in the SinkBasin and Wash the Mug
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -0.500)
+	GoToObject('Mug')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Mug')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('SinkBasin')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Mug', 'SinkBasin')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('Faucet')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Faucet')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -0.500)
+	GoToObject('Mug')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	CleanObject('Mug')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('Faucet')
+	# Step 10
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('Faucet')
+
+
+Physical Verification Summary:
+  Total Actions: 10
+  Passed Actions: 10
+  Failed Actions: 0
+
+Task Completion Verification:
+  ✅ All tasks completed: Yes
+  Reasoning: 모든 액션이 물리적 검증을 통과했습니다.
+
+================================================================================
+

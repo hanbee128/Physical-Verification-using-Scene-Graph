@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -2.0,
+        "x": -0.25,
         "y": 0.9093819856643677,
-        "z": 2.5
+        "z": 0.75
       },
       "rotation": {
         "x": -0.0,
@@ -417,7 +417,7 @@
           "z": 0.0002998423879034817
         },
         "parentReceptacles": [
-          "Sink|-01.94|+00.95|+03.14|SinkBasin"
+          "Cabinet|-00.34|+00.43|+02.87"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -441,7 +441,7 @@
         "receptacle": false,
         "toggleable": true,
         "isOpen": false,
-        "isToggled": false,
+        "isToggled": true,
         "visible": true,
         "distance": 1.3882390260696411,
         "position": {
@@ -1316,7 +1316,7 @@
         "openable": true,
         "receptacle": true,
         "toggleable": false,
-        "isOpen": false,
+        "isOpen": true,
         "isToggled": false,
         "visible": false,
         "distance": 1.6368635892868042,
@@ -1344,7 +1344,7 @@
         "cookable": false,
         "isCooked": false,
         "temperature": "RoomTemp",
-        "openness": 0.0
+        "openness": 1.0
       },
       {
         "nodeType": "Object",
@@ -1676,6 +1676,15 @@
       "targetObjectType": "Bathtub"
     },
     {
+      "edgeType": "IN",
+      "source": "DishSponge|-00.67|+00.05|+03.17",
+      "target": "Cabinet|-00.34|+00.43|+02.87",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "DishSponge",
+      "targetObjectType": "Cabinet"
+    },
+    {
       "edgeType": "ON",
       "source": "Faucet|-00.85|+01.09|+03.37",
       "target": "CounterTop|-01.36|+01.09|+03.15",
@@ -1872,15 +1881,6 @@
       "targetType": "Object",
       "sourceObjectType": "Towel",
       "targetObjectType": "TowelHolder"
-    },
-    {
-      "edgeType": "IN",
-      "source": "DishSponge|-00.67|+00.05|+03.17",
-      "target": "Sink|-01.94|+00.95|+03.14|SinkBasin",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "DishSponge",
-      "targetObjectType": "SinkBasin"
     }
   ]
 }
