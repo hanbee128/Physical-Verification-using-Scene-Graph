@@ -1,0 +1,79 @@
+[
+    {
+        "task": "Put Apple into the Pan",
+        "object_states": [
+            {
+                "name": "Pan",
+                "contains": [
+                    "Apple"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put Lettuce into the SinkBasin",
+        "object_states": [
+            {
+                "name": "SinkBasin",
+                "contains": [
+                    "Lettuce"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put Pot on the StoveBurner and Put Mug in the Microwave",
+        "object_states": [
+            {
+                "name": "StoveBurner",
+                "contains": [
+                    "Pot"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "Microwave",
+                "contains": [
+                    "Mug"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put Cup in the SinkBasin",
+        "object_states": [
+            {
+                "name": "SinkBasin",
+                "contains": [
+                    "Cup"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put Pot on the StoveBurner",
+        "object_states": [
+            {
+                "name": "StoveBurner",
+                "contains": [
+                    "Pot"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    }
+]

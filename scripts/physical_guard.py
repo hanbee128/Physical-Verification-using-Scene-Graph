@@ -61,7 +61,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 def parse_info_txt(info_file_path: str) -> Tuple[List[str], List[str]]:
     """
     info.txt 파일을 파싱하여 액션과 객체 목록을 추출합니다.
@@ -2282,9 +2281,23 @@ def update_scene_graph_after_action(
                 if holds_edge not in edges:
                     edges.append(holds_edge)
                 
-                # IN 엣지 제거
+                # 기존 수용체(들)의 receptacleObjectIds에서 해당 객체 제거
+                old_receptacle_ids = list(target_obj_node.get("parentReceptacles", []))
+                for other_node in object_nodes:
+                    if other_node.get("nodeId") in old_receptacle_ids:
+                        roids = other_node.get("receptacleObjectIds")
+                        if isinstance(roids, list) and obj_id in roids:
+                            other_node["receptacleObjectIds"] = [oid for oid in roids if oid != obj_id]
+                            logger.info(f"  → PickupObject: 기존 수용체 '{other_node.get('nodeId')}'의 receptacleObjectIds에서 '{obj_id}' 제거")
+                
+                # IN 엣지 제거 (객체가 원래 수용체 안에 있던 관계)
                 edges = [e for e in edges if not (
                     e.get("edgeType") == "IN" and e.get("source") == obj_id
+                )]
+                
+                # ON 엣지 제거 (객체가 원래 다른 물체 위에 있던 관계)
+                edges = [e for e in edges if not (
+                    e.get("edgeType") == "ON" and e.get("source") == obj_id
                 )]
                 
                 # Agent 노드 업데이트
@@ -2390,7 +2403,12 @@ def update_scene_graph_after_action(
                     recp_id = recp_obj_node.get("nodeId", "")
                     recp_type = recp_obj_node.get("objectType", "")
                     
-                    # IN 엣지 추가
+                    # 객체가 이전에 다른 곳(ON 관계)에 있었으면 ON 엣지 제거
+                    edges = [e for e in edges if not (
+                        e.get("edgeType") == "ON" and e.get("source") == obj_id
+                    )]
+                    
+                    # IN 엣지 추가 (객체가 수용체 안/위에 있음)
                     in_edge = {
                         "edgeType": "IN",
                         "source": obj_id,
@@ -2402,6 +2420,37 @@ def update_scene_graph_after_action(
                     }
                     if in_edge not in edges:
                         edges.append(in_edge)
+                    
+                    # ON 엣지 추가 (객체가 수용체 위에 놓임 - edges 관계 동기화)
+                    on_edge = {
+                        "edgeType": "ON",
+                        "source": obj_id,
+                        "target": recp_id,
+                        "sourceType": "Object",
+                        "targetType": "Object",
+                        "sourceObjectType": obj_type,
+                        "targetObjectType": recp_type
+                    }
+                    if on_edge not in edges:
+                        edges.append(on_edge)
+                    
+                    # 새 수용체의 receptacleObjectIds에 해당 객체 추가 (원래 있던 자리에서는 이미 PickupObject 시 제거됨)
+                    roids = recp_obj_node.get("receptacleObjectIds")
+                    if roids is None:
+                        recp_obj_node["receptacleObjectIds"] = [obj_id]
+                    elif isinstance(roids, list):
+                        if obj_id not in roids:
+                            recp_obj_node["receptacleObjectIds"] = roids + [obj_id]
+                    logger.info(f"  → PutObject: 수용체 '{recp_id}'의 receptacleObjectIds에 '{obj_id}' 추가")
+                    
+                    # 객체가 이전에 다른 수용체에 있었을 수 있음(직접 PutObject만 호출된 경우 등): 기존 수용체에서 제거
+                    old_receptacle_ids = [rid for rid in target_obj_node.get("parentReceptacles", []) if rid != recp_id]
+                    for other_node in object_nodes:
+                        if other_node.get("nodeId") in old_receptacle_ids:
+                            other_roids = other_node.get("receptacleObjectIds")
+                            if isinstance(other_roids, list) and obj_id in other_roids:
+                                other_node["receptacleObjectIds"] = [oid for oid in other_roids if oid != obj_id]
+                                logger.info(f"  → PutObject: 기존 수용체 '{other_node.get('nodeId')}'의 receptacleObjectIds에서 '{obj_id}' 제거")
                     
                     # Object 노드 업데이트
                     target_obj_node["isPickedUp"] = False
@@ -3084,18 +3133,18 @@ def generate_final_plan_with_physical_verification(
     max_verifications = 20  # 최대 검증 횟수
     
     while i < len(plan_actions):
-        # 최대 검증 횟수 확인
+        # 최대 검증 횟수 확인 (같은 액션 재시도 한도 초과 시 해당 액션만 실패 처리하고 다음으로)
         if verification_count >= max_verifications:
-            logger.warning(f"  ⚠️  최대 검증 횟수({max_verifications}회)에 도달했습니다. 검증을 중단합니다.")
-            # 남은 액션들을 실패한 액션으로 추가
-            for remaining_action in plan_actions[i:]:
-                failed_actions.append({
-                    "action": remaining_action,
-                    "reason": f"최대 검증 횟수({max_verifications}회) 초과로 검증 중단",
-                    "failed_guards": [],
-                    "recovery_actions": []
-                })
-            break
+            logger.warning(f"  ⚠️  최대 검증 횟수({max_verifications}회)에 도달. 해당 액션만 실패 처리하고 다음 액션 검증 계속")
+            failed_actions.append({
+                "action": plan_actions[i],
+                "reason": f"최대 검증 횟수({max_verifications}회) 초과",
+                "failed_guards": [],
+                "recovery_actions": []
+            })
+            i += 1
+            verification_count = 0  # 다음 액션부터 카운트 리셋
+            continue
         
         verification_count += 1
         action = plan_actions[i]
@@ -3106,68 +3155,41 @@ def generate_final_plan_with_physical_verification(
             action, scene_graph, controller
         )
         
-        # EXISTS 가드 실패 시 (객체가 존재하지 않음) 검증 종료
+        # EXISTS 가드 실패 시 (객체가 존재하지 않음) 해당 액션만 실패 처리하고 다음 액션 검증 계속
         if reason.startswith("OBJECT_NOT_EXISTS:"):
             error_message = reason.replace("OBJECT_NOT_EXISTS: ", "")
-            logger.error(f"\n{'='*80}")
-            logger.error(f"❌ 검증 중단: 존재하지 않는 객체를 사용하여 계획을 생성할 수 없음")
-            logger.error(f"   {error_message}")
-            logger.error(f"{'='*80}")
-            print(f"\n{'='*80}")
-            print(f"❌ 검증 중단: 존재하지 않는 객체를 사용하여 계획을 생성할 수 없음")
-            print(f"   {error_message}")
-            print(f"{'='*80}")
-            # 검증 종료 - 빈 plan 반환
-            return "", {
-                "total_actions": len(plan_actions),
-                "passed_actions": len(verified_actions),
-                "failed_actions": 1,
-                "failed_actions_list": [{
-                    "action": action,
-                    "reason": error_message,
-                    "failed_guards": failed_guards,
-                    "recovery_actions": []
-                }],
-                "updated_scene_graph": scene_graph,
-                "error": "OBJECT_NOT_EXISTS"
-            }
+            logger.warning(f"  ✗ 검증 실패 (객체 없음): {error_message}")
+            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
+            failed_actions.append({
+                "action": action,
+                "reason": error_message,
+                "failed_guards": failed_guards,
+                "recovery_actions": []
+            })
+            i += 1
+            continue
         
         # REACHABLE 가드 실패 시 처리
         # Proximity와 REACHABLE이 모두 실패했을 때는 Proximity 복구 후 REACHABLE 재검사
-        # REACHABLE만 실패했을 때는 검증 종료
+        # REACHABLE만 실패한 경우에도 해당 액션만 실패 처리하고 다음 액션 검증 계속
         has_proximity_failure = any("Proximity" in guard for guard in failed_guards)
         has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
         
         if has_reachable_failure and not has_proximity_failure:
-            # REACHABLE만 실패한 경우: 검증 종료
             action_type = action.get("type", "")
             action_args = action.get("args", {})
             object_name = action_args.get("o") or action_args.get("r") or "알 수 없음"
-            error_message = f"액션 '{action_type}'의 대상 객체 '{object_name}'가 agent의 손이 닿지 않는 거리에 있어 계획을 생성할 수 없음"
-            logger.error(f"\n{'='*80}")
-            logger.error(f"❌ 검증 중단: REACHABLE 가드 위반")
-            logger.error(f"   {error_message}")
-            logger.error(f"   실패한 가드: {', '.join([g for g in failed_guards if 'REACHABLE' in g])}")
-            logger.error(f"{'='*80}")
-            print(f"\n{'='*80}")
-            print(f"❌ 검증 중단: REACHABLE 가드 위반")
-            print(f"   {error_message}")
-            print(f"   실패한 가드: {', '.join([g for g in failed_guards if 'REACHABLE' in g])}")
-            print(f"{'='*80}")
-            # 검증 종료 - 빈 plan 반환
-            return "", {
-                "total_actions": len(plan_actions),
-                "passed_actions": len(verified_actions),
-                "failed_actions": 1,
-                "failed_actions_list": [{
-                    "action": action,
-                    "reason": error_message,
-                    "failed_guards": [g for g in failed_guards if 'REACHABLE' in g],
-                    "recovery_actions": []
-                }],
-                "updated_scene_graph": scene_graph,
-                "error": "REACHABLE_VIOLATION"
-            }
+            error_message = f"액션 '{action_type}'의 대상 객체 '{object_name}'가 agent의 손이 닿지 않는 거리에 있음"
+            logger.warning(f"  ✗ 검증 실패 (REACHABLE): {error_message}")
+            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
+            failed_actions.append({
+                "action": action,
+                "reason": error_message,
+                "failed_guards": [g for g in failed_guards if 'REACHABLE' in g],
+                "recovery_actions": []
+            })
+            i += 1
+            continue
         
         if passed:
             verified_actions.append(action)
@@ -3315,6 +3337,20 @@ def generate_final_plan_with_physical_verification(
                 logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
                 plan_actions.pop(i)  # 현재 액션 삭제
                 # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
+                continue
+            
+            # CloseObject이고 OPENED(object) 가드가 실패한 경우 (이미 닫혀있음)
+            # 해당 액션을 건너뛰고 다음 액션으로 진행
+            if action_type == "CloseObject" and "OPENED(object)" in failed_guards:
+                logger.info(f"  ⏭️  CloseObject 건너뛰기: 객체 '{object_name}'가 이미 닫혀있음")
+                logger.info(f"     → 다음 액션으로 진행")
+                failed_actions.append({
+                    "action": action,
+                    "reason": reason,
+                    "failed_guards": failed_guards,
+                    "recovery_actions": []
+                })
+                i += 1
                 continue
             
             # 복구 액션이 있으면 원래 액션 이전에 삽입하고 다시 검증
@@ -3483,7 +3519,7 @@ def generate_final_plan_with_physical_verification(
                     logger.info(f"  → 복구 액션부터 다시 검증 시작")
                     continue  # while 루프의 시작으로 돌아가서 복구 액션부터 검증
             
-            # 복구 액션이 없는 경우 실패로 처리하고 검증 중단
+            # 복구 액션이 없는 경우: 해당 액션만 실패 처리하고 다음 액션 검증 계속 (검증 중단 없음)
             failed_actions.append({
                 "action": action,
                 "reason": reason,
@@ -3491,16 +3527,9 @@ def generate_final_plan_with_physical_verification(
                 "recovery_actions": recovery_actions
             })
             logger.warning(f"  ✗ 검증 실패: {reason}")
-            logger.warning(f"  ⚠️  복구 액션이 없으므로 검증을 중단합니다.")
-            # 남은 액션들을 실패한 액션으로 추가
-            for remaining_action in plan_actions[i+1:]:
-                failed_actions.append({
-                    "action": remaining_action,
-                    "reason": "이전 액션 검증 실패로 인한 중단",
-                    "failed_guards": [],
-                    "recovery_actions": []
-                })
-            break  # 검증 중단
+            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
+            i += 1
+            continue
     
     logger.info(f"\n✓ 물리적 검증 완료: {len(verified_actions)}/{len(plan_actions)} 액션 통과")
     
@@ -4008,42 +4037,46 @@ def main():
                 else:
                     print(f"\n🔧 누락된 task들에 대한 plan 생성 중... (총 {len(valid_missing_tasks)}개)")
                     missing_task_plans = []
+                    # 메인 task 물리적 검증 후 파일에 저장된 최신 상태 사용 (Keychain in Drawer 등 반영)
+                    scene_graph = load_scene_graph(str(updated_scene_graph_path))
+                    logger.info(f"누락 task 검증용 Scene Graph 재로드: {updated_scene_graph_path}")
                     
                     for missing_task in valid_missing_tasks:
                         print(f"\n  📋 누락된 task 처리 중: '{missing_task}'")
-                    
-                    # 논리적 검증 - LLM을 사용하여 프로그램 생성
-                    missing_initial_program = generate_program(
-                        client=client,
-                        model=args.model,
-                        base_prompt=prompt,
-                        task=missing_task,
-                        temperature=args.temperature,
-                        max_tokens=args.max_tokens,
-                    )
-                    
-                    print(f"    논리적 검증 완료된 프로그램:")
-                    print(f"    {missing_initial_program[:200]}...")  # 처음 200자만 출력
-                    
-                    # 물리적 검증 - Scene Graph 기반 검증
-                    # 누락된 task 처리 시에도 updated_scene_graph.json 사용
-                    missing_final_program, missing_verification_result = generate_final_plan_with_physical_verification(
-                        task=missing_task,
-                        initial_program=missing_initial_program,
-                        scene_graph=scene_graph.copy(),  # 복사본 사용
-                        controller=controller,
-                        client=client,
-                        model=args.model,
-                        scene_graph_path=str(updated_scene_graph_path)  # 업데이트된 Scene Graph JSON 파일 경로 전달
-                    )
-                    
-                    missing_task_plans.append({
-                        "task": missing_task,
-                        "plan": missing_final_program,
-                        "verification_result": missing_verification_result
-                    })
-                    
-                    print(f"    ✓ '{missing_task}'에 대한 plan 생성 완료")
+                        
+                        # 논리적 검증 - LLM을 사용하여 프로그램 생성
+                        missing_initial_program = generate_program(
+                            client=client,
+                            model=args.model,
+                            base_prompt=prompt,
+                            task=missing_task,
+                            temperature=args.temperature,
+                            max_tokens=args.max_tokens,
+                        )
+                        
+                        print(f"    논리적 검증 완료된 프로그램:")
+                        print(f"    {missing_initial_program[:200]}...")  # 처음 200자만 출력
+                        
+                        # 물리적 검증 - 최신 Scene Graph 사용 (객체가 수용체 안에 있으면 OpenObject 등 복구 액션 생성)
+                        missing_final_program, missing_verification_result = generate_final_plan_with_physical_verification(
+                            task=missing_task,
+                            initial_program=missing_initial_program,
+                            scene_graph=scene_graph.copy(),  # 복사본 사용
+                            controller=controller,
+                            client=client,
+                            model=args.model,
+                            scene_graph_path=str(updated_scene_graph_path)  # 업데이트된 Scene Graph JSON 파일 경로 전달
+                        )
+                        
+                        missing_task_plans.append({
+                            "task": missing_task,
+                            "plan": missing_final_program,
+                            "verification_result": missing_verification_result
+                        })
+                        
+                        print(f"    ✓ '{missing_task}'에 대한 plan 생성 완료")
+                        # 다음 누락 task에서 직전 plan 반영 상태 사용
+                        scene_graph = load_scene_graph(str(updated_scene_graph_path))
             
             # 누락된 task들의 plan을 기존 plan에 추가
             if missing_task_plans:

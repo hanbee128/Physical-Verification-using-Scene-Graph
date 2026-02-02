@@ -768,6 +768,8 @@ def main():
                        help="FP number (e.g., 1, 2, 216, 224, 325, 326, 403, 425). If not provided, will process all FPs in folder.")
     parser.add_argument("--all-fps", action="store_true",
                        help="Process all FPs in the selected folder")
+    parser.add_argument("--output-json", type=str, default=None,
+                       help="평가 결과(physical_guard, baseline, exec 포함)를 저장할 JSON 파일 경로. batch_evaluation에서 사용.")
     args = parser.parse_args()
 
     folder_name = args.folder
@@ -834,6 +836,17 @@ def main():
             if not physical_guard_results and not baseline_results:
                 print(f"⚠️  FloorPlan{fp_number}: 평가 결과가 없습니다.")
                 continue
+            
+            # batch_evaluation용 JSON 저장 (Exec 포함)
+            if getattr(args, "output_json", None):
+                out_path = Path(args.output_json)
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(out_path, "w", encoding="utf-8") as f:
+                    json.dump({
+                        "physical_guard": physical_guard_results,
+                        "baseline": baseline_results
+                    }, f, indent=2, ensure_ascii=False)
+                print(f"\n💾 평가 결과(Exec 포함) 저장: {out_path}")
             
             # 기존 출력 형식으로 요약 출력
             print("\n" + "="*70)

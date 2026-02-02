@@ -171,25 +171,29 @@ def run_physical_guard_subprocess(fp_number: int, task_file: str, folder: str = 
 
 def run_evaluate_results_subprocess(fp_number: int, folder: str, test_file: str) -> Dict[str, Any]:
     """
-    evaluate_results.py를 subprocess로 실행하고 출력에서 GCR 결과를 파싱
+    evaluate_results.py를 subprocess로 실행하고 결과 반환 (GCR, Exec 포함).
+    --output-json으로 JSON 저장 후 읽어서 사용 (Exec 포함). 실패 시 stdout 파싱으로 GCR만 사용.
     
     Returns:
         {
-            "physical_guard": [{"task": str, "gcr": float, ...}, ...],
-            "baseline": [{"task": str, "gcr": float, ...}, ...]
+            "physical_guard": [{"task": str, "gcr": float, "exec": float, ...}, ...],
+            "baseline": [{"task": str, "gcr": float, "exec": float, ...}, ...]
         }
     """
     import re
     
     script_dir = Path(__file__).parent
+    project_root = script_dir.parent
     evaluate_script = script_dir / "evaluate_results.py"
+    output_json_path = project_root / "results" / folder / f"FP{fp_number}" / "_batch_eval_result.json"
     
     cmd = [
         sys.executable,
         str(evaluate_script),
         "--fp-number", str(fp_number),
         "--folder", folder,
-        "--test_file", test_file
+        "--test_file", test_file,
+        "--output-json", str(output_json_path)
     ]
     
     physical_guard_results = []
@@ -300,8 +304,15 @@ def run_evaluate_results_subprocess(fp_number: int, folder: str, test_file: str)
         
         process.wait()
         
-        # Average GCR 추출 (출력에서 다시 파싱)
-        # 이미 파싱한 결과를 사용하므로 추가 파싱 불필요
+        # JSON 결과 파일에서 전체 결과 로드 (Exec 포함)
+        if output_json_path.exists():
+            try:
+                with open(output_json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                physical_guard_results = data.get("physical_guard", [])
+                baseline_results = data.get("baseline", [])
+            except Exception as e:
+                print(f"⚠️ 평가 결과 JSON 읽기 실패, stdout 파싱 결과 사용: {e}")
         
     except Exception as e:
         print(f"❌ evaluate_results.py 실행 실패: {e}")
@@ -935,19 +946,24 @@ def main():
             print(f"   {i}. {task_str}")
         while True:
             try:
-                sel = input(f"\n실행할 Task 번호를 선택하세요 (1-{n_tasks}): ").strip()
+                sel = input(f"\n실행할 Task 번호를 선택하세요 (0=해당 FP 전체 Task, 1-{n_tasks}=단일 Task): ").strip()
                 task_index = int(sel)
+                if task_index == 0:
+                    selected_task_index = None
+                    single_task_path = None
+                    print(f"   선택: 0 — 해당 FP 전체 Task {n_tasks}개 10번 실행")
+                    break
                 if 1 <= task_index <= n_tasks:
+                    selected_task_def = task_list[task_index - 1]
+                    single_task_path = project_root / "data" / "final_test" / f"_single_task_fp{args.fp_number}_task{task_index}.json"
+                    with open(single_task_path, "w", encoding="utf-8") as f:
+                        json.dump([selected_task_def], f, indent=2, ensure_ascii=False)
+                    selected_task_index = task_index
+                    print(f"   선택: Task {task_index} — 10번 실행 후 결과 저장")
                     break
             except ValueError:
                 pass
-            print(f"   잘못된 입력입니다. 1~{n_tasks} 사이 숫자를 입력하세요.")
-        selected_task_def = task_list[task_index - 1]
-        single_task_path = project_root / "data" / "final_test" / f"_single_task_fp{args.fp_number}_task{task_index}.json"
-        with open(single_task_path, "w", encoding="utf-8") as f:
-            json.dump([selected_task_def], f, indent=2, ensure_ascii=False)
-        selected_task_index = task_index
-        print(f"   선택: Task {task_index} — 10번 실행 후 결과 저장")
+            print(f"   잘못된 입력입니다. 0 또는 1~{n_tasks} 사이 숫자를 입력하세요.")
     else:
         floor_plans = [1, 216, 325, 403]
         print(f"📋 기본 FloorPlan 목록: {floor_plans}")

@@ -1,20 +1,20 @@
 {
   "metadata": {
-    "sceneName": "FloorPlan403_physics",
+    "sceneName": "FloorPlan224_physics",
     "agentId": 0,
     "reachThreshold": 1.39,
     "handSphereRadius": 0.5,
-    "totalObjects": 42,
-    "totalEdges": 45
+    "totalObjects": 64,
+    "totalEdges": 44
   },
   "nodes": {
     "agent": {
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -0.25,
-        "y": 0.9093819856643677,
-        "z": 0.75
+        "x": 1.25,
+        "y": 0.9283229112625122,
+        "z": 2.0
       },
       "rotation": {
         "x": -0.0,
@@ -26,9 +26,9 @@
       "heldObjectId": null,
       "heldObjectPose": {
         "position": {
-          "x": -1.0,
-          "y": 1.424381971359253,
-          "z": 2.380000114440918
+          "x": -2.0,
+          "y": 1.4433228969573975,
+          "z": 1.3799999952316284
         },
         "rotation": {
           "x": -0.0,
@@ -50,8 +50,8 @@
     "objects": [
       {
         "nodeType": "Object",
-        "nodeId": "Bathtub|-02.23|+00.29|+00.72",
-        "objectType": "Bathtub",
+        "nodeId": "ArmChair|-02.86|+00.03|-02.04",
+        "objectType": "ArmChair",
         "pickupable": false,
         "openable": false,
         "receptacle": true,
@@ -59,11 +59,127 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.8813490867614746,
+        "distance": 3.2824840545654297,
         "position": {
-          "x": -2.234257221221924,
-          "y": 0.2889675199985504,
-          "z": 0.7228277325630188
+          "x": -2.8599560260772705,
+          "y": 0.02607990801334381,
+          "z": -2.0366320610046387
+        },
+        "rotation": {
+          "x": 0.00010033085709437728,
+          "y": 29.993730545043945,
+          "z": -0.00019851131946779788
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "Laptop|-02.78|+00.38|-01.87"
+        ],
+        "mass": 28.299999237060547,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Book|+00.12|+00.92|+01.11",
+        "objectType": "Book",
+        "pickupable": true,
+        "openable": true,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.119758129119873,
+        "position": {
+          "x": 0.11689551174640656,
+          "y": 0.9207387566566467,
+          "z": 1.109866976737976
+        },
+        "rotation": {
+          "x": 0.02115098014473915,
+          "y": 210.0342559814453,
+          "z": 0.012560592964291573
+        },
+        "parentReceptacles": [
+          "Dresser|-00.05|+00.03|+01.67"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.5,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Box|+03.17|+00.21|-00.05",
+        "objectType": "Box",
+        "pickupable": true,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": true,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.326204299926758,
+        "position": {
+          "x": 3.1729655265808105,
+          "y": 0.21381530165672302,
+          "z": -0.04802507907152176
+        },
+        "rotation": {
+          "x": -0.0018345355056226254,
+          "y": 19.46845245361328,
+          "z": 0.012787931598722935
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.30000001192092896,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 1.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Cabinet|+00.33|+00.51|-02.02",
+        "objectType": "Cabinet",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.8353235721588135,
+        "position": {
+          "x": 0.33378830552101135,
+          "y": 0.5141854882240295,
+          "z": -2.015232801437378
         },
         "rotation": {
           "x": -0.0,
@@ -75,51 +191,11 @@
         ],
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [
-          "Candle|-01.30|+00.59|+01.06",
-          "Cloth|-01.64|+00.59|+01.11",
-          "Faucet|-01.28|+00.59|+00.63"
-        ],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Bathtub|-02.23|+00.29|+00.72|BathtubBasin",
-        "objectType": "BathtubBasin",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.0669002532958984,
-        "position": {
-          "x": -2.3222572803497314,
-          "y": 0.09696751832962036,
-          "z": 0.634827733039856
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
         "receptacleObjectIds": [],
         "mass": 0.0,
         "sliceable": false,
         "isSliced": false,
-        "breakable": false,
+        "breakable": true,
         "isBroken": false,
         "cookable": false,
         "isCooked": false,
@@ -128,155 +204,8 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Cabinet|-01.36|+00.43|+02.87",
-        "objectType": "Cabinet",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.057500958442688,
-        "position": {
-          "x": -1.3626710176467896,
-          "y": 0.4254520535469055,
-          "z": 2.8675193786621094
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Cabinet|-01.40|+00.43|+02.87",
-        "objectType": "Cabinet",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.0705488920211792,
-        "position": {
-          "x": -1.3991169929504395,
-          "y": 0.4254520535469055,
-          "z": 2.867520809173584
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Cabinet|-00.34|+00.43|+02.87",
-        "objectType": "Cabinet",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.1937439441680908,
-        "position": {
-          "x": -0.33799999952316284,
-          "y": 0.4254520535469055,
-          "z": 2.867520809173584
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [
-          "PaperTowelRoll|-00.49|+00.15|+03.20",
-          "DishSponge|-00.67|+00.05|+03.17"
-        ],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Cabinet|-02.42|+00.43|+02.87",
-        "objectType": "Cabinet",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.7360732555389404,
-        "position": {
-          "x": -2.423788070678711,
-          "y": 0.4254520535469055,
-          "z": 2.8675193786621094
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Candle|-01.30|+00.59|+01.06",
-        "objectType": "Candle",
+        "nodeId": "CellPhone|-00.20|+00.92|+02.49",
+        "objectType": "CellPhone",
         "pickupable": true,
         "openable": false,
         "receptacle": false,
@@ -284,27 +213,27 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.035212516784668,
+        "distance": 2.330648422241211,
         "position": {
-          "x": -1.2970776557922363,
-          "y": 0.5896561145782471,
-          "z": 1.061285376548767
+          "x": -0.20397734642028809,
+          "y": 0.9202293753623962,
+          "z": 2.4853146076202393
         },
         "rotation": {
-          "x": 0.024922512471675873,
-          "y": 0.001551631954498589,
-          "z": 0.012424000538885593
+          "x": -0.0001066173572326079,
+          "y": 0.05145455524325371,
+          "z": 0.036299895495176315
         },
         "parentReceptacles": [
-          "Bathtub|-02.23|+00.29|+00.72"
+          "Dresser|-00.05|+00.03|+01.67"
         ],
         "controlledObjects": [],
         "isPickedUp": false,
         "receptacleObjectIds": null,
-        "mass": 0.20000000298023224,
+        "mass": 0.1599999964237213,
         "sliceable": false,
         "isSliced": false,
-        "breakable": false,
+        "breakable": true,
         "isBroken": false,
         "cookable": false,
         "isCooked": false,
@@ -313,78 +242,35 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Cloth|-01.64|+00.59|+01.11",
-        "objectType": "Cloth",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.1361920833587646,
-        "position": {
-          "x": -1.6379364728927612,
-          "y": 0.5937278866767883,
-          "z": 1.1143747568130493
-        },
-        "rotation": {
-          "x": 359.94305419921875,
-          "y": -0.0002683111815713346,
-          "z": 0.04475816339254379
-        },
-        "parentReceptacles": [
-          "Bathtub|-02.23|+00.29|+00.72"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.04500000178813934,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "CounterTop|-01.36|+01.09|+03.15",
-        "objectType": "CounterTop",
+        "nodeId": "Chair|+01.63|+00.03|+02.21",
+        "objectType": "Chair",
         "pickupable": false,
         "openable": false,
         "receptacle": true,
         "toggleable": false,
         "isOpen": false,
         "isToggled": false,
-        "visible": true,
-        "distance": 1.219963550567627,
+        "visible": false,
+        "distance": 3.93155574798584,
         "position": {
-          "x": -1.3581395149230957,
-          "y": 1.0946828126907349,
-          "z": 3.151395082473755
+          "x": 1.6310045719146729,
+          "y": 0.029849201440811157,
+          "z": 2.210653305053711
         },
         "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
+          "x": 359.3515319824219,
+          "y": 161.55685424804688,
+          "z": 359.9722900390625
         },
-        "parentReceptacles": null,
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "Mirror|-01.39|+01.60|+03.46",
-          "SoapBottle|-01.29|+01.09|+03.32",
-          "SoapBar|-01.53|+01.09|+03.32",
-          "ShowerGlass|-02.90|+01.42|+02.34",
-          "Faucet|-00.85|+01.09|+03.37",
-          "Faucet|-01.94|+01.09|+03.37",
-          "Sink|-00.85|+00.95|+03.14",
-          "Sink|-01.94|+00.95|+03.14"
+          "KeyChain|-00.24|+00.92|+02.34"
         ],
-        "mass": 0.0,
+        "mass": 10.0,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -396,8 +282,84 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "DishSponge|-00.67|+00.05|+03.17",
-        "objectType": "DishSponge",
+        "nodeId": "Chair|+01.05|+00.03|-02.19",
+        "objectType": "Chair",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 4.503468036651611,
+        "position": {
+          "x": 1.0489966869354248,
+          "y": 0.03155362606048584,
+          "z": -2.1907131671905518
+        },
+        "rotation": {
+          "x": 359.9052429199219,
+          "y": 29.997756958007812,
+          "z": 0.0007661544368602335
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 10.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Chair|+02.04|+00.03|-02.23",
+        "objectType": "Chair",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.249426364898682,
+        "position": {
+          "x": 2.0379891395568848,
+          "y": 0.03154349327087402,
+          "z": -2.2321672439575195
+        },
+        "rotation": {
+          "x": 359.90460205078125,
+          "y": 350.4858703613281,
+          "z": -0.00022559829812962562
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 10.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "CreditCard|-00.06|+00.92|+00.88",
+        "objectType": "CreditCard",
         "pickupable": true,
         "openable": false,
         "receptacle": false,
@@ -405,24 +367,24 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.485933542251587,
+        "distance": 1.9417229890823364,
         "position": {
-          "x": -0.6748359203338623,
-          "y": 0.046755753457546234,
-          "z": 3.165393829345703
+          "x": -0.061826810240745544,
+          "y": 0.9210451245307922,
+          "z": 0.8828678131103516
         },
         "rotation": {
-          "x": 0.019817722961306572,
-          "y": -5.373311068979092e-05,
-          "z": 0.0002998423879034817
+          "x": -0.0012886199401691556,
+          "y": 0.2138521522283554,
+          "z": 0.03640328347682953
         },
         "parentReceptacles": [
-          "Cabinet|-00.34|+00.43|+02.87"
+          "Drawer|+03.10|+00.42|+00.37"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": null,
-        "mass": 0.029999997466802597,
+        "mass": 0.005999999586492777,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -434,33 +396,33 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Faucet|-00.85|+01.09|+03.37",
-        "objectType": "Faucet",
+        "nodeId": "DeskLamp|+03.14|+00.59|+01.46",
+        "objectType": "DeskLamp",
         "pickupable": false,
         "openable": false,
         "receptacle": false,
         "toggleable": true,
         "isOpen": false,
         "isToggled": true,
-        "visible": true,
-        "distance": 1.3882390260696411,
+        "visible": false,
+        "distance": 5.1740498542785645,
         "position": {
-          "x": -0.8536000847816467,
-          "y": 1.0947999954223633,
-          "z": 3.3679893016815186
+          "x": 3.1428096294403076,
+          "y": 0.5919021964073181,
+          "z": 1.4572944641113281
         },
         "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
+          "x": 0.031745053827762604,
+          "y": 269.9510803222656,
+          "z": 359.98785400390625
         },
         "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
+          "SideTable|+03.16|+00.03|+01.40"
         ],
         "controlledObjects": [],
         "isPickedUp": false,
         "receptacleObjectIds": null,
-        "mass": 0.0,
+        "mass": 2.059999942779541,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -472,32 +434,110 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Faucet|-01.28|+00.59|+00.63",
-        "objectType": "Faucet",
+        "nodeId": "DogBed|+02.74|+00.03|+02.26",
+        "objectType": "DogBed",
         "pickupable": false,
         "openable": false,
-        "receptacle": false,
-        "toggleable": true,
+        "receptacle": true,
+        "toggleable": false,
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.436000108718872,
+        "distance": 4.985734939575195,
         "position": {
-          "x": -1.2829999923706055,
-          "y": 0.5873000025749207,
-          "z": 0.6294999718666077
+          "x": 2.7399919033050537,
+          "y": 0.0325472429394722,
+          "z": 2.260004997253418
         },
         "rotation": {
-          "x": -0.0,
-          "y": 270.0,
-          "z": 0.0
+          "x": 0.00047250837087631226,
+          "y": 45.05355453491211,
+          "z": -0.00038811968988738954
         },
         "parentReceptacles": [
-          "Bathtub|-02.23|+00.29|+00.72"
+          "Floor|+00.00|+00.00|+00.00"
         ],
-        "controlledObjects": [],
+        "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": null,
+        "receptacleObjectIds": [],
+        "mass": 0.9800000190734863,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|+03.10|+00.42|+00.37",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": true,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.168503284454346,
+        "position": {
+          "x": 3.104008436203003,
+          "y": 0.4190894067287445,
+          "z": 0.36501848697662354
+        },
+        "rotation": {
+          "x": 0.006106993183493614,
+          "y": 270.0024108886719,
+          "z": 359.99383544921875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "CreditCard|-00.06|+00.92|+00.88"
+        ],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 1.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-03.24|+00.17|-00.49",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.0833871364593506,
+        "position": {
+          "x": -3.2417714595794678,
+          "y": 0.16753938794136047,
+          "z": -0.48987042903900146
+        },
+        "rotation": {
+          "x": -0.0016252375207841396,
+          "y": 89.96112060546875,
+          "z": -0.0004058106860611588
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
         "mass": 0.0,
         "sliceable": false,
         "isSliced": false,
@@ -510,33 +550,742 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Faucet|-01.94|+01.09|+03.37",
-        "objectType": "Faucet",
+        "nodeId": "Drawer|+03.10|+00.17|-00.57",
+        "objectType": "Drawer",
         "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": true,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
         "isOpen": false,
         "isToggled": false,
-        "visible": true,
-        "distance": 1.6724531650543213,
+        "visible": false,
+        "distance": 5.3951287269592285,
         "position": {
-          "x": -1.944100022315979,
-          "y": 1.0947999954223633,
-          "z": 3.3679893016815186
+          "x": 3.1040351390838623,
+          "y": 0.16758334636688232,
+          "z": -0.5740111470222473
         },
         "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
+          "x": 0.005471683107316494,
+          "y": 270.0018310546875,
+          "z": -0.005533311050385237
         },
         "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
+          "Floor|+00.00|+00.00|+00.00"
         ],
-        "controlledObjects": [],
+        "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": null,
+        "receptacleObjectIds": [],
         "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|+03.10|+00.17|+00.37",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.199339389801025,
+        "position": {
+          "x": 3.1040351390838623,
+          "y": 0.1675892472267151,
+          "z": 0.3649914562702179
+        },
+        "rotation": {
+          "x": 0.006106993183493614,
+          "y": 270.0024108886719,
+          "z": 359.99383544921875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-03.24|+00.42|-00.49",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.0052688121795654,
+        "position": {
+          "x": -3.241778612136841,
+          "y": 0.4190395176410675,
+          "z": -0.4898722171783447
+        },
+        "rotation": {
+          "x": -0.0016252375207841396,
+          "y": 89.96112060546875,
+          "z": -0.0004058106860611588
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|+03.10|+00.42|+01.40",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.144890785217285,
+        "position": {
+          "x": 3.103898763656616,
+          "y": 0.41911736130714417,
+          "z": 1.4010331630706787
+        },
+        "rotation": {
+          "x": 0.021949883550405502,
+          "y": 270.00177001953125,
+          "z": 359.9901123046875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|+03.10|+00.42|-00.57",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.365416526794434,
+        "position": {
+          "x": 3.1040115356445312,
+          "y": 0.41908347606658936,
+          "z": -0.573986828327179
+        },
+        "rotation": {
+          "x": 0.005471683107316494,
+          "y": 270.0018310546875,
+          "z": -0.005533311050385237
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.19|+00.23|+00.95",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.939860224723816,
+        "position": {
+          "x": -0.18985894322395325,
+          "y": 0.23234285414218903,
+          "z": 0.9546274542808533
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.60|+01.41",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.669762134552002,
+        "position": {
+          "x": -0.4156283140182495,
+          "y": 0.603042483329773,
+          "z": 1.414806604385376
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.35|+01.41",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.7366437911987305,
+        "position": {
+          "x": -0.4154634177684784,
+          "y": 0.35116463899612427,
+          "z": 1.4148058891296387
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|+03.10|+00.17|+01.40",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.175928115844727,
+        "position": {
+          "x": 3.1039953231811523,
+          "y": 0.1676172912120819,
+          "z": 1.4009896516799927
+        },
+        "rotation": {
+          "x": 0.021949883550405502,
+          "y": 270.00177001953125,
+          "z": 359.9901123046875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.19|+00.48|+00.95",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.86421537399292,
+        "position": {
+          "x": -0.19002389907836914,
+          "y": 0.48422062397003174,
+          "z": 0.9546282291412354
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.19|+00.74|+00.95",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.8205535411834717,
+        "position": {
+          "x": -0.19018886983394623,
+          "y": 0.7361235618591309,
+          "z": 0.9546289443969727
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.60|+01.92",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.8613048791885376,
+        "position": {
+          "x": -0.41560783982276917,
+          "y": 0.6030410528182983,
+          "z": 1.9210585355758667
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.60|+02.38",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.129152774810791,
+        "position": {
+          "x": -0.41558927297592163,
+          "y": 0.6030398607254028,
+          "z": 2.3846027851104736
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.35|+02.38",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.1819984912872314,
+        "position": {
+          "x": -0.41542431712150574,
+          "y": 0.3511619567871094,
+          "z": 2.3846018314361572
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.85|+02.38",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.105313539505005,
+        "position": {
+          "x": -0.41575416922569275,
+          "y": 0.854942798614502,
+          "z": 2.384603261947632
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.35|+01.92",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.921531081199646,
+        "position": {
+          "x": -0.41544297337532043,
+          "y": 0.35116326808929443,
+          "z": 1.9210577011108398
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.85|+01.41",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.6392560005187988,
+        "position": {
+          "x": -0.4157932698726654,
+          "y": 0.8549455404281616,
+          "z": 1.4148072004318237
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.42|+00.85|+01.92",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.8339874744415283,
+        "position": {
+          "x": -0.4157728850841522,
+          "y": 0.8549439907073975,
+          "z": 1.921059250831604
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Drawer|-00.17|+00.47|-02.14",
+        "objectType": "Drawer",
+        "pickupable": false,
+        "openable": true,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.6578481197357178,
+        "position": {
+          "x": -0.1736583560705185,
+          "y": 0.4657902419567108,
+          "z": -2.135345697402954
+        },
+        "rotation": {
+          "x": 0.00013204665447119623,
+          "y": 3.6103345337323844e-05,
+          "z": 0.00012340368994046003
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Dresser|-00.05|+00.03|+01.67",
+        "objectType": "Dresser",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.2466087341308594,
+        "position": {
+          "x": -0.0529944933950901,
+          "y": 0.02809813618659973,
+          "z": 1.6678438186645508
+        },
+        "rotation": {
+          "x": 0.03752322122454643,
+          "y": 270.0023193359375,
+          "z": -0.00016192352632060647
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "Television|+00.07|+01.41|+01.70",
+          "Book|+00.12|+00.92|+01.11",
+          "CellPhone|-00.20|+00.92|+02.49",
+          "RemoteControl|-00.26|+00.92|+00.95"
+        ],
+        "mass": 57.0,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -556,8 +1305,8 @@
         "toggleable": false,
         "isOpen": false,
         "isToggled": false,
-        "visible": false,
-        "distance": 2.4139130115509033,
+        "visible": true,
+        "distance": 2.421112060546875,
         "position": {
           "x": 0.0,
           "y": 0.0,
@@ -572,13 +1321,36 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "GarbageCan|00.01|00.50|+03.13",
-          "ToiletPaper|-00.10|+00.04|+03.14",
-          "Plunger|-00.22|+00.01|+00.49",
-          "ShowerDoor|-02.48|+01.77|+02.39",
-          "Bathtub|-02.23|+00.29|+00.72",
-          "ScrubBrush|-00.35|+00.01|+00.35",
-          "Toilet|-00.70|+00.03|+00.66"
+          "Drawer|-00.42|+00.35|+02.38",
+          "Drawer|-00.42|+00.35|+01.92",
+          "Dresser|-00.05|+00.03|+01.67",
+          "Drawer|-00.19|+00.23|+00.95",
+          "Drawer|-00.42|+00.35|+01.41",
+          "Cabinet|+00.33|+00.51|-02.02",
+          "Sofa|-02.96|+00.03|+01.39",
+          "Drawer|-03.24|+00.42|-00.49",
+          "Drawer|-03.24|+00.17|-00.49",
+          "SideTable|-03.30|+00.03|-00.49",
+          "ArmChair|-02.86|+00.03|-02.04",
+          "SideTable|-00.17|+00.03|-02.28",
+          "DogBed|+02.74|+00.03|+02.26",
+          "Drawer|+03.10|+00.42|+01.40",
+          "Drawer|+03.10|+00.17|+01.40",
+          "SideTable|+03.16|+00.03|+01.40",
+          "Chair|+01.63|+00.03|+02.21",
+          "GarbageCan|+03.16|+00.03|+00.89",
+          "Drawer|+03.10|+00.42|+00.37",
+          "SideTable|+03.16|+00.03|+00.36",
+          "Drawer|+03.10|+00.17|+00.37",
+          "Box|+03.17|+00.21|-00.05",
+          "Drawer|+03.10|+00.42|-00.57",
+          "Drawer|+03.10|+00.17|-00.57",
+          "SideTable|+03.16|+00.03|-00.57",
+          "Stool|+03.14|+00.03|-01.63",
+          "WateringCan|+02.89|+00.03|-01.92",
+          "FloorLamp|+03.10|+00.03|-02.34",
+          "Chair|+02.04|+00.03|-02.23",
+          "Chair|+01.05|+00.03|-02.19"
         ],
         "mass": 1.0,
         "sliceable": false,
@@ -592,7 +1364,45 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "GarbageCan|00.01|00.50|+03.13",
+        "nodeId": "FloorLamp|+03.10|+00.03|-02.34",
+        "objectType": "FloorLamp",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": true,
+        "isOpen": false,
+        "isToggled": true,
+        "visible": false,
+        "distance": 6.166539192199707,
+        "position": {
+          "x": 3.103814125061035,
+          "y": 0.026035547256469727,
+          "z": -2.341132640838623
+        },
+        "rotation": {
+          "x": 0.02830336056649685,
+          "y": 134.9954071044922,
+          "z": -0.005464524030685425
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": [],
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 3.9300003051757812,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "GarbageCan|+03.16|+00.03|+00.89",
         "objectType": "GarbageCan",
         "pickupable": false,
         "openable": false,
@@ -601,25 +1411,23 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.7295323610305786,
+        "distance": 5.2433857917785645,
         "position": {
-          "x": -0.06158388406038284,
-          "y": -0.001465439796447754,
-          "z": 3.131819009780884
+          "x": 3.164154529571533,
+          "y": 0.02681329846382141,
+          "z": 0.890999972820282
         },
         "rotation": {
-          "x": -0.0012567708035930991,
-          "y": 270.0049743652344,
-          "z": -0.0034499147441238165
+          "x": -0.0010909128468483686,
+          "y": -0.0002432937326375395,
+          "z": 0.0004262639267835766
         },
         "parentReceptacles": [
           "Floor|+00.00|+00.00|+00.00"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [
-          "ToiletPaper|-00.10|+00.04|+03.14"
-        ],
+        "receptacleObjectIds": [],
         "mass": 0.699999988079071,
         "sliceable": false,
         "isSliced": false,
@@ -632,8 +1440,44 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "HandTowel|-00.24|+01.76|+03.43",
-        "objectType": "HandTowel",
+        "nodeId": "HousePlant|+00.49|+00.87|-01.58",
+        "objectType": "HousePlant",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.587675094604492,
+        "position": {
+          "x": 0.4912465512752533,
+          "y": 0.8746224641799927,
+          "z": -1.581127643585205
+        },
+        "rotation": {
+          "x": 0.02079288475215435,
+          "y": 0.00016433061682619154,
+          "z": 0.0003171447024215013
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 3.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "KeyChain|-00.24|+00.92|+02.34",
+        "objectType": "KeyChain",
         "pickupable": true,
         "openable": false,
         "receptacle": false,
@@ -641,24 +1485,24 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.8265931606292725,
+        "distance": 2.2150657176971436,
         "position": {
-          "x": -0.242000013589859,
-          "y": 1.7599999904632568,
-          "z": 3.4277000427246094
+          "x": -0.2385483831167221,
+          "y": 0.9215234518051147,
+          "z": 2.343040704727173
         },
         "rotation": {
-          "x": 0.0,
-          "y": 180.00001525878906,
-          "z": 0.0
+          "x": 1.2841014862060547,
+          "y": 20.322832107543945,
+          "z": 359.0312805175781
         },
         "parentReceptacles": [
-          "HandTowelHolder|-00.24|+01.86|+03.47"
+          "Chair|+01.63|+00.03|+02.21"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": null,
-        "mass": 0.07999999821186066,
+        "mass": 0.07500000298023224,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -670,45 +1514,45 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "HandTowelHolder|-00.24|+01.86|+03.47",
-        "objectType": "HandTowelHolder",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
+        "nodeId": "Laptop|-02.78|+00.38|-01.87",
+        "objectType": "Laptop",
+        "pickupable": true,
+        "openable": true,
+        "receptacle": false,
+        "toggleable": true,
+        "isOpen": true,
         "isToggled": false,
         "visible": false,
-        "distance": 1.9055711030960083,
+        "distance": 3.0299463272094727,
         "position": {
-          "x": -0.24199999868869781,
-          "y": 1.8619999885559082,
-          "z": 3.4660000801086426
+          "x": -2.7807064056396484,
+          "y": 0.37517887353897095,
+          "z": -1.8749092817306519
         },
         "rotation": {
-          "x": 0.0,
-          "y": 180.00001525878906,
-          "z": 0.0
+          "x": -0.0006285661947913468,
+          "y": 359.98773193359375,
+          "z": -0.002474704524502158
         },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [
-          "HandTowel|-00.24|+01.76|+03.43"
+        "parentReceptacles": [
+          "ArmChair|-02.86|+00.03|-02.04"
         ],
-        "mass": 0.0,
+        "controlledObjects": [],
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 2.299999952316284,
         "sliceable": false,
         "isSliced": false,
-        "breakable": false,
+        "breakable": true,
         "isBroken": false,
         "cookable": false,
         "isCooked": false,
         "temperature": "RoomTemp",
-        "openness": 0.0
+        "openness": 1.0
       },
       {
         "nodeType": "Object",
-        "nodeId": "LightSwitch|+00.97|+01.43|+01.13",
+        "nodeId": "LightSwitch|-00.93|+01.32|+02.85",
         "objectType": "LightSwitch",
         "pickupable": false,
         "openable": false,
@@ -717,15 +1561,15 @@
         "isOpen": false,
         "isToggled": true,
         "visible": false,
-        "distance": 2.21494197845459,
+        "distance": 2.1705243587493896,
         "position": {
-          "x": 0.9682979583740234,
-          "y": 1.4320000410079956,
-          "z": 1.128999948501587
+          "x": -0.9271823167800903,
+          "y": 1.3160552978515625,
+          "z": 2.8465919494628906
         },
         "rotation": {
           "x": -0.0,
-          "y": 270.0001220703125,
+          "y": 180.0000762939453,
           "z": 0.0
         },
         "parentReceptacles": null,
@@ -744,46 +1588,8 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Mirror|-01.39|+01.60|+03.46",
-        "objectType": "Mirror",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.662851095199585,
-        "position": {
-          "x": -1.3862148523330688,
-          "y": 1.5959999561309814,
-          "z": 3.464400053024292
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": true,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "PaperTowelRoll|-00.49|+00.15|+03.20",
-        "objectType": "PaperTowelRoll",
+        "nodeId": "Newspaper|+03.19|+00.59|-00.56",
+        "objectType": "Newspaper",
         "pickupable": true,
         "openable": false,
         "receptacle": false,
@@ -791,24 +1597,24 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.5113714933395386,
+        "distance": 5.428717136383057,
         "position": {
-          "x": -0.4890115559101105,
-          "y": 0.15211385488510132,
-          "z": 3.204026460647583
+          "x": 3.189312219619751,
+          "y": 0.5933063626289368,
+          "z": -0.5587730407714844
         },
         "rotation": {
-          "x": 0.06276863068342209,
-          "y": 0.01373152807354927,
-          "z": -0.0011788980336859822
+          "x": 0.012309297919273376,
+          "y": 260.6768798828125,
+          "z": -0.00465650437399745
         },
         "parentReceptacles": [
-          "Cabinet|-00.34|+00.43|+02.87"
+          "SideTable|+03.16|+00.03|-00.57"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": null,
-        "mass": 0.2199999988079071,
+        "mass": 0.20000000298023224,
         "sliceable": false,
         "isSliced": false,
         "breakable": false,
@@ -820,8 +1626,116 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Plunger|-00.22|+00.01|+00.49",
-        "objectType": "Plunger",
+        "nodeId": "Painting|-01.56|+01.41|-02.32",
+        "objectType": "Painting",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.3811607360839844,
+        "position": {
+          "x": -1.5613000392913818,
+          "y": 1.4085999727249146,
+          "z": -2.318000078201294
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 180.00013732910156,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Painting|-03.49|+01.39|-00.51",
+        "objectType": "Painting",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.166727304458618,
+        "position": {
+          "x": -3.4880154132843018,
+          "y": 1.3860000371932983,
+          "z": -0.5070000290870667
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 270.00006103515625,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Painting|+03.37|+01.79|-00.95",
+        "objectType": "Painting",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.774702072143555,
+        "position": {
+          "x": 3.367000102996826,
+          "y": 1.7899999618530273,
+          "z": -0.9493600130081177
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 270.00006103515625,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Pillow|-02.87|+00.56|+00.82",
+        "objectType": "Pillow",
         "pickupable": true,
         "openable": false,
         "receptacle": false,
@@ -829,16 +1743,514 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 1.9231696128845215,
+        "distance": 0.9627639651298523,
         "position": {
-          "x": -0.21920549869537354,
-          "y": 0.007918961346149445,
-          "z": 0.4912568926811218
+          "x": -2.8712363243103027,
+          "y": 0.5595557689666748,
+          "z": 0.8214713931083679
         },
         "rotation": {
-          "x": -0.0004137506184633821,
-          "y": 0.3547622561454773,
-          "z": -1.2923030226374976e-05
+          "x": -0.00040709361201152205,
+          "y": 358.63250732421875,
+          "z": 0.0028236834332346916
+        },
+        "parentReceptacles": [
+          "Sofa|-02.96|+00.03|+01.39"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.699999988079071,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "RemoteControl|-00.26|+00.92|+00.95",
+        "objectType": "RemoteControl",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 1.7446966171264648,
+        "position": {
+          "x": -0.25608107447624207,
+          "y": 0.9219225645065308,
+          "z": 0.9483066201210022
+        },
+        "rotation": {
+          "x": 0.0007887364481575787,
+          "y": 359.82476806640625,
+          "z": 0.04048221930861473
+        },
+        "parentReceptacles": [
+          "Dresser|-00.05|+00.03|+01.67"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.15000000596046448,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "SideTable|+03.16|+00.03|+01.40",
+        "objectType": "SideTable",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.255565643310547,
+        "position": {
+          "x": 3.1630470752716064,
+          "y": 0.03213992714881897,
+          "z": 1.4009644985198975
+        },
+        "rotation": {
+          "x": 0.021949883550405502,
+          "y": 270.00177001953125,
+          "z": 359.9901123046875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "DeskLamp|+03.14|+00.59|+01.46"
+        ],
+        "mass": 11.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "SideTable|-00.17|+00.03|-02.28",
+        "objectType": "SideTable",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.8624045848846436,
+        "position": {
+          "x": -0.1699996143579483,
+          "y": 0.027842164039611816,
+          "z": -2.2800002098083496
+        },
+        "rotation": {
+          "x": 0.00013204665447119623,
+          "y": 3.6103345337323844e-05,
+          "z": 0.00012340368994046003
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "Statue|-00.16|+00.55|-02.25"
+        ],
+        "mass": 11.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "SideTable|+03.16|+00.03|-00.57",
+        "objectType": "SideTable",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.471549987792969,
+        "position": {
+          "x": 3.163048267364502,
+          "y": 0.032089024782180786,
+          "z": -0.5740261077880859
+        },
+        "rotation": {
+          "x": 0.005471683107316494,
+          "y": 270.0018310546875,
+          "z": -0.005533311050385237
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "Newspaper|+03.19|+00.59|-00.56"
+        ],
+        "mass": 11.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "SideTable|+03.16|+00.03|+00.36",
+        "objectType": "SideTable",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.278594970703125,
+        "position": {
+          "x": 3.1630496978759766,
+          "y": 0.03209561109542847,
+          "z": 0.36497440934181213
+        },
+        "rotation": {
+          "x": 0.006106993183493614,
+          "y": 270.0024108886719,
+          "z": 359.99383544921875
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 11.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "SideTable|-03.30|+00.03|-00.49",
+        "objectType": "SideTable",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.171440601348877,
+        "position": {
+          "x": -3.300767660140991,
+          "y": 0.03203776478767395,
+          "z": -0.48990949988365173
+        },
+        "rotation": {
+          "x": -0.0016252375207841396,
+          "y": 89.96109771728516,
+          "z": -0.0004058101330883801
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 11.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Sofa|-02.96|+00.03|+01.39",
+        "objectType": "Sofa",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": true,
+        "distance": 1.369057059288025,
+        "position": {
+          "x": -2.957056999206543,
+          "y": 0.032013386487960815,
+          "z": 1.3936855792999268
+        },
+        "rotation": {
+          "x": -0.0007564852712675929,
+          "y": 90.01036071777344,
+          "z": 1.3780518202111125e-05
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [
+          "Pillow|-02.87|+00.56|+00.82"
+        ],
+        "mass": 103.99999237060547,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Statue|-00.16|+00.55|-02.25",
+        "objectType": "Statue",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.758679151535034,
+        "position": {
+          "x": -0.1557929962873459,
+          "y": 0.5454259514808655,
+          "z": -2.2526848316192627
+        },
+        "rotation": {
+          "x": 0.0004074404132552445,
+          "y": 0.02370385266840458,
+          "z": 0.0012721936218440533
+        },
+        "parentReceptacles": [
+          "SideTable|-00.17|+00.03|-02.28"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 1.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Stool|+03.14|+00.03|-01.63",
+        "objectType": "Stool",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": true,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.838040351867676,
+        "position": {
+          "x": 3.135990858078003,
+          "y": 0.02915775775909424,
+          "z": -1.6259875297546387
+        },
+        "rotation": {
+          "x": 0.0001325947669101879,
+          "y": 330.0014953613281,
+          "z": -4.286865532776574e-06
+        },
+        "parentReceptacles": [
+          "Floor|+00.00|+00.00|+00.00"
+        ],
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": [],
+        "mass": 3.180000066757202,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": false,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Television|+00.07|+01.41|+01.70",
+        "objectType": "Television",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": true,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 2.236368179321289,
+        "position": {
+          "x": 0.06986604630947113,
+          "y": 1.406610131263733,
+          "z": 1.69874107837677
+        },
+        "rotation": {
+          "x": 0.04717151075601578,
+          "y": 269.9063720703125,
+          "z": 359.9925537109375
+        },
+        "parentReceptacles": [
+          "Dresser|-00.05|+00.03|+01.67"
+        ],
+        "controlledObjects": [],
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 9.829999923706055,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Vase|-01.05|+01.19|-02.15",
+        "objectType": "Vase",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.303603410720825,
+        "position": {
+          "x": -1.0464391708374023,
+          "y": 1.1943707466125488,
+          "z": -2.151782989501953
+        },
+        "rotation": {
+          "x": 0.011833535507321358,
+          "y": 0.005108627025038004,
+          "z": 0.013003713451325893
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 1.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Vase|-02.17|+01.19|-02.18",
+        "objectType": "Vase",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.1992416381835938,
+        "position": {
+          "x": -2.168989896774292,
+          "y": 1.1943656206130981,
+          "z": -2.1836788654327393
+        },
+        "rotation": {
+          "x": -0.00015887655899859965,
+          "y": 0.004118627868592739,
+          "z": 359.98638916015625
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 1.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "WateringCan|+02.89|+00.03|-01.92",
+        "objectType": "WateringCan",
+        "pickupable": true,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.767818927764893,
+        "position": {
+          "x": 2.8940017223358154,
+          "y": 0.02646525949239731,
+          "z": -1.916013479232788
+        },
+        "rotation": {
+          "x": -0.000884896784555167,
+          "y": 328.8258361816406,
+          "z": 0.0013230944750830531
         },
         "parentReceptacles": [
           "Floor|+00.00|+00.00|+00.00"
@@ -858,724 +2270,7 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "ScrubBrush|-00.35|+00.01|+00.35",
-        "objectType": "ScrubBrush",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.9874746799468994,
-        "position": {
-          "x": -0.3524087369441986,
-          "y": 0.008382663130760193,
-          "z": 0.3510969281196594
-        },
-        "rotation": {
-          "x": 6.451247463701293e-05,
-          "y": 1.5876892805099487,
-          "z": 0.00019121858349535614
-        },
-        "parentReceptacles": [
-          "Floor|+00.00|+00.00|+00.00"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.1899999976158142,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Shelf|-02.93|+00.59|+01.43",
-        "objectType": "Shelf",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.038848876953125,
-        "position": {
-          "x": -2.930000066757202,
-          "y": 0.5891813039779663,
-          "z": 1.4259999990463257
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [
-          "ShowerGlass|-02.90|+01.42|+02.34",
-          "SprayBottle|-03.14|+00.59|+01.42"
-        ],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ShowerDoor|-02.48|+01.77|+02.39",
-        "objectType": "ShowerDoor",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.755456566810608,
-        "position": {
-          "x": -2.4778358936309814,
-          "y": 1.77427077293396,
-          "z": 2.386776924133301
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": [
-          "Floor|+00.00|+00.00|+00.00"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": true,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ShowerGlass|-02.90|+01.42|+02.34",
-        "objectType": "ShowerGlass",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.9930561780929565,
-        "position": {
-          "x": -2.895005226135254,
-          "y": 1.4230706691741943,
-          "z": 2.342567205429077
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15",
-          "Shelf|-02.93|+00.59|+01.43"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": true,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ShowerHead|-02.95|+02.16|+03.44",
-        "objectType": "ShowerHead",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": true,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.724025011062622,
-        "position": {
-          "x": -2.949369430541992,
-          "y": 2.1549999713897705,
-          "z": 3.4382998943328857
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.00003051757812,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": [],
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Sink|-01.94|+00.95|+03.14",
-        "objectType": "Sink",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.4780992269515991,
-        "position": {
-          "x": -1.934999942779541,
-          "y": 0.9520000219345093,
-          "z": 3.1440000534057617
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Sink|-00.85|+00.95|+03.14",
-        "objectType": "Sink",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.1551053524017334,
-        "position": {
-          "x": -0.8460000157356262,
-          "y": 0.9520000219345093,
-          "z": 3.1440000534057617
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Sink|-01.94|+00.95|+03.14|SinkBasin",
-        "objectType": "SinkBasin",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.4320478439331055,
-        "position": {
-          "x": -1.9261999130249023,
-          "y": 0.9607000350952148,
-          "z": 3.0910000801086426
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Sink|-00.85|+00.95|+03.14|SinkBasin",
-        "objectType": "SinkBasin",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.1042728424072266,
-        "position": {
-          "x": -0.8372000455856323,
-          "y": 0.9607000350952148,
-          "z": 3.0910000801086426
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.0,
-          "z": -0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "SoapBar|-01.53|+01.09|+03.32",
-        "objectType": "SoapBar",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.435605525970459,
-        "position": {
-          "x": -1.5342577695846558,
-          "y": 1.0948275327682495,
-          "z": 3.319523334503174
-        },
-        "rotation": {
-          "x": 0.015938684344291687,
-          "y": 340.2779846191406,
-          "z": 359.9849548339844
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.10999999940395355,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "SoapBottle|-01.29|+01.09|+03.32",
-        "objectType": "SoapBottle",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": true,
-        "distance": 1.3665839433670044,
-        "position": {
-          "x": -1.2879999876022339,
-          "y": 1.094507098197937,
-          "z": 3.323002815246582
-        },
-        "rotation": {
-          "x": 359.9610595703125,
-          "y": 195.0000457763672,
-          "z": 359.9905090332031
-        },
-        "parentReceptacles": [
-          "CounterTop|-01.36|+01.09|+03.15"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.4000000059604645,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "SprayBottle|-03.14|+00.59|+01.42",
-        "objectType": "SprayBottle",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.239748954772949,
-        "position": {
-          "x": -3.1402881145477295,
-          "y": 0.5886675119400024,
-          "z": 1.4231252670288086
-        },
-        "rotation": {
-          "x": 0.013429752551019192,
-          "y": 0.0017159723211079836,
-          "z": 0.02095833420753479
-        },
-        "parentReceptacles": [
-          "Shelf|-02.93|+00.59|+01.43"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.10999999940395355,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Toilet|-00.70|+00.03|+00.66",
-        "objectType": "Toilet",
-        "pickupable": false,
-        "openable": true,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": true,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.6368635892868042,
-        "position": {
-          "x": -0.6949999928474426,
-          "y": 0.026227682828903198,
-          "z": 0.656000018119812
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": -0.00010586791904643178,
-          "z": 0.0
-        },
-        "parentReceptacles": [
-          "Floor|+00.00|+00.00|+00.00"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 1.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ToiletPaper|-00.10|+00.04|+03.14",
-        "objectType": "ToiletPaper",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.693824052810669,
-        "position": {
-          "x": -0.09683521091938019,
-          "y": 0.03718852251768112,
-          "z": 3.1369309425354004
-        },
-        "rotation": {
-          "x": 359.6210632324219,
-          "y": 269.74298095703125,
-          "z": 359.642822265625
-        },
-        "parentReceptacles": [
-          "Floor|+00.00|+00.00|+00.00",
-          "GarbageCan|00.01|00.50|+03.13"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.20000000298023224,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ToiletPaper|-00.07|+00.87|+00.38",
-        "objectType": "ToiletPaper",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 1.8694360256195068,
-        "position": {
-          "x": -0.07479999959468842,
-          "y": 0.8716999888420105,
-          "z": 0.37599998712539673
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": -0.0,
-          "z": 89.99983215332031
-        },
-        "parentReceptacles": [
-          "ToiletPaperHanger|-00.04|+00.96|+00.20"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.20000000298023224,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "ToiletPaperHanger|-00.04|+00.96|+00.20",
-        "objectType": "ToiletPaperHanger",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.040192127227783,
-        "position": {
-          "x": -0.039000000804662704,
-          "y": 0.9589999914169312,
-          "z": 0.20100000500679016
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 2.390565896348562e-05,
-          "z": -0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [
-          "ToiletPaper|-00.07|+00.87|+00.38"
-        ],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Towel|+00.40|+01.39|+03.36",
-        "objectType": "Towel",
-        "pickupable": true,
-        "openable": false,
-        "receptacle": false,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.0113539695739746,
-        "position": {
-          "x": 0.40289950370788574,
-          "y": 1.3890000581741333,
-          "z": 3.359184980392456
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 1.7075473124350538e-06,
-          "z": -0.0
-        },
-        "parentReceptacles": [
-          "TowelHolder|+00.40|+01.38|+03.47"
-        ],
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": null,
-        "mass": 0.5699999928474426,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "TowelHolder|+00.40|+01.38|+03.47",
-        "objectType": "TowelHolder",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.081906318664551,
-        "position": {
-          "x": 0.40290001034736633,
-          "y": 1.375,
-          "z": 3.4660849571228027
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 180.00025939941406,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [
-          "Towel|+00.40|+01.39|+03.36"
-        ],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "TowelHolder|+00.97|+01.34|+02.86",
-        "objectType": "TowelHolder",
-        "pickupable": false,
-        "openable": false,
-        "receptacle": true,
-        "toggleable": false,
-        "isOpen": false,
-        "isToggled": false,
-        "visible": false,
-        "distance": 2.1892788410186768,
-        "position": {
-          "x": 0.9679999947547913,
-          "y": 1.343999981880188,
-          "z": 2.8550000190734863
-        },
-        "rotation": {
-          "x": -0.0,
-          "y": 270.0002746582031,
-          "z": 0.0
-        },
-        "parentReceptacles": null,
-        "controlledObjects": null,
-        "isPickedUp": false,
-        "receptacleObjectIds": [],
-        "mass": 0.0,
-        "sliceable": false,
-        "isSliced": false,
-        "breakable": false,
-        "isBroken": false,
-        "cookable": false,
-        "isCooked": false,
-        "temperature": "RoomTemp",
-        "openness": 0.0
-      },
-      {
-        "nodeType": "Object",
-        "nodeId": "Window|-02.19|+01.55|+00.09",
+        "nodeId": "Window|+01.13|+01.22|-02.74",
         "objectType": "Window",
         "pickupable": false,
         "openable": false,
@@ -1584,15 +2279,15 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 2.343324661254883,
+        "distance": 4.887512683868408,
         "position": {
-          "x": -2.190000057220459,
-          "y": 1.5509999990463257,
-          "z": 0.0860000029206276
+          "x": 1.1330000162124634,
+          "y": 1.218999981880188,
+          "z": -2.740000009536743
         },
         "rotation": {
-          "x": -0.0,
-          "y": 0.0,
+          "x": 90.0,
+          "y": 4.829672980122268e-05,
           "z": 0.0
         },
         "parentReceptacles": null,
@@ -1611,7 +2306,7 @@
       },
       {
         "nodeType": "Object",
-        "nodeId": "Window|-03.45|+01.59|+00.65",
+        "nodeId": "Window|-03.37|+01.18|-01.54",
         "objectType": "Window",
         "pickupable": false,
         "openable": false,
@@ -1620,15 +2315,159 @@
         "isOpen": false,
         "isToggled": false,
         "visible": false,
-        "distance": 2.877857208251953,
+        "distance": 2.8956048488616943,
         "position": {
-          "x": -3.447211980819702,
-          "y": 1.5931342840194702,
-          "z": 0.6488158106803894
+          "x": -3.36899995803833,
+          "y": 1.180999994277954,
+          "z": -1.5390000343322754
         },
         "rotation": {
-          "x": -0.0,
-          "y": 0.0,
+          "x": 90.0,
+          "y": 90.00006103515625,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Window|+02.90|+01.22|-02.74",
+        "objectType": "Window",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 6.169480800628662,
+        "position": {
+          "x": 2.8980000019073486,
+          "y": 1.218999981880188,
+          "z": -2.740000009536743
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 4.829672980122268e-05,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Window|+02.01|+01.22|-02.74",
+        "objectType": "Window",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 5.488910675048828,
+        "position": {
+          "x": 2.006999969482422,
+          "y": 1.218999981880188,
+          "z": -2.740000009536743
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 4.829672980122268e-05,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Window|-00.19|+01.16|-02.56",
+        "objectType": "Window",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 4.002511024475098,
+        "position": {
+          "x": -0.19300000369548798,
+          "y": 1.1579999923706055,
+          "z": -2.563999891281128
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 4.829672980122268e-05,
+          "z": 0.0
+        },
+        "parentReceptacles": null,
+        "controlledObjects": null,
+        "isPickedUp": false,
+        "receptacleObjectIds": null,
+        "mass": 0.0,
+        "sliceable": false,
+        "isSliced": false,
+        "breakable": true,
+        "isBroken": false,
+        "cookable": false,
+        "isCooked": false,
+        "temperature": "RoomTemp",
+        "openness": 0.0
+      },
+      {
+        "nodeType": "Object",
+        "nodeId": "Window|-02.97|+01.16|-02.56",
+        "objectType": "Window",
+        "pickupable": false,
+        "openable": false,
+        "receptacle": false,
+        "toggleable": false,
+        "isOpen": false,
+        "isToggled": false,
+        "visible": false,
+        "distance": 3.7007765769958496,
+        "position": {
+          "x": -2.9700000286102295,
+          "y": 1.1579999923706055,
+          "z": -2.563999891281128
+        },
+        "rotation": {
+          "x": 90.0,
+          "y": 4.829672980122268e-05,
           "z": 0.0
         },
         "parentReceptacles": null,
@@ -1650,70 +2489,223 @@
   "edges": [
     {
       "edgeType": "ON",
-      "source": "Bathtub|-02.23|+00.29|+00.72",
+      "source": "ArmChair|-02.86|+00.03|-02.04",
       "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Bathtub",
+      "sourceObjectType": "ArmChair",
       "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
-      "source": "Candle|-01.30|+00.59|+01.06",
-      "target": "Bathtub|-02.23|+00.29|+00.72",
+      "source": "Book|+00.12|+00.92|+01.11",
+      "target": "Dresser|-00.05|+00.03|+01.67",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Candle",
-      "targetObjectType": "Bathtub"
+      "sourceObjectType": "Book",
+      "targetObjectType": "Dresser"
     },
     {
       "edgeType": "ON",
-      "source": "Cloth|-01.64|+00.59|+01.11",
-      "target": "Bathtub|-02.23|+00.29|+00.72",
+      "source": "Box|+03.17|+00.21|-00.05",
+      "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Cloth",
-      "targetObjectType": "Bathtub"
-    },
-    {
-      "edgeType": "IN",
-      "source": "DishSponge|-00.67|+00.05|+03.17",
-      "target": "Cabinet|-00.34|+00.43|+02.87",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "DishSponge",
-      "targetObjectType": "Cabinet"
+      "sourceObjectType": "Box",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
-      "source": "Faucet|-00.85|+01.09|+03.37",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
+      "source": "Cabinet|+00.33|+00.51|-02.02",
+      "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Faucet",
-      "targetObjectType": "CounterTop"
+      "sourceObjectType": "Cabinet",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
-      "source": "Faucet|-01.28|+00.59|+00.63",
-      "target": "Bathtub|-02.23|+00.29|+00.72",
+      "source": "CellPhone|-00.20|+00.92|+02.49",
+      "target": "Dresser|-00.05|+00.03|+01.67",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Faucet",
-      "targetObjectType": "Bathtub"
+      "sourceObjectType": "CellPhone",
+      "targetObjectType": "Dresser"
     },
     {
       "edgeType": "ON",
-      "source": "Faucet|-01.94|+01.09|+03.37",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
+      "source": "Chair|+01.63|+00.03|+02.21",
+      "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Faucet",
-      "targetObjectType": "CounterTop"
+      "sourceObjectType": "Chair",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
-      "source": "GarbageCan|00.01|00.50|+03.13",
+      "source": "Chair|+01.05|+00.03|-02.19",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Chair",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Chair|+02.04|+00.03|-02.23",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Chair",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "DeskLamp|+03.14|+00.59|+01.46",
+      "target": "SideTable|+03.16|+00.03|+01.40",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "DeskLamp",
+      "targetObjectType": "SideTable"
+    },
+    {
+      "edgeType": "ON",
+      "source": "DogBed|+02.74|+00.03|+02.26",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "DogBed",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.42|+00.37",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-03.24|+00.17|-00.49",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.17|-00.57",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.17|+00.37",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-03.24|+00.42|-00.49",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.42|+01.40",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.42|-00.57",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-00.19|+00.23|+00.95",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-00.42|+00.35|+01.41",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|+03.10|+00.17|+01.40",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-00.42|+00.35|+02.38",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Drawer|-00.42|+00.35|+01.92",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Drawer",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Dresser|-00.05|+00.03|+01.67",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Dresser",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "FloorLamp|+03.10|+00.03|-02.34",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "FloorLamp",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "GarbageCan|+03.16|+00.03|+00.89",
       "target": "Floor|+00.00|+00.00|+00.00",
       "sourceType": "Object",
       "targetType": "Object",
@@ -1722,165 +2714,165 @@
     },
     {
       "edgeType": "ON",
-      "source": "HandTowel|-00.24|+01.76|+03.43",
-      "target": "HandTowelHolder|-00.24|+01.86|+03.47",
+      "source": "Laptop|-02.78|+00.38|-01.87",
+      "target": "ArmChair|-02.86|+00.03|-02.04",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "HandTowel",
-      "targetObjectType": "HandTowelHolder"
+      "sourceObjectType": "Laptop",
+      "targetObjectType": "ArmChair"
     },
     {
       "edgeType": "ON",
-      "source": "Mirror|-01.39|+01.60|+03.46",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
+      "source": "Newspaper|+03.19|+00.59|-00.56",
+      "target": "SideTable|+03.16|+00.03|-00.57",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Mirror",
-      "targetObjectType": "CounterTop"
+      "sourceObjectType": "Newspaper",
+      "targetObjectType": "SideTable"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Pillow|-02.87|+00.56|+00.82",
+      "target": "Sofa|-02.96|+00.03|+01.39",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Pillow",
+      "targetObjectType": "Sofa"
+    },
+    {
+      "edgeType": "ON",
+      "source": "RemoteControl|-00.26|+00.92|+00.95",
+      "target": "Dresser|-00.05|+00.03|+01.67",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "RemoteControl",
+      "targetObjectType": "Dresser"
+    },
+    {
+      "edgeType": "ON",
+      "source": "SideTable|+03.16|+00.03|+01.40",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "SideTable",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "SideTable|-00.17|+00.03|-02.28",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "SideTable",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "SideTable|+03.16|+00.03|-00.57",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "SideTable",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "SideTable|+03.16|+00.03|+00.36",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "SideTable",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "SideTable|-03.30|+00.03|-00.49",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "SideTable",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Sofa|-02.96|+00.03|+01.39",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Sofa",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Statue|-00.16|+00.55|-02.25",
+      "target": "SideTable|-00.17|+00.03|-02.28",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Statue",
+      "targetObjectType": "SideTable"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Stool|+03.14|+00.03|-01.63",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Stool",
+      "targetObjectType": "Floor"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Television|+00.07|+01.41|+01.70",
+      "target": "Dresser|-00.05|+00.03|+01.67",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Television",
+      "targetObjectType": "Dresser"
+    },
+    {
+      "edgeType": "ON",
+      "source": "WateringCan|+02.89|+00.03|-01.92",
+      "target": "Floor|+00.00|+00.00|+00.00",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "WateringCan",
+      "targetObjectType": "Floor"
     },
     {
       "edgeType": "IN",
-      "source": "PaperTowelRoll|-00.49|+00.15|+03.20",
-      "target": "Cabinet|-00.34|+00.43|+02.87",
+      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "PaperTowelRoll",
-      "targetObjectType": "Cabinet"
+      "sourceObjectType": "CreditCard",
+      "targetObjectType": "Drawer"
     },
     {
       "edgeType": "ON",
-      "source": "Plunger|-00.22|+00.01|+00.49",
-      "target": "Floor|+00.00|+00.00|+00.00",
+      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "Plunger",
-      "targetObjectType": "Floor"
+      "sourceObjectType": "CreditCard",
+      "targetObjectType": "Drawer"
+    },
+    {
+      "edgeType": "IN",
+      "source": "KeyChain|-00.24|+00.92|+02.34",
+      "target": "Chair|+01.63|+00.03|+02.21",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "KeyChain",
+      "targetObjectType": "Chair"
     },
     {
       "edgeType": "ON",
-      "source": "ScrubBrush|-00.35|+00.01|+00.35",
-      "target": "Floor|+00.00|+00.00|+00.00",
+      "source": "KeyChain|-00.24|+00.92|+02.34",
+      "target": "Chair|+01.63|+00.03|+02.21",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "ScrubBrush",
-      "targetObjectType": "Floor"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ShowerDoor|-02.48|+01.77|+02.39",
-      "target": "Floor|+00.00|+00.00|+00.00",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ShowerDoor",
-      "targetObjectType": "Floor"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ShowerGlass|-02.90|+01.42|+02.34",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ShowerGlass",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ShowerGlass|-02.90|+01.42|+02.34",
-      "target": "Shelf|-02.93|+00.59|+01.43",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ShowerGlass",
-      "targetObjectType": "Shelf"
-    },
-    {
-      "edgeType": "ON",
-      "source": "Sink|-01.94|+00.95|+03.14",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Sink",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "ON",
-      "source": "Sink|-00.85|+00.95|+03.14",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Sink",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "ON",
-      "source": "SoapBar|-01.53|+01.09|+03.32",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "SoapBar",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "ON",
-      "source": "SoapBottle|-01.29|+01.09|+03.32",
-      "target": "CounterTop|-01.36|+01.09|+03.15",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "SoapBottle",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "ON",
-      "source": "SprayBottle|-03.14|+00.59|+01.42",
-      "target": "Shelf|-02.93|+00.59|+01.43",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "SprayBottle",
-      "targetObjectType": "Shelf"
-    },
-    {
-      "edgeType": "ON",
-      "source": "Toilet|-00.70|+00.03|+00.66",
-      "target": "Floor|+00.00|+00.00|+00.00",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Toilet",
-      "targetObjectType": "Floor"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ToiletPaper|-00.10|+00.04|+03.14",
-      "target": "Floor|+00.00|+00.00|+00.00",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ToiletPaper",
-      "targetObjectType": "Floor"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ToiletPaper|-00.10|+00.04|+03.14",
-      "target": "GarbageCan|00.01|00.50|+03.13",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ToiletPaper",
-      "targetObjectType": "GarbageCan"
-    },
-    {
-      "edgeType": "ON",
-      "source": "ToiletPaper|-00.07|+00.87|+00.38",
-      "target": "ToiletPaperHanger|-00.04|+00.96|+00.20",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ToiletPaper",
-      "targetObjectType": "ToiletPaperHanger"
-    },
-    {
-      "edgeType": "ON",
-      "source": "Towel|+00.40|+01.39|+03.36",
-      "target": "TowelHolder|+00.40|+01.38|+03.47",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Towel",
-      "targetObjectType": "TowelHolder"
+      "sourceObjectType": "KeyChain",
+      "targetObjectType": "Chair"
     }
   ]
 }
