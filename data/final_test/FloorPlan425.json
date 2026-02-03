@@ -1,0 +1,80 @@
+[
+    {
+        "task": "Put SprayBottle on the CounterTop",
+        "object_states": [
+            {
+                "name": "CounterTop",
+                "contains": [
+                    "SprayBottle"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put cloth on the Sinkbasin and toggle on the faucet",
+        "object_states": [
+            {
+                "name": "Faucet",
+                "contains": [],
+                "state": "On"
+            },
+            {
+                "name": "SinkBasin",
+                "contains": [
+                    "Cloth"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Turn on the ShowerHead",
+        "object_states": [
+            {
+                "name": "ShowerHead",
+                "contains": [],
+                "state": "On"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put Plunger on the CounterTop and Open the toilet",
+        "object_states": [
+            {
+                "name": "CounterTop",
+                "contains": [
+                    "Plunger"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "Toilet",
+                "contains": [],
+                "state": "Opened"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put toiletpaper on the toilet",
+        "object_states": [
+            {
+                "name": "Toilet",
+                "contains": [
+                    "ToiletPaper"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    }
+]

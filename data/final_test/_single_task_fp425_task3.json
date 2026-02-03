@@ -1,0 +1,14 @@
+[
+  {
+    "task": "Turn on the ShowerHead",
+    "object_states": [
+      {
+        "name": "ShowerHead",
+        "contains": [],
+        "state": "On"
+      }
+    ],
+    "trans": 0,
+    "max_trans": 0
+  }
+]

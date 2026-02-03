@@ -1103,7 +1103,7 @@ class AI2ThorExecutor:
             action="OpenObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1145,7 +1145,7 @@ class AI2ThorExecutor:
             action="CloseObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1187,7 +1187,7 @@ class AI2ThorExecutor:
             action="ToggleObjectOn",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1229,7 +1229,7 @@ class AI2ThorExecutor:
             action="ToggleObjectOff",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1271,7 +1271,7 @@ class AI2ThorExecutor:
             action="SliceObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1311,7 +1311,7 @@ class AI2ThorExecutor:
             action="CleanObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1353,7 +1353,7 @@ class AI2ThorExecutor:
             action="BreakObject",
             objectId=object_id,
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화
@@ -1378,7 +1378,7 @@ class AI2ThorExecutor:
         event = self.controller.step(
             action="DropHandObject",
             agentId=self.agent_id,
-            forceAction=True
+            forceAction=False
         )
         self._capture_frame()  # 액션 실행 후 프레임 캡처
         time.sleep(0.1)  # 프레임 안정화

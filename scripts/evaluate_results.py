@@ -116,6 +116,16 @@ def load_expected_results(json_path: str) -> List[Dict[str, Any]]:
 def verify_object_state(executor: AI2ThorExecutor, expected_state: Dict[str, Any]) -> Tuple[int, int]:
     """
     Verifies object state and returns (passed_count, total_count).
+
+    object_states의 state 필드에 사용 가능한 값:
+    - None: 상태 검사 없음
+    - Sliced: isSliced
+    - Broken: isBroken
+    - Opened: isOpen
+    - Closed: !isOpen
+    - On / ToggledOn: isToggled
+    - Off / ToggledOff: !isToggled
+    - PickedUp: agent가 해당 객체를 들고 있음 (heldObjectId 또는 isPickedUp)
     """
     object_name = expected_state['name']
     expected_contains = expected_state.get('contains', [])
@@ -255,6 +265,15 @@ def verify_object_state(executor: AI2ThorExecutor, expected_state: Dict[str, Any
                 state_passed = True
             else:
                 print(f"  ❌ Expected '{object_name}' to be {'Off' if expected_status == 'Off' else 'ToggledOff'}, but isToggled={is_toggled}.")
+        elif expected_status == 'PickedUp':
+            # Agent가 해당 객체를 들고 있는지: agent.heldObjectId == obj_id 또는 obj_meta.isPickedUp
+            held_id = executor.controller.last_event.metadata.get('agent', {}).get('heldObjectId')
+            is_picked = (held_id == obj_id) or obj_meta.get('isPickedUp', False)
+            if is_picked:
+                print(f"  ✅ Verified '{object_name}' is PickedUp (agent holds it).")
+                state_passed = True
+            else:
+                print(f"  ❌ Expected '{object_name}' to be PickedUp, but agent heldObjectId={held_id}, isPickedUp={obj_meta.get('isPickedUp', False)}.")
         else:
             print(f"  ⚠ Unknown state '{expected_status}' for '{object_name}'.")
             # 알 수 없는 상태는 통과로 처리하지 않음

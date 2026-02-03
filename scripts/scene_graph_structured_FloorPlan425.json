@@ -827,7 +827,8 @@
           "z": 0.0
         },
         "parentReceptacles": [
-          "Floor|-01.72|00.00|+00.00"
+          "Floor|-01.72|00.00|+00.00",
+          "ShowerDoor|-01.63|+01.01|+01.17"
         ],
         "controlledObjects": [],
         "isPickedUp": false,
@@ -1478,13 +1479,13 @@
       "targetObjectType": "Floor"
     },
     {
-      "edgeType": "ON",
+      "edgeType": "IN",
       "source": "ShowerHead|-01.62|+00.58|+00.66",
-      "target": "Floor|-01.72|00.00|+00.00",
+      "target": "ShowerDoor|-01.63|+01.01|+01.17",
       "sourceType": "Object",
       "targetType": "Object",
       "sourceObjectType": "ShowerHead",
-      "targetObjectType": "Floor"
+      "targetObjectType": "ShowerDoor"
     },
     {
       "edgeType": "ON",

@@ -2282,7 +2282,7 @@ def update_scene_graph_after_action(
                     edges.append(holds_edge)
                 
                 # 기존 수용체(들)의 receptacleObjectIds에서 해당 객체 제거
-                old_receptacle_ids = list(target_obj_node.get("parentReceptacles", []))
+                old_receptacle_ids = list(target_obj_node.get("parentReceptacles") or [])
                 for other_node in object_nodes:
                     if other_node.get("nodeId") in old_receptacle_ids:
                         roids = other_node.get("receptacleObjectIds")
@@ -2444,7 +2444,7 @@ def update_scene_graph_after_action(
                     logger.info(f"  → PutObject: 수용체 '{recp_id}'의 receptacleObjectIds에 '{obj_id}' 추가")
                     
                     # 객체가 이전에 다른 수용체에 있었을 수 있음(직접 PutObject만 호출된 경우 등): 기존 수용체에서 제거
-                    old_receptacle_ids = [rid for rid in target_obj_node.get("parentReceptacles", []) if rid != recp_id]
+                    old_receptacle_ids = [rid for rid in (target_obj_node.get("parentReceptacles") or []) if rid != recp_id]
                     for other_node in object_nodes:
                         if other_node.get("nodeId") in old_receptacle_ids:
                             other_roids = other_node.get("receptacleObjectIds")

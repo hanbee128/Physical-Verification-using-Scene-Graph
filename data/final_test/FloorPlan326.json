@@ -1,0 +1,85 @@
+[
+    {
+        "task": "Put Pen in the drawer",
+        "object_states": [
+            {
+                "name": "Drawer",
+                "contains": [
+                    "Pen"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Turn on the Desktop and Laptop",
+        "object_states": [
+            {
+                "name": "Desktop",
+                "contains": [],
+                "state": "On"
+            },
+            {
+                "name": "Laptop",
+                "contains": [],
+                "state": "On"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Open the book",
+        "object_states": [
+            {
+                "name": "Book",
+                "contains": [],
+                "state": "Opened"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put pen and creditcard in the drawer and put the pen on the desk",
+        "object_states": [
+            {
+                "name": "Drawer",
+                "contains": [
+                    "CreditCard"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "Desk",
+                "contains": [
+                    "Pen"
+                ],
+                "state": "None"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    },
+    {
+        "task": "Put CD on the chair and Open the Book",
+        "object_states": [
+            {
+                "name": "Chair",
+                "contains": [
+                    "CD"
+                ],
+                "state": "None"
+            },
+            {
+                "name": "Book",
+                "contains": [],
+                "state": "Opened"
+            }
+        ],
+        "trans": 0,
+        "max_trans": 0
+    }
+]
