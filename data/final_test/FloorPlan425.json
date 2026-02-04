@@ -45,12 +45,12 @@
         "max_trans": 0
     },
     {
-        "task": "Put Plunger on the CounterTop and Open the toilet",
+        "task": "Put ScrubBrush in the garbagecan and Open the toilet",
         "object_states": [
             {
-                "name": "CounterTop",
+                "name": "GarbageCan",
                 "contains": [
-                    "Plunger"
+                    "ScrubBrush"
                 ],
                 "state": "None"
             },
@@ -64,10 +64,10 @@
         "max_trans": 0
     },
     {
-        "task": "Put toiletpaper on the toilet",
+        "task": "Put toiletpaper on the countertop",
         "object_states": [
             {
-                "name": "Toilet",
+                "name": "CounterTop",
                 "contains": [
                     "ToiletPaper"
                 ],

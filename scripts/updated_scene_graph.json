@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -1.5,
+        "x": -0.75,
         "y": 0.9019671678543091,
-        "z": 1.5
+        "z": 3.0
       },
       "rotation": {
         "x": -0.0,
@@ -112,7 +112,6 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "ToiletPaper|-01.41|+00.06|+02.35",
           "ToiletPaper|-01.33|+00.06|+02.26"
         ],
         "mass": 0.0,
@@ -302,7 +301,8 @@
           "TissueBox|-01.31|+00.99|+03.19",
           "Candle|-01.64|+00.99|+03.09",
           "SoapBar|-01.53|+00.99|+02.86",
-          "SoapBottle|-01.56|+00.99|+02.21"
+          "SoapBottle|-01.56|+00.99|+02.21",
+          "ToiletPaper|-01.41|+00.06|+02.35"
         ],
         "mass": 0.0,
         "sliceable": false,
@@ -813,7 +813,7 @@
         "receptacle": false,
         "toggleable": true,
         "isOpen": false,
-        "isToggled": true,
+        "isToggled": false,
         "visible": false,
         "distance": 2.474553108215332,
         "position": {
@@ -1202,7 +1202,7 @@
           "z": 359.9815673828125
         },
         "parentReceptacles": [
-          "Cabinet|-01.19|+00.39|+02.13"
+          "CounterTop|-01.35|+00.97|+02.95"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1534,15 +1534,6 @@
     },
     {
       "edgeType": "IN",
-      "source": "ToiletPaper|-01.41|+00.06|+02.35",
-      "target": "Cabinet|-01.19|+00.39|+02.13",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "ToiletPaper",
-      "targetObjectType": "Cabinet"
-    },
-    {
-      "edgeType": "IN",
       "source": "ToiletPaper|-01.33|+00.06|+02.26",
       "target": "Cabinet|-01.19|+00.39|+02.13",
       "sourceType": "Object",
@@ -1558,6 +1549,24 @@
       "targetType": "Object",
       "sourceObjectType": "Towel",
       "targetObjectType": "TowelHolder"
+    },
+    {
+      "edgeType": "IN",
+      "source": "ToiletPaper|-01.41|+00.06|+02.35",
+      "target": "CounterTop|-01.35|+00.97|+02.95",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "ToiletPaper",
+      "targetObjectType": "CounterTop"
+    },
+    {
+      "edgeType": "ON",
+      "source": "ToiletPaper|-01.41|+00.06|+02.35",
+      "target": "CounterTop|-01.35|+00.97|+02.95",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "ToiletPaper",
+      "targetObjectType": "CounterTop"
     }
   ]
 }
