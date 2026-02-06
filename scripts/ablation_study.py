@@ -215,38 +215,100 @@ def run_evaluate_ablation_vs_baseline(
     ablation_json_path: str,
     baseline_json_path: str,
 ) -> Dict[str, Any]:
-    """evaluate_results.py를 subprocess로 호출 (ablation=PG, baseline=BL). batch_evaluation과 동일 방식."""
-    evaluate_script = _script_dir / "evaluate_results.py"
+    """evaluate_results 로직을 ablation_study 내에서 직접 수행 (ablation=PG, baseline=BL). subprocess/폴더 검사 없이 동작."""
+    from evaluate_results import load_expected_results, parse_json_plan_file, execute_and_evaluate_task
+    from ai2thor_connector_ithor import AI2ThorExecutor
+
+    ablation_plans = parse_json_plan_file(ablation_json_path)
+    baseline_plans = parse_json_plan_file(baseline_json_path)
+    expected_results = load_expected_results(test_file)
+    scene_name = f"FloorPlan{fp_number}"
+
+    def _norm(s: str) -> str:
+        return (s or "").lower().strip().replace(" ", "")
+
+    physical_guard_exe = None
+    baseline_exe = None
+    if ablation_plans:
+        physical_guard_exe = AI2ThorExecutor(scene=scene_name, headless=False, save_video=False)
+        physical_guard_exe.initialize()
+    if baseline_plans:
+        baseline_exe = AI2ThorExecutor(scene=scene_name, headless=False, save_video=False)
+        baseline_exe.initialize()
+
+    physical_guard_results = []
+    baseline_results = []
+    for task_def in expected_results:
+        task_name = task_def["task"]
+        task_key = task_name.strip().lower()
+
+        if ablation_plans and physical_guard_exe:
+            matched_key = None
+            if task_key in ablation_plans:
+                matched_key = task_key
+            else:
+                task_norm = _norm(task_name)
+                for plan_key in ablation_plans.keys():
+                    if _norm(plan_key) == task_norm:
+                        matched_key = plan_key
+                        break
+                if not matched_key:
+                    for plan_key in ablation_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            break
+            if matched_key:
+                result = execute_and_evaluate_task(
+                    physical_guard_exe, task_def, ablation_plans[matched_key], "Physical Guard"
+                )
+                physical_guard_results.append(result)
+            else:
+                physical_guard_results.append({
+                    "task": task_name, "method": "Physical Guard", "status": "SKIPPED", "reason": "No Plan"
+                })
+
+        if baseline_plans and baseline_exe:
+            matched_key = None
+            if task_key in baseline_plans:
+                matched_key = task_key
+            else:
+                task_norm = _norm(task_name)
+                for plan_key in baseline_plans.keys():
+                    if _norm(plan_key) == task_norm:
+                        matched_key = plan_key
+                        break
+                if not matched_key:
+                    for plan_key in baseline_plans.keys():
+                        if task_key in plan_key or plan_key in task_key:
+                            matched_key = plan_key
+                            break
+            if matched_key:
+                result = execute_and_evaluate_task(
+                    baseline_exe, task_def, baseline_plans[matched_key], "Baseline"
+                )
+                baseline_results.append(result)
+            else:
+                baseline_results.append({
+                    "task": task_name, "method": "Baseline", "status": "SKIPPED", "reason": "No Plan"
+                })
+
+    if physical_guard_exe:
+        try:
+            physical_guard_exe.close()
+        except Exception:
+            pass
+    if baseline_exe:
+        try:
+            baseline_exe.close()
+        except Exception:
+            pass
+
+    result_dict = {"physical_guard": physical_guard_results, "baseline": baseline_results}
     output_json = _project_root / ABLATION_RESULTS_BASE / folder / f"FP{fp_number}" / "_ablation_eval_result.json"
     output_json.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
-        sys.executable,
-        str(evaluate_script),
-        "--physical_guard_json", ablation_json_path,
-        "--baseline_json", baseline_json_path,
-        "--fp-number", str(fp_number),
-        "--folder", folder,
-        "--test_file", test_file,
-        "--output-json", str(output_json),
-    ]
-    try:
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-            bufsize=1,
-            cwd=_project_root,
-        )
-        for line in process.stdout:
-            print(line.rstrip())
-        process.wait()
-        if output_json.exists():
-            with open(output_json, "r", encoding="utf-8") as f:
-                return json.load(f)
-    except Exception as e:
-        print(f"❌ evaluate_results 실행 실패: {e}")
-    return {"physical_guard": [], "baseline": []}
+    with open(output_json, "w", encoding="utf-8") as f:
+        json.dump(result_dict, f, indent=2, ensure_ascii=False)
+    return result_dict
 
 
 def calculate_averages(all_results: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -481,11 +543,11 @@ def save_to_excel(
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Ablation (2): Baseline + Physical Guard + Recovery 실행 및 평가")
-    parser.add_argument("--fp-number", type=int, default=None, help="FloorPlan 번호 (미지정 시 1, 216, 325, 403)")
+    parser.add_argument("--fp-number", type=int, default=None, help="FloorPlan 번호 (미지정 시 1, 2, 216, 224, 325, 326, 403, 425)")
     parser.add_argument("--num-runs", type=int, default=10, help="실행 횟수 (기본 10)")
     args = parser.parse_args()
 
-    floor_plans = [args.fp_number] if args.fp_number else [1, 216, 325, 403]
+    floor_plans = [args.fp_number] if args.fp_number else [1, 2, 216, 224, 325, 326, 403, 425]
     num_runs = args.num_runs
 
     # --fp-number 지정 시: 해당 FP의 Task 목록을 보여주고 번호로 선택 (0=전체, 1~N=단일 Task)
@@ -611,7 +673,7 @@ def main():
 
         elapsed = (datetime.now() - start_time).total_seconds()
         print("\n" + "=" * 70)
-        print("✅ Ablation Study (2) 완료")
+        print("✅ Ablation Study (2): Baseline + Physical Guard + Recovery 완료")
         print(f"⏱️  소요 시간: {int(elapsed // 60)}분 {int(elapsed % 60)}초")
         print("=" * 70)
 

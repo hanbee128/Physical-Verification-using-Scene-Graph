@@ -1,0 +1,1084 @@
+{
+  "physical_guard": [
+    {
+      "task": "Put egg into the bowl",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Egg')",
+          "action": "GoToObject",
+          "target_object": "Egg",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "OpenObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Egg')",
+          "action": "PickupObject",
+          "target_object": "Egg",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Bowl')",
+          "action": "GoToObject",
+          "target_object": "Bowl",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Egg', 'Bowl')",
+          "action": "PutObject",
+          "target_object": "Egg",
+          "receptacle": "Bowl",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Bring Plate to CounterTop",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Plate')",
+          "action": "GoToObject",
+          "target_object": "Plate",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet|+00.72|+02.02|-02.46')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|+00.72|+02.02|-02.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Plate')",
+          "action": "PickupObject",
+          "target_object": "Plate",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|+00.72|+02.02|-02.46')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|+00.72|+02.02|-02.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Plate', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Plate",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put Apple and Tomato and Potato into Fridge",
+      "method": "Physical Guard",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 66.67,
+      "exec": 100.0,
+      "executed_actions_count": 18,
+      "successful_actions_count": 18,
+      "total_generated_actions": 18,
+      "passed_conditions": 2,
+      "total_conditions": 3,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Apple', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Tomato')",
+          "action": "GoToObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Tomato')",
+          "action": "PickupObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "OpenObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Tomato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Tomato",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Potato')",
+          "action": "GoToObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Potato')",
+          "action": "PickupObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Slice the Bread",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 39,
+      "successful_actions_count": 39,
+      "total_generated_actions": 39,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "OpenObject('Drawer|-01.56|+00.84|-00.20')",
+          "action": "OpenObject",
+          "target_object": "Drawer|-01.56|+00.84|-00.20",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|-01.56|+00.84|-00.20')",
+          "action": "CloseObject",
+          "target_object": "Drawer|-01.56|+00.84|-00.20",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Bread')",
+          "action": "GoToObject",
+          "target_object": "Bread",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "SliceObject('Bread')",
+          "action": "SliceObject",
+          "target_object": "Bread",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Knife')",
+          "action": "GoToObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put the Mug in the SinkBasin and Wash the Mug",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 4,
+      "total_generated_actions": 4,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Mug')",
+          "action": "GoToObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Mug')",
+          "action": "PickupObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Mug', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Mug",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ],
+  "baseline": [
+    {
+      "task": "Put egg into the bowl",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 33.33,
+      "executed_actions_count": 6,
+      "successful_actions_count": 2,
+      "total_generated_actions": 6,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Egg')",
+          "action": "GoToObject",
+          "target_object": "Egg",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Egg')",
+          "action": "PickupObject",
+          "target_object": "Egg",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Bowl')",
+          "action": "GoToObject",
+          "target_object": "Bowl",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Bowl')",
+          "action": "OpenObject",
+          "target_object": "Bowl",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Egg', 'Bowl')",
+          "action": "PutObject",
+          "target_object": "Egg",
+          "receptacle": "Bowl",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Bowl')",
+          "action": "CloseObject",
+          "target_object": "Bowl",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Bring Plate to CounterTop",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Plate')",
+          "action": "GoToObject",
+          "target_object": "Plate",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Plate')",
+          "action": "PickupObject",
+          "target_object": "Plate",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Plate', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Plate",
+          "receptacle": "CounterTop",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put Apple and Tomato and Potato into Fridge",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 33.33,
+      "exec": 63.64,
+      "executed_actions_count": 11,
+      "successful_actions_count": 7,
+      "total_generated_actions": 11,
+      "passed_conditions": 1,
+      "total_conditions": 3,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Apple', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Tomato')",
+          "action": "GoToObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PickupObject('Tomato')",
+          "action": "PickupObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Tomato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Tomato",
+          "receptacle": "Fridge",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Potato')",
+          "action": "GoToObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PickupObject('Potato')",
+          "action": "PickupObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Potato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Potato",
+          "receptacle": "Fridge",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Slice the Bread",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 100.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "PickupObject('Knife')",
+          "action": "PickupObject",
+          "target_object": "Knife",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Bread')",
+          "action": "GoToObject",
+          "target_object": "Bread",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "SliceObject('Bread')",
+          "action": "SliceObject",
+          "target_object": "Bread",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Knife', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "Knife",
+          "receptacle": "CounterTop",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put the Mug in the SinkBasin and Wash the Mug",
+      "method": "Baseline",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 4,
+      "total_generated_actions": 4,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Mug')",
+          "action": "GoToObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Mug')",
+          "action": "PickupObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Mug', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Mug",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ]
+}
