@@ -791,6 +791,91 @@ def main():
                        help="평가 결과(physical_guard, baseline, exec 포함)를 저장할 JSON 파일 경로. batch_evaluation에서 사용.")
     args = parser.parse_args()
 
+    # ablation_study 등: JSON 경로와 test_file, fp_number가 모두 주어지면 폴더 검사 없이 단일 FP 평가만 수행 후 output_json 저장
+    if (getattr(args, "physical_guard_json", None) and getattr(args, "baseline_json", None)
+            and getattr(args, "fp_number", None) and getattr(args, "test_file", None)):
+        fp_number = args.fp_number
+        physical_guard_file = args.physical_guard_json
+        baseline_file = args.baseline_json
+        physical_guard_plans = parse_json_plan_file(physical_guard_file)
+        baseline_plans = parse_json_plan_file(baseline_file)
+        expected_results = load_expected_results(args.test_file)
+        scene_name = f"FloorPlan{fp_number}"
+        physical_guard_exe = None
+        baseline_exe = None
+        if physical_guard_plans:
+            physical_guard_exe = AI2ThorExecutor(scene=scene_name, headless=False, save_video=False)
+            physical_guard_exe.initialize()
+        if baseline_plans:
+            baseline_exe = AI2ThorExecutor(scene=scene_name, headless=False, save_video=False)
+            baseline_exe.initialize()
+        physical_guard_results = []
+        baseline_results = []
+        for task_def in expected_results:
+            task_name = task_def['task']
+            task_key = task_name.strip().lower()
+            def _norm(s):
+                return (s or "").lower().strip().replace(" ", "")
+            matched_key = None
+            if physical_guard_plans and physical_guard_exe:
+                if task_key in physical_guard_plans:
+                    matched_key = task_key
+                else:
+                    task_norm = _norm(task_name)
+                    for plan_key in physical_guard_plans.keys():
+                        if _norm(plan_key) == task_norm:
+                            matched_key = plan_key
+                            break
+                    if not matched_key:
+                        for plan_key in physical_guard_plans.keys():
+                            if task_key in plan_key or plan_key in task_key:
+                                matched_key = plan_key
+                                break
+                if matched_key:
+                    result = execute_and_evaluate_task(
+                        physical_guard_exe, task_def, physical_guard_plans[matched_key], "Physical Guard"
+                    )
+                    physical_guard_results.append(result)
+                else:
+                    physical_guard_results.append({
+                        "task": task_name, "method": "Physical Guard", "status": "SKIPPED", "reason": "No Plan"
+                    })
+            matched_key = None
+            if baseline_plans and baseline_exe:
+                if task_key in baseline_plans:
+                    matched_key = task_key
+                else:
+                    task_norm = _norm(task_name)
+                    for plan_key in baseline_plans.keys():
+                        if _norm(plan_key) == task_norm:
+                            matched_key = plan_key
+                            break
+                    if not matched_key:
+                        for plan_key in baseline_plans.keys():
+                            if task_key in plan_key or plan_key in task_key:
+                                matched_key = plan_key
+                                break
+                if matched_key:
+                    result = execute_and_evaluate_task(
+                        baseline_exe, task_def, baseline_plans[matched_key], "Baseline"
+                    )
+                    baseline_results.append(result)
+                else:
+                    baseline_results.append({
+                        "task": task_name, "method": "Baseline", "status": "SKIPPED", "reason": "No Plan"
+                    })
+        if physical_guard_exe:
+            physical_guard_exe.close()
+        if baseline_exe:
+            baseline_exe.close()
+        if getattr(args, "output_json", None):
+            out_path = Path(args.output_json)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump({"physical_guard": physical_guard_results, "baseline": baseline_results}, f, indent=2, ensure_ascii=False)
+            print(f"\n💾 평가 결과(Exec 포함) 저장: {out_path}")
+        return
+    # ----- 기존: results/{folder} 기반 평가 -----
     folder_name = args.folder
     
     # 폴더 안의 모든 FP 폴더 찾기

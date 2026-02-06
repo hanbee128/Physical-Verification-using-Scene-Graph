@@ -1,0 +1,200 @@
+{
+  "physical_guard": [
+    {
+      "task": "Put Pot on the StoveBurner and Put Mug in the Microwave",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 10,
+      "successful_actions_count": 10,
+      "total_generated_actions": 10,
+      "passed_conditions": 2,
+      "total_conditions": 2,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Pot')",
+          "action": "GoToObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Pot')",
+          "action": "PickupObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('StoveBurner')",
+          "action": "GoToObject",
+          "target_object": "StoveBurner",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Pot', 'StoveBurner')",
+          "action": "PutObject",
+          "target_object": "Pot",
+          "receptacle": "StoveBurner",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Mug')",
+          "action": "GoToObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Mug')",
+          "action": "PickupObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Microwave')",
+          "action": "GoToObject",
+          "target_object": "Microwave",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Microwave|+01.93|+00.90|-00.77')",
+          "action": "OpenObject",
+          "target_object": "Microwave|+01.93|+00.90|-00.77",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Mug', 'Microwave')",
+          "action": "PutObject",
+          "target_object": "Mug",
+          "receptacle": "Microwave",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Microwave|+01.93|+00.90|-00.77')",
+          "action": "CloseObject",
+          "target_object": "Microwave|+01.93|+00.90|-00.77",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ],
+  "baseline": [
+    {
+      "task": "Put Pot on the StoveBurner and Put Mug in the Microwave",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 50.0,
+      "exec": 87.5,
+      "executed_actions_count": 8,
+      "successful_actions_count": 7,
+      "total_generated_actions": 8,
+      "passed_conditions": 1,
+      "total_conditions": 2,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Pot')",
+          "action": "GoToObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Pot')",
+          "action": "PickupObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('StoveBurner')",
+          "action": "GoToObject",
+          "target_object": "StoveBurner",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Pot', 'StoveBurner')",
+          "action": "PutObject",
+          "target_object": "Pot",
+          "receptacle": "StoveBurner",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Mug')",
+          "action": "GoToObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Mug')",
+          "action": "PickupObject",
+          "target_object": "Mug",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Microwave')",
+          "action": "GoToObject",
+          "target_object": "Microwave",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Mug', 'Microwave')",
+          "action": "PutObject",
+          "target_object": "Mug",
+          "receptacle": "Microwave",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    }
+  ]
+}
