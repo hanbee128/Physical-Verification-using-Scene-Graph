@@ -1,0 +1,2143 @@
+================================================================================
+Unified Execution Log
+생성 시간: 2026-02-10 09:53:17
+================================================================================
+
+
+============================================================
+🔧 Unified Execution Script
+   physical_guard.py와 evaluate_results.py를 순차적으로 실행합니다
+============================================================
+실행 시작 시간: 2026-02-10 09:53:17
+
+
+📋 FloorPlan 번호 입력: 326
+
+📄 작업 파일 자동 감지: data/final_test/FloorPlan326.json
+
+============================================================
+🚀 Step 1: physical_guard.py 실행 (FloorPlan 326)
+============================================================
+
+2026-02-10 09:53:21,922 - __main__ - INFO - 원본 Scene Graph를 /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json로 복사 완료 (초기 복사)
+2026-02-10 09:53:21,922 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:21,922 - __main__ - INFO - 업데이트된 Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:21,922 - __main__ - INFO - 📦 AI2-THOR Controller 초기화 중...
+2026-02-10 09:53:21,922 - __main__ - INFO -    Scene: FloorPlan326_physics
+2026-02-10 09:53:25,456 - root - INFO - Initialize return: {'cameraNearPlane': 0.009999999776482582, 'cameraFarPlane': 20.0}
+2026-02-10 09:53:25,456 - __main__ - INFO - ✓ AI2-THOR Controller 초기화 완료
+2026-02-10 09:53:25,484 - __main__ - INFO - 원본 Scene Graph를 /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json로 복사 완료 (task 시작 전 리셋)
+2026-02-10 09:53:25,485 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:25,485 - __main__ - INFO - 업데이트된 Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,179 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:31,183 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:31,183 - __main__ - INFO - 물리적 검증 시작: 'Put Pen in the drawer'
+2026-02-10 09:53:31,183 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:31,183 - __main__ - INFO -
+[Step 1] 프로그램 파싱 중...
+2026-02-10 09:53:31,183 - __main__ - INFO - ✓ 6개의 액션 파싱 완료
+2026-02-10 09:53:31,183 - __main__ - INFO -
+[Step 2] 물리적 검증: 각 액션 검증 중...
+2026-02-10 09:53:31,183 - __main__ - INFO -
+[액션 1/6] GoToObject('Pen')
+2026-02-10 09:53:31,183 - __main__ - INFO -   → 물리적 검증: GoToObject('Pen')
+2026-02-10 09:53:31,183 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,183 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, 0.000)
+2026-02-10 09:53:31,183 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,183 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:31,183 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:31,183 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:31,183 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,195 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.019, 0.796, -1.784), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.52m, 실제 3D 거리: 0.53m) <= 1.3m
+2026-02-10 09:53:31,197 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.520m)
+2026-02-10 09:53:31,197 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,197 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.500, 0.899, -1.750) (거리: 0.530m, 정면 위치)
+2026-02-10 09:53:31,199 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,199 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,199 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,199 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,199 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,199 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,199 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:31,199 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:31,199 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,199 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:31,199 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,199 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:31,200 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,200 - __main__ - INFO -
+[액션 2/6] PickupObject('Pen')
+2026-02-10 09:53:31,200 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:31,200 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,200 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,200 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,200 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:31,200 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:31,200 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.530m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=0.530m)
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:31,200 - __main__ - INFO -       수용체 'Desk|+03.14|00.00|-01.41': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:31,200 - __main__ - INFO -       → 수용체 'Desk|+03.14|00.00|-01.41'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:31,200 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:31,200 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:31,200 - __main__ - INFO -   → PickupObject: 기존 수용체 'Desk|+03.14|00.00|-01.41'의 receptacleObjectIds에서 'Pen|+03.02|+00.80|-01.78' 제거
+2026-02-10 09:53:31,200 - __main__ - INFO -   → PickupObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78, type: Pen) 업데이트 완료
+2026-02-10 09:53:31,205 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,205 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:31,205 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,205 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,205 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,205 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,205 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,205 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:31,205 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,205 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:31,205 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,205 - __main__ - INFO -       상태: isPickedUp=True
+2026-02-10 09:53:31,206 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,206 - __main__ - INFO -
+[액션 3/6] GoToObject('Desk')
+2026-02-10 09:53:31,206 - __main__ - INFO -   → 물리적 검증: GoToObject('Desk')
+2026-02-10 09:53:31,206 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,206 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,206 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,206 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 목표 객체: Desk
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 객체 위치: (3.142, -0.001, -1.415)
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 거리: 3.343m
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 속성: receptacle
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 부모 수용체: Floor|+00.00|+00.00|+00.00
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:31,206 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:31,206 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:31,206 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Desk' 존재 확인
+2026-02-10 09:53:31,208 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.142, -0.001, -1.415), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.72m, 실제 3D 거리: 1.16m) <= 1.3m
+2026-02-10 09:53:31,210 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.724m)
+2026-02-10 09:53:31,210 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,210 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Desk') → (2.500, 0.899, -1.750) (거리: 1.155m, 정면 위치)
+2026-02-10 09:53:31,212 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,212 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,212 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,212 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,212 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,212 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,212 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,212 - __main__ - INFO -     📦 목표 객체 (Desk):
+2026-02-10 09:53:31,212 - __main__ - INFO -       nodeId: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:31,212 - __main__ - INFO -       타입: Desk
+2026-02-10 09:53:31,212 - __main__ - INFO -       위치: (3.142, -0.001, -1.415)
+2026-02-10 09:53:31,212 - __main__ - INFO -       부모 수용체: Floor|+00.00|+00.00|+00.00
+2026-02-10 09:53:31,213 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,213 - __main__ - INFO -
+[액션 4/6] OpenObject('Drawer')
+2026-02-10 09:53:31,213 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer')
+2026-02-10 09:53:31,213 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,213 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:31,213 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,213 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,213 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:31,213 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,213 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:31,213 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:31,213 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:31,213 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:31,213 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 4.563m > 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,213 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:31,213 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:31,213 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=4.563m, 벗어난 축: x=-1.523 (범위: 0.700~4.300), z=0.346 (범위: -3.550~0.050))
+2026-02-10 09:53:31,214 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:31,215 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:31,215 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:31,215 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:31,215 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Drawer')
+2026-02-10 09:53:31,215 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (0.250, 0.899, -0.500) (거리: 2.025m, 정면 위치)
+2026-02-10 09:53:31,216 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,217 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:31,217 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,217 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:31,217 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:31,217 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:31,217 - __main__ - INFO -   → OpenObject: 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35)의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:31,219 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,219 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:31,220 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,220 - __main__ - INFO -
+[액션 5/7] OpenObject('Drawer')
+2026-02-10 09:53:31,220 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer')
+2026-02-10 09:53:31,220 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,220 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:31,220 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,220 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,220 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:31,220 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,220 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:31,220 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:31,220 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:31,220 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:31,220 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:31,220 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,220 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:31,220 - __main__ - WARNING -     ✗ ¬OPENED(object): 객체가 이미 열려있음 (openness: 1.0)
+2026-02-10 09:53:31,220 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:31,222 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:31,222 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:31,222 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), ¬OPENED(object)
+2026-02-10 09:53:31,222 - __main__ - INFO -   ⏭️  OpenObject 건너뛰기: 객체 'Drawer'가 이미 열려있음
+2026-02-10 09:53:31,222 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:31,222 - __main__ - INFO -
+[액션 6/7] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:31,222 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:31,222 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,222 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:31,222 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,222 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:31,222 - __main__ - INFO -     📦 수용체 열림 상태: True
+2026-02-10 09:53:31,222 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,222 - __main__ - WARNING -     ✗ Proximity(agent, receptacle): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:31,222 - __main__ - INFO -     ✓ OPENED(receptacle): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:31,224 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:31,224 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:31,224 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: Proximity(agent, receptacle)
+2026-02-10 09:53:31,224 - __main__ - INFO -   → 복구 액션 1개를 원래 액션 이전에 삽입
+2026-02-10 09:53:31,224 - __main__ - INFO -     → 복구 액션 삽입: GoToObject('Drawer')
+2026-02-10 09:53:31,224 - __main__ - INFO -   → 복구 액션부터 다시 검증 시작
+2026-02-10 09:53:31,224 - __main__ - INFO -
+[액션 6/8] GoToObject('Drawer')
+2026-02-10 09:53:31,224 - __main__ - INFO -   → 물리적 검증: GoToObject('Drawer')
+2026-02-10 09:53:31,224 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,224 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:31,224 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,224 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,224 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:31,224 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,224 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:31,224 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:31,224 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:31,224 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:31,224 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:31,226 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (-1.523, 0.408, 0.346), 가장 가까운 이동 가능 위치: (-1.500, 0.899, 0.000) (NavMesh 거리: 0.35m, 실제 3D 거리: 0.60m) <= 1.3m
+2026-02-10 09:53:31,228 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (-1.500, 0.899, 0.000) (거리: 0.347m)
+2026-02-10 09:53:31,228 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,228 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (-1.500, 0.899, 0.000) (거리: 0.601m, 정면 위치)
+2026-02-10 09:53:31,230 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,230 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:31,230 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,230 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,230 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,230 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,230 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,230 - __main__ - INFO -     📦 목표 객체 (Drawer):
+2026-02-10 09:53:31,230 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:31,230 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:31,230 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,230 - __main__ - INFO -       상태: isOpen=True (openness=1.00)
+2026-02-10 09:53:31,231 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,231 - __main__ - INFO -
+[액션 7/8] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:31,231 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:31,231 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,231 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,231 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,231 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:31,231 - __main__ - INFO -     📦 수용체 열림 상태: True
+2026-02-10 09:53:31,231 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ Proximity(agent, receptacle): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:31,231 - __main__ - INFO -     ✓ OPENED(receptacle): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:31,231 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (8개)
+2026-02-10 09:53:31,231 - __main__ - INFO -   → PutObject: 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에 'Pen|+03.02|+00.80|-01.78' 추가
+2026-02-10 09:53:31,231 - __main__ - INFO -   → PutObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78) → 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35) 업데이트 완료
+2026-02-10 09:53:31,233 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,233 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (8개)
+2026-02-10 09:53:31,233 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,233 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,233 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,233 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,233 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:31,233 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:31,233 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:31,233 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:31,233 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:31,233 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:31,233 - __main__ - INFO -     📦 수용체 (Drawer):
+2026-02-10 09:53:31,233 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:31,233 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:31,233 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,233 - __main__ - INFO -       상태: openable=True, isOpen=True (openness=1.00)
+2026-02-10 09:53:31,233 - __main__ - INFO -   → CloseObject 추가: CloseObject('Drawer|-01.52|+00.41|+00.35') (PutObject 후)
+2026-02-10 09:53:31,234 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,234 - __main__ - INFO -
+[액션 8/9] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:31,234 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:31,234 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,234 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,234 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,234 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:31,234 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:31,234 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:31,234 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:31,234 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,234 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:31,234 - __main__ - INFO -     ✓ OPENED(object): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:31,234 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:31,234 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:31,236 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,236 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:31,236 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:31,236 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:31,236 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,236 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:31,236 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:31,236 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:31,236 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:31,236 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,236 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:31,236 - __main__ - INFO -
+[액션 9/9] CloseObject('Drawer')
+2026-02-10 09:53:31,236 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer')
+2026-02-10 09:53:31,236 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:31,236 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:31,236 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:31,236 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:31,236 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:31,236 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:31,236 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:31,236 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:31,236 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:31,236 - __main__ - WARNING -     ✗ OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:31,237 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:31,237 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: OPENED(object)
+2026-02-10 09:53:31,237 - __main__ - INFO -   ⏭️  CloseObject 건너뛰기: 객체 'Drawer'가 이미 닫혀있음
+2026-02-10 09:53:31,237 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:31,237 - __main__ - INFO -
+✓ 물리적 검증 완료: 8/9 액션 통과
+2026-02-10 09:53:31,237 - __main__ - INFO -
+[Step 3] 실패한 액션들에 대한 주석 생성 중...
+2026-02-10 09:53:32,312 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:32,312 - __main__ - INFO -   ✓ 주석 생성 완료: CloseObject('Drawer')
+2026-02-10 09:53:32,312 - __main__ - INFO -
+[Step 4] 최종 Plan 생성 중...
+2026-02-10 09:53:32,312 - __main__ - INFO - ✓ 최종 Plan 생성 완료
+2026-02-10 09:53:33,861 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:33,862 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:33,862 - __main__ - INFO - 누락 task 검증용 Scene Graph 재로드: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,180 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:37,181 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:37,181 - __main__ - INFO - 물리적 검증 시작: 'Put Pen'
+2026-02-10 09:53:37,181 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:37,181 - __main__ - INFO -
+[Step 1] 프로그램 파싱 중...
+2026-02-10 09:53:37,181 - __main__ - INFO - ✓ 4개의 액션 파싱 완료
+2026-02-10 09:53:37,181 - __main__ - INFO -
+[Step 2] 물리적 검증: 각 액션 검증 중...
+2026-02-10 09:53:37,181 - __main__ - INFO -
+[액션 1/4] GoToObject('Pen')
+2026-02-10 09:53:37,181 - __main__ - INFO -   → 물리적 검증: GoToObject('Pen')
+2026-02-10 09:53:37,181 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,181 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,181 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,181 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:37,181 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,181 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:37,181 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,183 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.019, 0.796, -1.784), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.52m, 실제 3D 거리: 0.53m) <= 1.3m
+2026-02-10 09:53:37,185 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.520m)
+2026-02-10 09:53:37,185 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,185 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.500, 0.899, -1.750) (거리: 0.530m, 정면 위치)
+2026-02-10 09:53:37,188 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,188 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,188 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,188 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,188 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:37,188 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,188 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:37,189 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,189 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:37,189 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,189 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,189 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,189 - __main__ - INFO -
+[액션 2/4] PickupObject('Pen')
+2026-02-10 09:53:37,189 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:37,189 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,189 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:37,189 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,189 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:37,189 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,189 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:37,189 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.530m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=0.530m)
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:37,190 - __main__ - INFO -       수용체 'Drawer|-01.52|+00.41|+00.35': openable=True, isOpen=False, openness=0.0
+2026-02-10 09:53:37,190 - __main__ - WARNING -       → 수용체 'Drawer|-01.52|+00.41|+00.35'가 닫혀있음 (openable=True, isOpen=False)
+2026-02-10 09:53:37,190 - __main__ - WARNING -     ✗ ¬IN(object, closed_receptacle): 닫힌 수용체가 있음: ['Drawer|-01.52|+00.41|+00.35']
+2026-02-10 09:53:37,190 - __main__ - INFO -     → 복구 액션 생성: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,190 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: ¬IN(object, closed_receptacle)
+2026-02-10 09:53:37,190 - __main__ - INFO -   → 복구 액션 1개를 원래 액션 이전에 삽입
+2026-02-10 09:53:37,190 - __main__ - INFO -     → 복구 액션 삽입: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,190 - __main__ - INFO -   → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,190 - __main__ - INFO -   → 복구 액션부터 다시 검증 시작
+2026-02-10 09:53:37,190 - __main__ - INFO -
+[액션 2/6] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,190 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,190 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,190 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:37,190 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,190 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,190 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,190 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,190 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,190 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,190 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,190 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,190 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 4.563m > 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,190 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:37,190 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=4.563m, 벗어난 축: x=-1.523 (범위: 0.700~4.300), z=0.346 (범위: -3.550~0.050))
+2026-02-10 09:53:37,192 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,193 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,193 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:37,193 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:37,193 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,193 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer|-01.52|+00.41|+00.35') → (0.250, 0.899, -0.500) (거리: 2.025m, 정면 위치)
+2026-02-10 09:53:37,201 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,201 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:37,201 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,202 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:37,202 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,202 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:37,202 - __main__ - INFO -   → OpenObject: nodeId 'Drawer|-01.52|+00.41|+00.35'의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:37,204 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,204 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:37,204 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,204 - __main__ - INFO -
+[액션 3/7] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,204 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,204 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,204 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,204 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,204 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:37,204 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,204 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,204 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,204 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,205 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,205 - __main__ - WARNING -     ✗ ¬OPENED(object): 객체가 이미 열려있음 (openness: 1.0)
+2026-02-10 09:53:37,205 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,206 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,206 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,206 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), ¬OPENED(object)
+2026-02-10 09:53:37,206 - __main__ - INFO -   ⏭️  OpenObject 건너뛰기: 객체 'Drawer|-01.52|+00.41|+00.35'가 이미 열려있음
+2026-02-10 09:53:37,206 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:37,207 - __main__ - INFO -
+[액션 4/7] PickupObject('Pen')
+2026-02-10 09:53:37,207 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:37,207 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,207 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,207 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,207 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:37,207 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,207 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:37,207 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,207 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 3.054m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:37,207 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:37,207 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=3.054m, 벗어난 축: x=3.019 (범위: -1.550~2.050))
+2026-02-10 09:53:37,207 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:37,207 - __main__ - INFO -       수용체 'Drawer|-01.52|+00.41|+00.35': openable=True, isOpen=True, openness=1.0
+2026-02-10 09:53:37,207 - __main__ - INFO -       → 수용체 'Drawer|-01.52|+00.41|+00.35'가 열려있거나 openable이 아님 (openable=True, isOpen=True)
+2026-02-10 09:53:37,207 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:37,210 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Pen'를 정면으로 보는 위치 계산 완료: (2.000, 0.899, -1.250) (거리: 1.150m)
+2026-02-10 09:53:37,210 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Pen') (Proximity 가드 위반, 목표 위치: (2.000, 0.899, -1.250))
+2026-02-10 09:53:37,210 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:37,210 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:37,210 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Pen')
+2026-02-10 09:53:37,210 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.000, 0.899, -1.250) (거리: 1.155m, 정면 위치)
+2026-02-10 09:53:37,212 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,212 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:37,213 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,213 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:37,213 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=2.000, y=0.899, z=-1.250, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=1.155m)
+2026-02-10 09:53:37,213 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:37,213 - __main__ - INFO -   → PickupObject: 기존 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에서 'Pen|+03.02|+00.80|-01.78' 제거
+2026-02-10 09:53:37,213 - __main__ - INFO -   → PickupObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78, type: Pen) 업데이트 완료
+2026-02-10 09:53:37,215 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,215 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:37,215 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,215 - __main__ - INFO -
+[액션 5/8] PickupObject('Pen')
+2026-02-10 09:53:37,215 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:37,215 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,215 - __main__ - INFO -     🤖 에이전트 위치: (2.000, 0.899, -1.250)
+2026-02-10 09:53:37,215 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,215 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:37,215 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:37,215 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:37,215 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,215 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 1.155m <= 1.5m (agent 위치: (2.000, 0.899, -1.250), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:37,215 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:37,215 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.000, y=0.899, z=-1.250, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=1.155m)
+2026-02-10 09:53:37,215 - __main__ - WARNING -     ✗ ¬HOLDS(agent, *): Agent가 이미 객체를 들고 있음 (heldObjectId: Pen|+03.02|+00.80|-01.78, 업데이트된 Scene Graph)
+2026-02-10 09:53:37,215 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 객체가 수용체 안에 있지 않음
+2026-02-10 09:53:37,215 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: ¬HOLDS(agent, *)
+2026-02-10 09:53:37,216 - __main__ - INFO -   ⏭️  PickupObject 건너뛰기: 이미 손에 물체가 있음
+2026-02-10 09:53:37,216 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:37,216 - __main__ - INFO -
+[액션 6/8] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,216 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,216 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,216 - __main__ - INFO -     🤖 에이전트 위치: (2.000, 0.899, -1.250)
+2026-02-10 09:53:37,216 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,216 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,216 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,216 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,216 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,216 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,216 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:37,216 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,216 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,216 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 3.899m > 1.5m (agent 위치: (2.000, 0.899, -1.250), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,216 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,216 - __main__ - INFO -     ✓ OPENED(object): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:37,216 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=2.000, y=0.899, z=-1.250, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=3.899m, 벗어난 축: x=-1.523 (범위: 0.200~3.800))
+2026-02-10 09:53:37,218 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,218 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,218 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:37,218 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:37,218 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,218 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer|-01.52|+00.41|+00.35') → (0.250, 0.899, -0.500) (거리: 2.025m, 정면 위치)
+2026-02-10 09:53:37,220 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,220 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:37,220 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,220 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:37,220 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,220 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:37,222 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,222 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:37,222 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,222 - __main__ - INFO -
+[액션 7/9] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,222 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,222 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,222 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,222 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,222 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,222 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,222 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,222 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,222 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,222 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,222 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,222 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,222 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,222 - __main__ - WARNING -     ✗ OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:37,222 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,224 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,224 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,224 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), OPENED(object)
+2026-02-10 09:53:37,225 - __main__ - INFO -   ⏭️  CloseObject 건너뛰기: 객체 'Drawer|-01.52|+00.41|+00.35'가 이미 닫혀있음
+2026-02-10 09:53:37,225 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:37,225 - __main__ - INFO -
+[액션 8/9] GoToObject('Desk')
+2026-02-10 09:53:37,225 - __main__ - INFO -   → 물리적 검증: GoToObject('Desk')
+2026-02-10 09:53:37,225 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,225 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,225 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,225 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 목표 객체: Desk
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 객체 위치: (3.142, -0.001, -1.415)
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 거리: 3.343m
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 속성: receptacle
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 부모 수용체: Floor|+00.00|+00.00|+00.00
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:37,225 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:37,225 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:37,225 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Desk' 존재 확인
+2026-02-10 09:53:37,227 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.142, -0.001, -1.415), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.72m, 실제 3D 거리: 1.16m) <= 1.3m
+2026-02-10 09:53:37,228 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.724m)
+2026-02-10 09:53:37,228 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,228 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Desk') → (2.500, 0.899, -1.750) (거리: 1.155m, 정면 위치)
+2026-02-10 09:53:37,230 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,230 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,230 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,230 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,230 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:37,230 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,230 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,230 - __main__ - INFO -     📦 목표 객체 (Desk):
+2026-02-10 09:53:37,230 - __main__ - INFO -       nodeId: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:37,230 - __main__ - INFO -       타입: Desk
+2026-02-10 09:53:37,230 - __main__ - INFO -       위치: (3.142, -0.001, -1.415)
+2026-02-10 09:53:37,230 - __main__ - INFO -       부모 수용체: Floor|+00.00|+00.00|+00.00
+2026-02-10 09:53:37,231 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,231 - __main__ - INFO -
+[액션 9/9] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,231 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,231 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,231 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:37,231 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,231 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:37,231 - __main__ - INFO -     📦 수용체 열림 상태: False
+2026-02-10 09:53:37,231 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:37,231 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,231 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,231 - __main__ - WARNING -     ✗ Proximity(agent, receptacle): Agent와 객체 간 거리: 4.563m > 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,231 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:37,231 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,231 - __main__ - WARNING -     ✗ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 밖 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=4.563m, 벗어난 축: x=-1.523 (범위: 0.700~4.300), z=0.346 (범위: -3.550~0.050))
+2026-02-10 09:53:37,231 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,231 - __main__ - WARNING -     ✗ OPENED(receptacle): 객체가 닫혀있음
+2026-02-10 09:53:37,233 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,233 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,233 - __main__ - INFO -     → 복구 액션 생성: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,233 - __main__ - WARNING -   ✗ 물리적 검증 실패: 3개 가드 실패: Proximity(agent, receptacle), REACHABLE(agent, receptacle), OPENED(receptacle)
+2026-02-10 09:53:37,233 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:37,233 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Drawer')
+2026-02-10 09:53:37,233 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (0.250, 0.899, -0.500) (거리: 2.025m, 정면 위치)
+2026-02-10 09:53:37,235 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,235 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:37,235 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,235 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:37,235 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,236 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:37,236 - __main__ - WARNING -   ✗ 나머지 가드 실패: 객체가 닫혀있음
+2026-02-10 09:53:37,236 - __main__ - WARNING -   ✗ 검증 실패: 객체가 닫혀있음
+2026-02-10 09:53:37,236 - __main__ - INFO -   ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속
+2026-02-10 09:53:37,236 - __main__ - INFO -
+[액션 10/10] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,236 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,236 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,236 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,236 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,236 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:37,236 - __main__ - INFO -     📦 수용체 열림 상태: False
+2026-02-10 09:53:37,236 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,236 - __main__ - WARNING -     ✗ Proximity(agent, receptacle): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:37,236 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,236 - __main__ - WARNING -     ✗ OPENED(receptacle): 객체가 닫혀있음
+2026-02-10 09:53:37,238 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:37,238 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:37,238 - __main__ - INFO -     → 복구 액션 생성: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,238 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, receptacle), OPENED(receptacle)
+2026-02-10 09:53:37,238 - __main__ - INFO -   → 복구 액션 2개를 원래 액션 이전에 삽입
+2026-02-10 09:53:37,238 - __main__ - INFO -     → 복구 액션 삽입: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,238 - __main__ - INFO -     → 복구 액션 삽입: GoToObject('Drawer')
+2026-02-10 09:53:37,238 - __main__ - INFO -   → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,238 - __main__ - INFO -   → 복구 액션부터 다시 검증 시작
+2026-02-10 09:53:37,238 - __main__ - INFO -
+[액션 10/13] GoToObject('Drawer')
+2026-02-10 09:53:37,238 - __main__ - INFO -   → 물리적 검증: GoToObject('Drawer')
+2026-02-10 09:53:37,238 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,238 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:37,238 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,238 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,238 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,238 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,238 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,238 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,238 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:37,238 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:37,240 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (-1.523, 0.408, 0.346), 가장 가까운 이동 가능 위치: (-1.500, 0.899, 0.000) (NavMesh 거리: 0.35m, 실제 3D 거리: 0.60m) <= 1.3m
+2026-02-10 09:53:37,241 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (-1.500, 0.899, 0.000) (거리: 0.347m)
+2026-02-10 09:53:37,241 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,241 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (-1.500, 0.899, 0.000) (거리: 0.601m, 정면 위치)
+2026-02-10 09:53:37,243 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,243 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:37,243 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,243 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,243 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,243 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,243 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,243 - __main__ - INFO -     📦 목표 객체 (Drawer):
+2026-02-10 09:53:37,243 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,243 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:37,243 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,244 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,244 - __main__ - INFO -
+[액션 11/13] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,244 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,244 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,244 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,244 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,244 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,244 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,244 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,244 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,244 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,244 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,244 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,244 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,244 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,244 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:37,244 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:37,244 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:37,244 - __main__ - INFO -   → OpenObject: nodeId 'Drawer|-01.52|+00.41|+00.35'의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:37,246 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,246 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:37,246 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,246 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,246 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,246 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,246 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,246 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:37,246 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,246 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:37,246 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,246 - __main__ - INFO -       상태: isOpen=True (openness=1.00)
+2026-02-10 09:53:37,247 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,247 - __main__ - INFO -
+[액션 12/13] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,247 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:37,247 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,247 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,247 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,247 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:37,247 - __main__ - INFO -     📦 수용체 열림 상태: True
+2026-02-10 09:53:37,247 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ Proximity(agent, receptacle): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:37,247 - __main__ - INFO -     ✓ OPENED(receptacle): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:37,247 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (8개)
+2026-02-10 09:53:37,247 - __main__ - INFO -   → PutObject: 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에 'Pen|+03.02|+00.80|-01.78' 추가
+2026-02-10 09:53:37,247 - __main__ - INFO -   → PutObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78) → 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35) 업데이트 완료
+2026-02-10 09:53:37,249 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,249 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (8개)
+2026-02-10 09:53:37,249 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,249 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,249 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,249 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,249 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:37,249 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:37,249 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:37,249 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:37,249 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:37,249 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,249 - __main__ - INFO -     📦 수용체 (Drawer):
+2026-02-10 09:53:37,249 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,249 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:37,249 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,249 - __main__ - INFO -       상태: openable=True, isOpen=True (openness=1.00)
+2026-02-10 09:53:37,249 - __main__ - INFO -   → CloseObject 추가: CloseObject('Drawer|-01.52|+00.41|+00.35') (PutObject 후)
+2026-02-10 09:53:37,249 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,249 - __main__ - INFO -
+[액션 13/14] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,249 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,249 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,250 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,250 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,250 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:37,250 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,250 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,250 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,250 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,250 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,250 - __main__ - INFO -     ✓ OPENED(object): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:37,250 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:37,250 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:37,252 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,252 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:37,252 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:37,252 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:37,252 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,252 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:37,252 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:37,252 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:37,252 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:37,252 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,252 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:37,252 - __main__ - INFO -
+[액션 14/14] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,252 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:37,252 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:37,252 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:37,252 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:37,252 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:37,252 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:37,252 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:37,252 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:37,252 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:37,252 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:37,252 - __main__ - WARNING -     ✗ OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:37,252 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:37,252 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: OPENED(object)
+2026-02-10 09:53:37,252 - __main__ - INFO -   ⏭️  CloseObject 건너뛰기: 객체 'Drawer|-01.52|+00.41|+00.35'가 이미 닫혀있음
+2026-02-10 09:53:37,252 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:37,252 - __main__ - INFO -
+✓ 물리적 검증 완료: 13/14 액션 통과
+2026-02-10 09:53:37,252 - __main__ - INFO -
+[Step 3] 실패한 액션들에 대한 주석 생성 중...
+2026-02-10 09:53:38,698 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:38,699 - __main__ - INFO -   ✓ 주석 생성 완료: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:40,066 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:40,066 - __main__ - INFO -   ✓ 주석 생성 완료: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:41,671 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:41,672 - __main__ - INFO -   ✓ 주석 생성 완료: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:41,672 - __main__ - INFO -
+[Step 4] 최종 Plan 생성 중...
+2026-02-10 09:53:41,672 - __main__ - INFO - ✓ 최종 Plan 생성 완료
+2026-02-10 09:53:41,672 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:41,688 - __main__ - INFO - 원본 Scene Graph를 /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json로 복사 완료 (task 시작 전 리셋)
+2026-02-10 09:53:41,688 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:41,688 - __main__ - INFO - 업데이트된 Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,560 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:43,561 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:43,561 - __main__ - INFO - 물리적 검증 시작: 'Turn on the Desktop and Laptop'
+2026-02-10 09:53:43,561 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:43,561 - __main__ - INFO -
+[Step 1] 프로그램 파싱 중...
+2026-02-10 09:53:43,561 - __main__ - INFO - ✓ 4개의 액션 파싱 완료
+2026-02-10 09:53:43,561 - __main__ - INFO -
+[Step 2] 물리적 검증: 각 액션 검증 중...
+2026-02-10 09:53:43,561 - __main__ - INFO -
+[액션 1/4] GoToObject('Desktop')
+2026-02-10 09:53:43,561 - __main__ - INFO -   → 물리적 검증: GoToObject('Desktop')
+2026-02-10 09:53:43,561 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:43,561 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, 0.000)
+2026-02-10 09:53:43,561 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:43,561 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 목표 객체: Desktop
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 객체 위치: (3.102, 0.792, -1.237)
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 거리: 3.110m
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 속성: toggleable
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:43,561 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:43,561 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:43,561 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Desktop' 존재 확인
+2026-02-10 09:53:43,563 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.102, 0.792, -1.237), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.79m, 실제 3D 거리: 0.80m) <= 1.3m
+2026-02-10 09:53:43,565 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.791m)
+2026-02-10 09:53:43,565 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:43,565 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Desktop') → (2.500, 0.899, -1.750) (거리: 0.798m, 정면 위치)
+2026-02-10 09:53:43,567 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,567 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:43,567 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:43,567 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:43,567 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:43,567 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:43,567 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:43,567 - __main__ - INFO -     📦 목표 객체 (Desktop):
+2026-02-10 09:53:43,567 - __main__ - INFO -       nodeId: Desktop|+03.10|+00.79|-01.24
+2026-02-10 09:53:43,567 - __main__ - INFO -       타입: Desktop
+2026-02-10 09:53:43,567 - __main__ - INFO -       위치: (3.102, 0.792, -1.237)
+2026-02-10 09:53:43,567 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,568 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,568 - __main__ - INFO -
+[액션 2/4] ToggleObjectOn('Desktop')
+2026-02-10 09:53:43,568 - __main__ - INFO -   → 물리적 검증: ToggleObjectOn('Desktop')
+2026-02-10 09:53:43,568 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:43,568 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:43,568 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:43,568 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 목표 객체: Desktop
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 객체 위치: (3.102, 0.792, -1.237)
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 거리: 3.110m
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 속성: toggleable
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:43,568 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:43,568 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'toggleable(object)', 'REACHABLE(agent, object)', '¬isToggled(object)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Desktop' 존재 확인
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.798m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (3.102, 0.792, -1.237))
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ toggleable(object): 객체가 toggleable임
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=3.102, y=0.792, z=-1.237, 거리=0.798m)
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ ¬isToggled(object): 객체가 꺼져있음
+2026-02-10 09:53:43,568 - __main__ - INFO -       수용체 'Desk|+03.14|00.00|-01.41': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:43,568 - __main__ - INFO -       → 수용체 'Desk|+03.14|00.00|-01.41'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:43,568 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:43,568 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:43,568 - __main__ - INFO -   → ToggleObjectOn: 'Desktop' (nodeId: Desktop|+03.10|+00.79|-01.24)의 isToggled=True로 업데이트됨
+2026-02-10 09:53:43,580 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,580 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:43,580 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:43,580 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:43,580 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:43,580 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:43,580 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 목표 객체 (Desktop):
+2026-02-10 09:53:43,580 - __main__ - INFO -       nodeId: Desktop|+03.10|+00.79|-01.24
+2026-02-10 09:53:43,580 - __main__ - INFO -       타입: Desktop
+2026-02-10 09:53:43,580 - __main__ - INFO -       위치: (3.102, 0.792, -1.237)
+2026-02-10 09:53:43,580 - __main__ - INFO -       상태: isToggled=True
+2026-02-10 09:53:43,580 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,580 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,580 - __main__ - INFO -
+[액션 3/4] GoToObject('Laptop')
+2026-02-10 09:53:43,580 - __main__ - INFO -   → 물리적 검증: GoToObject('Laptop')
+2026-02-10 09:53:43,580 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:43,580 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:43,580 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:43,580 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 목표 객체: Laptop
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 객체 위치: (3.036, 0.790, -2.277)
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 거리: 3.600m
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 속성: pickupable, openable, toggleable
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 부모 수용체 속성: Openable=True, isOpen=True, openness=1.0
+2026-02-10 09:53:43,580 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:43,580 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:43,580 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Laptop' 존재 확인
+2026-02-10 09:53:43,582 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.036, 0.790, -2.277), 가장 가까운 이동 가능 위치: (3.000, 0.899, -2.750) (NavMesh 거리: 0.47m, 실제 3D 거리: 0.49m) <= 1.3m
+2026-02-10 09:53:43,584 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (3.000, 0.899, -2.750) (거리: 0.474m)
+2026-02-10 09:53:43,584 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:43,584 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Laptop') → (3.000, 0.899, -2.750) (거리: 0.487m, 정면 위치)
+2026-02-10 09:53:43,586 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,586 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:43,586 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:43,586 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:43,586 - __main__ - INFO -       위치: (3.000, 0.899, -2.750)
+2026-02-10 09:53:43,586 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:43,586 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 목표 객체 (Laptop):
+2026-02-10 09:53:43,586 - __main__ - INFO -       nodeId: Laptop|+03.04|+00.79|-02.28
+2026-02-10 09:53:43,586 - __main__ - INFO -       타입: Laptop
+2026-02-10 09:53:43,586 - __main__ - INFO -       위치: (3.036, 0.790, -2.277)
+2026-02-10 09:53:43,586 - __main__ - INFO -       상태: isOpen=True (openness=1.00)
+2026-02-10 09:53:43,586 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,586 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,586 - __main__ - INFO -
+[액션 4/4] ToggleObjectOn('Laptop')
+2026-02-10 09:53:43,586 - __main__ - INFO -   → 물리적 검증: ToggleObjectOn('Laptop')
+2026-02-10 09:53:43,586 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:43,586 - __main__ - INFO -     🤖 에이전트 위치: (3.000, 0.899, -2.750)
+2026-02-10 09:53:43,586 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:43,586 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 목표 객체: Laptop
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 객체 위치: (3.036, 0.790, -2.277)
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 거리: 3.600m
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 속성: pickupable, openable, toggleable
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:43,586 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,587 - __main__ - INFO -     📦 부모 수용체 속성: Openable=True, isOpen=True, openness=1.0
+2026-02-10 09:53:43,587 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:43,587 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'toggleable(object)', 'REACHABLE(agent, object)', '¬isToggled(object)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Laptop' 존재 확인
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.487m <= 1.5m (agent 위치: (3.000, 0.899, -2.750), 객체 위치: (3.036, 0.790, -2.277))
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ toggleable(object): 객체가 toggleable임
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=3.000, y=0.899, z=-2.750, 객체 위치: x=3.036, y=0.790, z=-2.277, 거리=0.487m)
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ ¬isToggled(object): 객체가 꺼져있음
+2026-02-10 09:53:43,587 - __main__ - INFO -       수용체 'Desk|+03.14|00.00|-01.41': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:43,587 - __main__ - INFO -       → 수용체 'Desk|+03.14|00.00|-01.41'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:43,587 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:43,587 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:43,587 - __main__ - INFO -   → ToggleObjectOn: 'Laptop' (nodeId: Laptop|+03.04|+00.79|-02.28)의 isToggled=True로 업데이트됨
+2026-02-10 09:53:43,589 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,589 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:43,589 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:43,589 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:43,589 - __main__ - INFO -       위치: (3.000, 0.899, -2.750)
+2026-02-10 09:53:43,589 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:43,589 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:43,589 - __main__ - INFO -     📦 목표 객체 (Laptop):
+2026-02-10 09:53:43,589 - __main__ - INFO -       nodeId: Laptop|+03.04|+00.79|-02.28
+2026-02-10 09:53:43,589 - __main__ - INFO -       타입: Laptop
+2026-02-10 09:53:43,589 - __main__ - INFO -       위치: (3.036, 0.790, -2.277)
+2026-02-10 09:53:43,589 - __main__ - INFO -       상태: isOpen=True (openness=1.00), isToggled=True
+2026-02-10 09:53:43,589 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:43,589 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,589 - __main__ - INFO -
+✓ 물리적 검증 완료: 4/4 액션 통과
+2026-02-10 09:53:43,589 - __main__ - INFO -
+[Step 3] 실패한 액션들에 대한 주석 생성 중...
+2026-02-10 09:53:43,589 - __main__ - INFO -
+[Step 4] 최종 Plan 생성 중...
+2026-02-10 09:53:43,589 - __main__ - INFO - ✓ 최종 Plan 생성 완료
+2026-02-10 09:53:43,605 - __main__ - INFO - 원본 Scene Graph를 /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json로 복사 완료 (task 시작 전 리셋)
+2026-02-10 09:53:43,605 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:43,605 - __main__ - INFO - 업데이트된 Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,802 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:44,803 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:44,803 - __main__ - INFO - 물리적 검증 시작: 'Open the book'
+2026-02-10 09:53:44,803 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:44,803 - __main__ - INFO -
+[Step 1] 프로그램 파싱 중...
+2026-02-10 09:53:44,803 - __main__ - INFO - ✓ 3개의 액션 파싱 완료
+2026-02-10 09:53:44,803 - __main__ - INFO -
+[Step 2] 물리적 검증: 각 액션 검증 중...
+2026-02-10 09:53:44,803 - __main__ - INFO -
+[액션 1/3] GoToObject('Book')
+2026-02-10 09:53:44,803 - __main__ - INFO -   → 물리적 검증: GoToObject('Book')
+2026-02-10 09:53:44,803 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:44,803 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, 0.000)
+2026-02-10 09:53:44,803 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:44,803 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 목표 객체: Book
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 객체 위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 거리: 2.623m
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 속성: pickupable, openable
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 부모 수용체: Chair|+02.83|00.00|00.00
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 부모 수용체 속성: Openable=True, isOpen=False, openness=0.0
+2026-02-10 09:53:44,803 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:44,803 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:44,803 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Book' 존재 확인
+2026-02-10 09:53:44,805 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (2.827, 0.409, -0.005), 가장 가까운 이동 가능 위치: (2.250, 0.899, 0.000) (NavMesh 거리: 0.58m, 실제 3D 거리: 0.76m) <= 1.3m
+2026-02-10 09:53:44,807 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.250, 0.899, 0.000) (거리: 0.577m)
+2026-02-10 09:53:44,807 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:44,807 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Book') → (2.250, 0.899, 0.000) (거리: 0.757m, 정면 위치)
+2026-02-10 09:53:44,809 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,809 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:44,809 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:44,809 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:44,809 - __main__ - INFO -       위치: (2.250, 0.899, 0.000)
+2026-02-10 09:53:44,809 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:44,809 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:44,809 - __main__ - INFO -     📦 목표 객체 (Book):
+2026-02-10 09:53:44,809 - __main__ - INFO -       nodeId: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,809 - __main__ - INFO -       타입: Book
+2026-02-10 09:53:44,809 - __main__ - INFO -       위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,809 - __main__ - INFO -       부모 수용체: Chair|+02.83|00.00|00.00
+2026-02-10 09:53:44,810 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,810 - __main__ - INFO -
+[액션 2/3] PickupObject('Book')
+2026-02-10 09:53:44,810 - __main__ - INFO -   → 물리적 검증: PickupObject('Book')
+2026-02-10 09:53:44,810 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:44,810 - __main__ - INFO -     🤖 에이전트 위치: (2.250, 0.899, 0.000)
+2026-02-10 09:53:44,810 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:44,810 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 목표 객체: Book
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 객체 위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 거리: 2.623m
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 속성: pickupable, openable
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 부모 수용체: Chair|+02.83|00.00|00.00
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 부모 수용체 속성: Openable=True, isOpen=False, openness=0.0
+2026-02-10 09:53:44,810 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:44,810 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Book' 존재 확인
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.757m <= 1.5m (agent 위치: (2.250, 0.899, 0.000), 객체 위치: (2.827, 0.409, -0.005))
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.250, y=0.899, z=0.000, 객체 위치: x=2.827, y=0.409, z=-0.005, 거리=0.757m)
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:44,810 - __main__ - INFO -       수용체 'Chair|+02.83|00.00|00.00': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:44,810 - __main__ - INFO -       → 수용체 'Chair|+02.83|00.00|00.00'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:44,810 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:44,810 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:44,810 - __main__ - INFO -   → PickupObject: 기존 수용체 'Chair|+02.83|00.00|00.00'의 receptacleObjectIds에서 'Book|+02.83|+00.41|-00.01' 제거
+2026-02-10 09:53:44,810 - __main__ - INFO -   → PickupObject: 'Book' (nodeId: Book|+02.83|+00.41|-00.01, type: Book) 업데이트 완료
+2026-02-10 09:53:44,822 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,822 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:44,822 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:44,822 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:44,822 - __main__ - INFO -       위치: (2.250, 0.899, 0.000)
+2026-02-10 09:53:44,822 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:44,822 - __main__ - INFO -       손에 들고 있는 객체: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,822 - __main__ - INFO -     📦 목표 객체 (Book):
+2026-02-10 09:53:44,822 - __main__ - INFO -       nodeId: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,822 - __main__ - INFO -       타입: Book
+2026-02-10 09:53:44,822 - __main__ - INFO -       위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,822 - __main__ - INFO -       상태: isPickedUp=True
+2026-02-10 09:53:44,823 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,823 - __main__ - INFO -
+[액션 3/3] OpenObject('Book')
+2026-02-10 09:53:44,823 - __main__ - INFO -   → 물리적 검증: OpenObject('Book')
+2026-02-10 09:53:44,823 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:44,823 - __main__ - INFO -     🤖 에이전트 위치: (2.250, 0.899, 0.000)
+2026-02-10 09:53:44,823 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:44,823 - __main__ - INFO -     🤖 손에 들고 있는 객체: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 목표 객체: Book
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 객체 위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 거리: 2.623m
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 속성: pickupable, openable
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:44,823 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:44,823 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:44,823 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Book' 존재 확인
+2026-02-10 09:53:44,823 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.757m <= 1.5m (agent 위치: (2.250, 0.899, 0.000), 객체 위치: (2.827, 0.409, -0.005))
+2026-02-10 09:53:44,823 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:44,823 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:44,823 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.250, y=0.899, z=0.000, 객체 위치: x=2.827, y=0.409, z=-0.005, 거리=0.757m)
+2026-02-10 09:53:44,823 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:44,823 - __main__ - INFO -   → OpenObject: 'Book' (nodeId: Book|+02.83|+00.41|-00.01)의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:44,825 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,825 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:44,825 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:44,825 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:44,825 - __main__ - INFO -       위치: (2.250, 0.899, 0.000)
+2026-02-10 09:53:44,825 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:44,825 - __main__ - INFO -       손에 들고 있는 객체: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,825 - __main__ - INFO -     📦 목표 객체 (Book):
+2026-02-10 09:53:44,825 - __main__ - INFO -       nodeId: Book|+02.83|+00.41|-00.01
+2026-02-10 09:53:44,825 - __main__ - INFO -       타입: Book
+2026-02-10 09:53:44,825 - __main__ - INFO -       위치: (2.827, 0.409, -0.005)
+2026-02-10 09:53:44,825 - __main__ - INFO -       상태: isOpen=True (openness=1.00), isPickedUp=True
+2026-02-10 09:53:44,826 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,826 - __main__ - INFO -
+✓ 물리적 검증 완료: 3/3 액션 통과
+2026-02-10 09:53:44,826 - __main__ - INFO -
+[Step 3] 실패한 액션들에 대한 주석 생성 중...
+2026-02-10 09:53:44,826 - __main__ - INFO -
+[Step 4] 최종 Plan 생성 중...
+2026-02-10 09:53:44,826 - __main__ - INFO - ✓ 최종 Plan 생성 완료
+2026-02-10 09:53:44,842 - __main__ - INFO - 원본 Scene Graph를 /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json로 복사 완료 (task 시작 전 리셋)
+2026-02-10 09:53:44,842 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:44,842 - __main__ - INFO - 업데이트된 Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,231 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+📋 FloorPlan326 감지: data/all_plans_env0/FP326_info.txt 사용
+🔍 FloorPlan 326의 Scene Graph 사용: scripts/scene_graph_structured_FloorPlan326.json
+📦 data/all_plans_env0/FP326_info.txt에서 액션과 객체 로드 중
+   10개의 액션과 33개의 객체를 찾았습니다.
+📁 FloorPlan326 감지: 결과를 results/BedRoom/FP326에 저장합니다.
+🧠 작업에 대한 프로그램 생성 중: Put Pen in the drawer
+논리적 검증 완료된 프로그램:
+Here is the Python-like program for the task "Put Pen in the Drawer":
+
+```
+def put_pen_in_drawer():
+    # Step 1: Find and pick up the pen
+    GoToObject('Pen')
+    assert('hands' is 'empty')
+    else: GoToObject('CounterTop')
+    else: PutObject('<current_object_in_hands>', 'CounterTop')
+
+    PickupObject('Pen')
+    # Step 2: Move to the desk and open the drawer
+    GoToObject('Desk')
+    OpenObject('Drawer')
+
+    # Step 3: Place the pen inside the drawer and close it
+    PutObject('Pen', 'Drawer')
+    CloseObject('Drawer')
+```
+
+This program follows the rules:
+
+1. It uses only the whitelisted actions.
+2. It includes structured natural-language comments before each action block (Stage 2).
+3. It inserts assertion + recovery pairs before every interaction to guarantee preconditions (Stage 3).
+4. The plan is executed sequentially without missing steps.
+
+Note: Replace `<current_object_in_hands>` with the actual object name, which in this case is 'Pen'.
+--------------------------------------------------------------------------------
+물리적 검증 완료된 최종 프로그램:
+def put_pen_in_the_drawer():
+	# Task: Put Pen in the drawer
+	# Generated plan with logical and physical verification
+	#
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Pen')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pen')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Desk')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.250, 0.899, -0.500)
+	GoToObject('Drawer')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Drawer')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-1.500, 0.899, 0.000)
+	GoToObject('Drawer')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pen', 'Drawer')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Drawer|-01.52|+00.41|+00.35' 자동 닫기
+	CloseObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer가 열려 있으므로 CloseObject('Drawer') 액션이 불가능함 (guard: OPENED(object))
+# Let me know if you need any modifications! 😊
+	# CloseObject('Drawer')
+
+--------------------------------------------------------------------------------
+
+🔍 Task 완료 검증 중: 'Put Pen in the drawer' (일부 액션이 실패했으므로 누락된 task 확인)
+⚠️  일부 task가 누락되었습니다:
+  1. Put Pen
+
+📝 검증 결과: The original goal is to 'Put Pen in the drawer', but the plan only includes tasks related to moving and putting the pen. The task of actually putting the pen in the drawer is missing.
+
+🔧 누락된 task들에 대한 plan 생성 중... (총 1개)
+
+  📋 누락된 task 처리 중: 'Put Pen'
+    논리적 검증 완료된 프로그램:
+    Here is the Python-like program for the task "Put Pen":
+
+```
+def put_pen():
+    # Step 1: Find and pick up the pen
+    GoToObject('Pen')
+    assert('hands' is 'empty')
+    else: GoToObject('CounterTop...
+    ✓ 'Put Pen'에 대한 plan 생성 완료
+
+  📝 누락된 task들의 plan을 기존 plan에 추가 중...
+    ✓ 누락된 task들의 plan 추가 완료
+--------------------------------------------------------------------------------
+🧠 작업에 대한 프로그램 생성 중: Turn on the Desktop and Laptop
+논리적 검증 완료된 프로그램:
+Here is the Python-like program for the task:
+
+```
+def turn_on_desktop_and_laptop():
+    # Step 1: Turn on the desktop
+    GoToObject('Desktop')
+    ToggleObjectOn('Desktop')
+
+    # Step 2: Turn on the laptop
+    GoToObject('Laptop')
+    ToggleObjectOn('Laptop')
+```
+--------------------------------------------------------------------------------
+물리적 검증 완료된 최종 프로그램:
+def turn_on_the_desktop_and_laptop():
+	# Task: Turn on the Desktop and Laptop
+	# Generated plan with logical and physical verification
+	#
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Desktop')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Desktop')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (3.000, 0.899, -2.750)
+	GoToObject('Laptop')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Laptop')
+
+--------------------------------------------------------------------------------
+
+✅ 모든 액션이 통과했습니다. LLM으로 누락된 task를 찾지 않습니다.
+--------------------------------------------------------------------------------
+🧠 작업에 대한 프로그램 생성 중: Open the book
+논리적 검증 완료된 프로그램:
+Here is the Python-like program for opening a book:
+
+```
+def open_book():
+    # Step 1: Find and pick up the book
+    GoToObject('Book')
+    assert('hands' is 'empty')
+    else: GoToObject('Table')
+    PickupObject('Book')
+
+    # Step 2: Open the book
+    OpenObject('Book')
+```
+--------------------------------------------------------------------------------
+물리적 검증 완료된 최종 프로그램:
+def open_the_book():
+	# Task: Open the book
+	# Generated plan with logical and physical verification
+	#
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.250, 0.899, 0.000)
+	GoToObject('Book')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Book')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Book')
+
+--------------------------------------------------------------------------------
+
+✅ 모든 액션이 통과했습니다. LLM으로 누락된 task를 찾지 않습니다.
+--------------------------------------------------------------------------------
+🧠 작업에 대한 프로그램 생성 중: Put pen and creditcard in the drawer and put the pen on the desk
+논리적 검증 완료된 프로그램:
+2026-02-10 09:53:50,231 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:50,231 - __main__ - INFO - 물리적 검증 시작: 'Put pen and creditcard in the drawer and put the pen on the desk'
+2026-02-10 09:53:50,231 - __main__ - INFO - ================================================================================
+2026-02-10 09:53:50,231 - __main__ - INFO -
+[Step 1] 프로그램 파싱 중...
+2026-02-10 09:53:50,231 - __main__ - INFO - ✓ 13개의 액션 파싱 완료
+2026-02-10 09:53:50,231 - __main__ - INFO -
+[Step 2] 물리적 검증: 각 액션 검증 중...
+2026-02-10 09:53:50,231 - __main__ - INFO -
+[액션 1/13] GoToObject('Pen')
+2026-02-10 09:53:50,231 - __main__ - INFO -   → 물리적 검증: GoToObject('Pen')
+2026-02-10 09:53:50,231 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,231 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, 0.000)
+2026-02-10 09:53:50,231 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,231 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,231 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,231 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,232 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,232 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,232 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,232 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,232 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:50,232 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:50,232 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,234 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.019, 0.796, -1.784), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.52m, 실제 3D 거리: 0.53m) <= 1.3m
+2026-02-10 09:53:50,237 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.520m)
+2026-02-10 09:53:50,237 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,237 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.500, 0.899, -1.750) (거리: 0.530m, 정면 위치)
+2026-02-10 09:53:50,239 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,239 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,239 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,239 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,239 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,239 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,239 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,239 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:50,239 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,239 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:50,239 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,239 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,239 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,239 - __main__ - INFO -
+[액션 2/13] PickupObject('Pen')
+2026-02-10 09:53:50,239 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:50,239 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,239 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,239 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,239 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,239 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,239 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,239 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,239 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,240 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,240 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,240 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:50,240 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.530m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=0.530m)
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:50,240 - __main__ - INFO -       수용체 'Desk|+03.14|00.00|-01.41': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,240 - __main__ - INFO -       → 수용체 'Desk|+03.14|00.00|-01.41'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:50,240 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:50,240 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:50,240 - __main__ - INFO -   → PickupObject: 기존 수용체 'Desk|+03.14|00.00|-01.41'의 receptacleObjectIds에서 'Pen|+03.02|+00.80|-01.78' 제거
+2026-02-10 09:53:50,240 - __main__ - INFO -   → PickupObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78, type: Pen) 업데이트 완료
+2026-02-10 09:53:50,252 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,252 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:50,252 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,252 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,252 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,252 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,252 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,252 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:50,252 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,252 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:50,252 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,252 - __main__ - INFO -       상태: isPickedUp=True
+2026-02-10 09:53:50,253 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,253 - __main__ - INFO -
+[액션 3/13] GoToObject('Drawer')
+2026-02-10 09:53:50,253 - __main__ - INFO -   → 물리적 검증: GoToObject('Drawer')
+2026-02-10 09:53:50,253 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,253 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,253 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,253 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,253 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,253 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,253 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,253 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,253 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:50,253 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:50,255 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (-1.523, 0.408, 0.346), 가장 가까운 이동 가능 위치: (-1.500, 0.899, 0.000) (NavMesh 거리: 0.35m, 실제 3D 거리: 0.60m) <= 1.3m
+2026-02-10 09:53:50,257 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (-1.500, 0.899, 0.000) (거리: 0.347m)
+2026-02-10 09:53:50,257 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,258 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (-1.500, 0.899, 0.000) (거리: 0.601m, 정면 위치)
+2026-02-10 09:53:50,260 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,260 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,260 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,260 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,260 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,260 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,260 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,260 - __main__ - INFO -     📦 목표 객체 (Drawer):
+2026-02-10 09:53:50,260 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,260 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,260 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,260 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,261 - __main__ - INFO -
+[액션 4/13] OpenObject('Drawer')
+2026-02-10 09:53:50,261 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer')
+2026-02-10 09:53:50,261 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,261 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,261 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,261 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,261 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,261 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,261 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,261 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,261 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,261 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:50,261 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,261 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,261 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:50,261 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,261 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,261 - __main__ - INFO -   → OpenObject: 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35)의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:50,263 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,263 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,263 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,263 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,263 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,263 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,263 - __main__ - INFO -       손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,263 - __main__ - INFO -     📦 목표 객체 (Drawer):
+2026-02-10 09:53:50,263 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,263 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,263 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,263 - __main__ - INFO -       상태: isOpen=True (openness=1.00)
+2026-02-10 09:53:50,263 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,264 - __main__ - INFO -
+[액션 5/13] PutObject('Pen', 'Drawer')
+2026-02-10 09:53:50,264 - __main__ - INFO -   → 물리적 검증: PutObject('Pen', 'Drawer')
+2026-02-10 09:53:50,264 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,264 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,264 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,264 - __main__ - INFO -     🤖 손에 들고 있는 객체: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:50,264 - __main__ - INFO -     📦 수용체 열림 상태: True
+2026-02-10 09:53:50,264 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ Proximity(agent, receptacle): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'Pen'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,264 - __main__ - INFO -     ✓ OPENED(receptacle): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:50,264 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (8개)
+2026-02-10 09:53:50,264 - __main__ - INFO -   → PutObject: 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에 'Pen|+03.02|+00.80|-01.78' 추가
+2026-02-10 09:53:50,264 - __main__ - INFO -   → PutObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78) → 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35) 업데이트 완료
+2026-02-10 09:53:50,266 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,266 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (8개)
+2026-02-10 09:53:50,266 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,266 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,266 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,266 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,266 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,266 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:50,266 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,266 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:50,266 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,266 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,266 - __main__ - INFO -     📦 수용체 (Drawer):
+2026-02-10 09:53:50,266 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,266 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,266 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,266 - __main__ - INFO -       상태: openable=True, isOpen=True (openness=1.00)
+2026-02-10 09:53:50,266 - __main__ - INFO -   → CloseObject 추가: CloseObject('Drawer|-01.52|+00.41|+00.35') (PutObject 후)
+2026-02-10 09:53:50,267 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,267 - __main__ - INFO -
+[액션 6/14] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,267 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,267 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,267 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,267 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,267 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:50,267 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,267 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,267 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,267 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,267 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,267 - __main__ - INFO -     ✓ OPENED(object): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:50,267 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,267 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,269 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,269 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,269 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,269 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,269 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,269 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,269 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,269 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:50,269 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,269 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,269 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,270 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,270 - __main__ - INFO -
+[액션 7/14] GoToObject('CreditCard')
+2026-02-10 09:53:50,270 - __main__ - INFO -   → 물리적 검증: GoToObject('CreditCard')
+2026-02-10 09:53:50,270 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,270 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,270 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,270 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 목표 객체: CreditCard
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 객체 위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 거리: 3.015m
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,270 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:50,270 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:50,270 - __main__ - INFO -     ✓ EXISTS(object): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,272 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (2.994, 0.790, -1.242), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.71m, 실제 3D 거리: 0.72m) <= 1.3m
+2026-02-10 09:53:50,273 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.709m)
+2026-02-10 09:53:50,273 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,274 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('CreditCard') → (2.500, 0.899, -1.750) (거리: 0.717m, 정면 위치)
+2026-02-10 09:53:50,276 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,276 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,276 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,276 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,276 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,276 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,276 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 목표 객체 (CreditCard):
+2026-02-10 09:53:50,276 - __main__ - INFO -       nodeId: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,276 - __main__ - INFO -       타입: CreditCard
+2026-02-10 09:53:50,276 - __main__ - INFO -       위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,276 - __main__ - INFO -       부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,276 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,276 - __main__ - INFO -
+[액션 8/14] PickupObject('CreditCard')
+2026-02-10 09:53:50,276 - __main__ - INFO -   → 물리적 검증: PickupObject('CreditCard')
+2026-02-10 09:53:50,276 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,276 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,276 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,276 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 목표 객체: CreditCard
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 객체 위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 거리: 3.015m
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 부모 수용체: Desk|+03.14|00.00|-01.41
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,276 - __main__ - INFO -     📦 관련 엣지: ON
+2026-02-10 09:53:50,276 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:50,276 - __main__ - INFO -     ✓ EXISTS(object): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,276 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.717m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (2.994, 0.790, -1.242))
+2026-02-10 09:53:50,276 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:50,276 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=2.994, y=0.790, z=-1.242, 거리=0.717m)
+2026-02-10 09:53:50,276 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:50,277 - __main__ - INFO -       수용체 'Desk|+03.14|00.00|-01.41': openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,277 - __main__ - INFO -       → 수용체 'Desk|+03.14|00.00|-01.41'가 열려있거나 openable이 아님 (openable=False, isOpen=False)
+2026-02-10 09:53:50,277 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:50,277 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (6개)
+2026-02-10 09:53:50,277 - __main__ - INFO -   → PickupObject: 기존 수용체 'Desk|+03.14|00.00|-01.41'의 receptacleObjectIds에서 'CreditCard|+02.99|+00.79|-01.24' 제거
+2026-02-10 09:53:50,277 - __main__ - INFO -   → PickupObject: 'CreditCard' (nodeId: CreditCard|+02.99|+00.79|-01.24, type: CreditCard) 업데이트 완료
+2026-02-10 09:53:50,278 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,278 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (6개)
+2026-02-10 09:53:50,278 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,278 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,278 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,278 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,278 - __main__ - INFO -       손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 목표 객체 (CreditCard):
+2026-02-10 09:53:50,279 - __main__ - INFO -       nodeId: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,279 - __main__ - INFO -       타입: CreditCard
+2026-02-10 09:53:50,279 - __main__ - INFO -       위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,279 - __main__ - INFO -       상태: isPickedUp=True
+2026-02-10 09:53:50,279 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,279 - __main__ - INFO -
+[액션 9/14] GoToObject('Drawer')
+2026-02-10 09:53:50,279 - __main__ - INFO -   → 물리적 검증: GoToObject('Drawer')
+2026-02-10 09:53:50,279 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,279 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,279 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,279 - __main__ - INFO -     🤖 손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,279 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,279 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:50,279 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer' 존재 확인
+2026-02-10 09:53:50,281 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (-1.523, 0.408, 0.346), 가장 가까운 이동 가능 위치: (-1.500, 0.899, 0.000) (NavMesh 거리: 0.35m, 실제 3D 거리: 0.60m) <= 1.3m
+2026-02-10 09:53:50,283 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (-1.500, 0.899, 0.000) (거리: 0.347m)
+2026-02-10 09:53:50,283 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,283 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer') → (-1.500, 0.899, 0.000) (거리: 0.601m, 정면 위치)
+2026-02-10 09:53:50,284 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,284 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,284 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,284 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,284 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,285 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,285 - __main__ - INFO -       손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 목표 객체 (Drawer):
+2026-02-10 09:53:50,285 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,285 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,285 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,285 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,285 - __main__ - INFO -
+[액션 10/14] PutObject('CreditCard', 'Drawer')
+2026-02-10 09:53:50,285 - __main__ - INFO -   → 물리적 검증: PutObject('CreditCard', 'Drawer')
+2026-02-10 09:53:50,285 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,285 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,285 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,285 - __main__ - INFO -     🤖 손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 목표 객체: CreditCard
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 객체 위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 거리: 3.015m
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:50,285 - __main__ - INFO -     📦 수용체 열림 상태: False
+2026-02-10 09:53:50,285 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ EXISTS(object): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ Proximity(agent, receptacle): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'CreditCard'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,285 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,285 - __main__ - WARNING -     ✗ OPENED(receptacle): 객체가 닫혀있음
+2026-02-10 09:53:50,285 - __main__ - INFO -     → 복구 액션 생성: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,285 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: OPENED(receptacle)
+2026-02-10 09:53:50,285 - __main__ - INFO -   → 복구 액션 1개를 원래 액션 이전에 삽입
+2026-02-10 09:53:50,285 - __main__ - INFO -     → 복구 액션 삽입: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,285 - __main__ - INFO -   → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,285 - __main__ - INFO -   → 복구 액션부터 다시 검증 시작
+2026-02-10 09:53:50,285 - __main__ - INFO -
+[액션 10/16] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,285 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,286 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,286 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,286 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,286 - __main__ - INFO -     🤖 손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,286 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,286 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,286 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,286 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,286 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,286 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,286 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,286 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,286 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,286 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:50,286 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,286 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,286 - __main__ - INFO -   → OpenObject: nodeId 'Drawer|-01.52|+00.41|+00.35'의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:50,288 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,288 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,288 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,288 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,288 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,288 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,288 - __main__ - INFO -       손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:50,288 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,288 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,288 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,288 - __main__ - INFO -       상태: isOpen=True (openness=1.00)
+2026-02-10 09:53:50,288 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,288 - __main__ - INFO -
+[액션 11/16] PutObject('CreditCard', 'Drawer')
+2026-02-10 09:53:50,288 - __main__ - INFO -   → 물리적 검증: PutObject('CreditCard', 'Drawer')
+2026-02-10 09:53:50,288 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,288 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,288 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,288 - __main__ - INFO -     🤖 손에 들고 있는 객체: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 목표 객체: CreditCard
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 객체 위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 거리: 3.015m
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 상태: isPickedUp
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 관련 엣지: HOLDS
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 수용체: Drawer
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 수용체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 수용체 거리: 1.872m
+2026-02-10 09:53:50,288 - __main__ - INFO -     📦 수용체 열림 상태: True
+2026-02-10 09:53:50,288 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'EXISTS(receptacle)', 'Proximity(agent, receptacle)', 'HOLDS(agent, object)', 'receptacle(receptacle)', 'REACHABLE(agent, receptacle)', 'openable(receptacle)', 'OPENED(receptacle)']
+2026-02-10 09:53:50,288 - __main__ - INFO -     ✓ EXISTS(object): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ EXISTS(receptacle): 객체 'CreditCard' 존재 확인
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ Proximity(agent, receptacle): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ HOLDS(agent, object): Agent가 'CreditCard'를 들고 있음 (업데이트된 Scene Graph)
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ receptacle(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ REACHABLE(agent, receptacle):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ openable(receptacle): 객체가 receptacle임
+2026-02-10 09:53:50,289 - __main__ - INFO -     ✓ OPENED(receptacle): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:50,289 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (8개)
+2026-02-10 09:53:50,289 - __main__ - INFO -   → PutObject: 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에 'CreditCard|+02.99|+00.79|-01.24' 추가
+2026-02-10 09:53:50,289 - __main__ - INFO -   → PutObject: 'CreditCard' (nodeId: CreditCard|+02.99|+00.79|-01.24) → 'Drawer' (nodeId: Drawer|-01.52|+00.41|+00.35) 업데이트 완료
+2026-02-10 09:53:50,291 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,291 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (8개)
+2026-02-10 09:53:50,291 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,291 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,291 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,291 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,291 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 목표 객체 (CreditCard):
+2026-02-10 09:53:50,291 - __main__ - INFO -       nodeId: CreditCard|+02.99|+00.79|-01.24
+2026-02-10 09:53:50,291 - __main__ - INFO -       타입: CreditCard
+2026-02-10 09:53:50,291 - __main__ - INFO -       위치: (2.994, 0.790, -1.242)
+2026-02-10 09:53:50,291 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 수용체 (Drawer):
+2026-02-10 09:53:50,291 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,291 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,291 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,291 - __main__ - INFO -       상태: openable=True, isOpen=True (openness=1.00)
+2026-02-10 09:53:50,291 - __main__ - INFO -   → CloseObject 추가: CloseObject('Drawer|-01.52|+00.41|+00.35') (PutObject 후)
+2026-02-10 09:53:50,291 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,291 - __main__ - INFO -
+[액션 12/17] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,291 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,291 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,291 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,291 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,291 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:50,291 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,291 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,291 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,292 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,292 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,292 - __main__ - INFO -     ✓ OPENED(object): 객체가 열려있음 (openness: 1.0)
+2026-02-10 09:53:50,292 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,292 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,293 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,293 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (5개)
+2026-02-10 09:53:50,293 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,294 - __main__ - INFO -       위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,294 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,294 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 목표 객체 (Drawer|-01.52|+00.41|+00.35):
+2026-02-10 09:53:50,294 - __main__ - INFO -       nodeId: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,294 - __main__ - INFO -       타입: Drawer
+2026-02-10 09:53:50,294 - __main__ - INFO -       위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,294 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,294 - __main__ - INFO -
+[액션 13/17] CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,294 - __main__ - INFO -   → 물리적 검증: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,294 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,294 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', 'OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,294 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,294 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.601m <= 1.5m (agent 위치: (-1.500, 0.899, 0.000), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,294 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,294 - __main__ - WARNING -     ✗ OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:50,294 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=-1.500, y=0.899, z=0.000, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=0.601m)
+2026-02-10 09:53:50,294 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: OPENED(object)
+2026-02-10 09:53:50,294 - __main__ - INFO -   ⏭️  CloseObject 건너뛰기: 객체 'Drawer|-01.52|+00.41|+00.35'가 이미 닫혀있음
+2026-02-10 09:53:50,294 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:50,294 - __main__ - INFO -
+[액션 14/17] GoToObject('Pen')
+2026-02-10 09:53:50,294 - __main__ - INFO -   → 물리적 검증: GoToObject('Pen')
+2026-02-10 09:53:50,294 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 에이전트 위치: (-1.500, 0.899, 0.000)
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,294 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,294 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,294 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'NAVIGABLE(agent, object)']
+2026-02-10 09:53:50,294 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,296 - __main__ - INFO -     ✓ NAVIGABLE(agent, object): 목표 객체 위치: (3.019, 0.796, -1.784), 가장 가까운 이동 가능 위치: (2.500, 0.899, -1.750) (NavMesh 거리: 0.52m, 실제 3D 거리: 0.53m) <= 1.3m
+2026-02-10 09:53:50,298 - __main__ - INFO -     📍 이동할 좌표 (가장 가까운 위치): (2.500, 0.899, -1.750) (거리: 0.520m)
+2026-02-10 09:53:50,298 - __main__ - INFO -   ✓ 물리적 검증 통과: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,298 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.500, 0.899, -1.750) (거리: 0.530m, 정면 위치)
+2026-02-10 09:53:50,300 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,300 - __main__ - INFO -   ✓ 검증 통과: PASS: 모든 가드 통과 (2개)
+2026-02-10 09:53:50,300 - __main__ - INFO -
+  📋 액션 실행 후 상태 요약:
+2026-02-10 09:53:50,300 - __main__ - INFO -     🤖 Agent:
+2026-02-10 09:53:50,300 - __main__ - INFO -       위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,300 - __main__ - INFO -       회전: (-0.0°, 90.0°, 0.0°)
+2026-02-10 09:53:50,300 - __main__ - INFO -       손에 들고 있는 객체: None
+2026-02-10 09:53:50,300 - __main__ - INFO -     📦 목표 객체 (Pen):
+2026-02-10 09:53:50,300 - __main__ - INFO -       nodeId: Pen|+03.02|+00.80|-01.78
+2026-02-10 09:53:50,300 - __main__ - INFO -       타입: Pen
+2026-02-10 09:53:50,300 - __main__ - INFO -       위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,300 - __main__ - INFO -       부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,300 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,300 - __main__ - INFO -
+[액션 15/17] PickupObject('Pen')
+2026-02-10 09:53:50,300 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:50,301 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,301 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ Proximity(agent, object): Agent와 객체 간 거리: 0.530m <= 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=0.530m)
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:50,301 - __main__ - INFO -       수용체 'Drawer|-01.52|+00.41|+00.35': openable=True, isOpen=False, openness=0.0
+2026-02-10 09:53:50,301 - __main__ - WARNING -       → 수용체 'Drawer|-01.52|+00.41|+00.35'가 닫혀있음 (openable=True, isOpen=False)
+2026-02-10 09:53:50,301 - __main__ - WARNING -     ✗ ¬IN(object, closed_receptacle): 닫힌 수용체가 있음: ['Drawer|-01.52|+00.41|+00.35']
+2026-02-10 09:53:50,301 - __main__ - INFO -     → 복구 액션 생성: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,301 - __main__ - WARNING -   ✗ 물리적 검증 실패: 1개 가드 실패: ¬IN(object, closed_receptacle)
+2026-02-10 09:53:50,301 - __main__ - INFO -   → 복구 액션 1개를 원래 액션 이전에 삽입
+2026-02-10 09:53:50,301 - __main__ - INFO -     → 복구 액션 삽입: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,301 - __main__ - INFO -   → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,301 - __main__ - INFO -   → 복구 액션부터 다시 검증 시작
+2026-02-10 09:53:50,301 - __main__ - INFO -
+[액션 15/19] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,301 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,301 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 에이전트 위치: (2.500, 0.899, -1.750)
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,301 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,301 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,301 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,301 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 4.563m > 1.5m (agent 위치: (2.500, 0.899, -1.750), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,301 - __main__ - INFO -     ✓ ¬OPENED(object): 객체가 닫혀있음
+2026-02-10 09:53:50,301 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=2.500, y=0.899, z=-1.750, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=4.563m, 벗어난 축: x=-1.523 (범위: 0.700~4.300), z=0.346 (범위: -3.550~0.050))
+2026-02-10 09:53:50,303 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:50,303 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:50,303 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:50,303 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:50,303 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,303 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Drawer|-01.52|+00.41|+00.35') → (0.250, 0.899, -0.500) (거리: 2.025m, 정면 위치)
+2026-02-10 09:53:50,305 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,305 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:50,305 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,305 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:50,305 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:50,305 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:50,305 - __main__ - INFO -   → OpenObject: nodeId 'Drawer|-01.52|+00.41|+00.35'의 isOpen=True, openness=1.0으로 업데이트됨
+2026-02-10 09:53:50,307 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,307 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:50,307 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,307 - __main__ - INFO -
+[액션 16/20] OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,307 - __main__ - INFO -   → 물리적 검증: OpenObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:50,307 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,307 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:50,307 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,308 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 목표 객체: Drawer
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 객체 위치: (-1.523, 0.408, 0.346)
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 거리: 1.872m
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 속성: openable, receptacle
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 상태: isOpen
+2026-02-10 09:53:50,308 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,308 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'openable(object)', '¬OPENED(object)', 'REACHABLE(agent, object)']
+2026-02-10 09:53:50,308 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Drawer|-01.52|+00.41|+00.35' 존재 확인
+2026-02-10 09:53:50,308 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 2.025m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (-1.523, 0.408, 0.346))
+2026-02-10 09:53:50,308 - __main__ - INFO -     ✓ openable(object): 객체가 openable임
+2026-02-10 09:53:50,308 - __main__ - WARNING -     ✗ ¬OPENED(object): 객체가 이미 열려있음 (openness: 1.0)
+2026-02-10 09:53:50,308 - __main__ - INFO -     ✓ REACHABLE(agent, object):
+ Agent 위치 기준 범위 내 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=-1.523, y=0.408, z=0.346, 거리=2.025m)
+2026-02-10 09:53:50,309 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Drawer|-01.52|+00.41|+00.35'를 정면으로 보는 위치 계산 완료: (0.250, 0.899, -0.500) (거리: 1.965m)
+2026-02-10 09:53:50,309 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Drawer|-01.52|+00.41|+00.35') (Proximity 가드 위반, 목표 위치: (0.250, 0.899, -0.500))
+2026-02-10 09:53:50,310 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), ¬OPENED(object)
+2026-02-10 09:53:50,310 - __main__ - INFO -   ⏭️  OpenObject 건너뛰기: 객체 'Drawer|-01.52|+00.41|+00.35'가 이미 열려있음
+2026-02-10 09:53:50,310 - __main__ - INFO -      → 다음 액션으로 진행
+2026-02-10 09:53:50,310 - __main__ - INFO -
+[액션 17/20] PickupObject('Pen')
+2026-02-10 09:53:50,310 - __main__ - INFO -   → 물리적 검증: PickupObject('Pen')
+2026-02-10 09:53:50,310 - __main__ - INFO -   📊 에이전트 및 목표 객체 정보:
+2026-02-10 09:53:50,310 - __main__ - INFO -     🤖 에이전트 위치: (0.250, 0.899, -0.500)
+2026-02-10 09:53:50,310 - __main__ - INFO -     🤖 에이전트 회전: 90.0°
+2026-02-10 09:53:50,310 - __main__ - INFO -     🤖 손에 들고 있는 객체: None
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 목표 객체: Pen
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 객체 위치: (3.019, 0.796, -1.784)
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 거리: 3.295m
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 속성: pickupable
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 부모 수용체: Drawer|-01.52|+00.41|+00.35
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 부모 수용체 속성: Openable=False, isOpen=False, openness=0.0
+2026-02-10 09:53:50,310 - __main__ - INFO -     📦 관련 엣지: IN, ON
+2026-02-10 09:53:50,310 - __main__ - INFO -   → 검증할 Guards: ['EXISTS(object)', 'Proximity(agent, object)', 'pickupable(object)', 'REACHABLE(agent, object)', '¬HOLDS(agent, *)', '¬IN(object, closed_receptacle)']
+2026-02-10 09:53:50,310 - __main__ - INFO -     ✓ EXISTS(object): 객체 'Pen' 존재 확인
+2026-02-10 09:53:50,310 - __main__ - WARNING -     ✗ Proximity(agent, object): Agent와 객체 간 거리: 3.054m > 1.5m (agent 위치: (0.250, 0.899, -0.500), 객체 위치: (3.019, 0.796, -1.784))
+2026-02-10 09:53:50,310 - __main__ - INFO -     ✓ pickupable(object): 객체가 pickupable임
+2026-02-10 09:53:50,310 - __main__ - WARNING -     ✗ REACHABLE(agent, object):
+ Agent 위치 기준 범위 밖 (agent 위치: x=0.250, y=0.899, z=-0.500, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=3.054m, 벗어난 축: x=3.019 (범위: -1.550~2.050))
+2026-02-10 09:53:50,310 - __main__ - INFO -     ✓ ¬HOLDS(agent, *): Agent의 손이 비어있음
+2026-02-10 09:53:50,310 - __main__ - INFO -       수용체 'Drawer|-01.52|+00.41|+00.35': openable=True, isOpen=True, openness=1.0
+2026-02-10 09:53:50,310 - __main__ - INFO -       → 수용체 'Drawer|-01.52|+00.41|+00.35'가 열려있거나 openable이 아님 (openable=True, isOpen=True)
+2026-02-10 09:53:50,310 - __main__ - INFO -     ✓ ¬IN(object, closed_receptacle): 모든 부모 수용체가 열려있거나 openable이 아님
+2026-02-10 09:53:50,311 - __main__ - INFO -     📍 Proximity 복구: 목표 객체 'Pen'를 정면으로 보는 위치 계산 완료: (2.000, 0.899, -1.250) (거리: 1.150m)
+2026-02-10 09:53:50,311 - __main__ - INFO -     → 복구 액션 생성: GoToObject('Pen') (Proximity 가드 위반, 목표 위치: (2.000, 0.899, -1.250))
+2026-02-10 09:53:50,311 - __main__ - WARNING -   ✗ 물리적 검증 실패: 2개 가드 실패: Proximity(agent, object), REACHABLE(agent, object)
+2026-02-10 09:53:50,311 - __main__ - INFO -   → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사
+2026-02-10 09:53:50,312 - __main__ - INFO -     → Proximity 복구 액션 삽입: GoToObject('Pen')
+2026-02-10 09:53:50,312 - __main__ - INFO -   ✓ Agent 위치 업데이트: GoToObject('Pen') → (2.000, 0.899, -1.250) (거리: 1.155m, 정면 위치)
+2026-02-10 09:53:50,313 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,313 - __main__ - INFO -   ✓ Proximity 복구 액션 실행 완료
+2026-02-10 09:53:50,315 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,315 - __main__ - INFO -   → REACHABLE 가드 재검사 중...
+2026-02-10 09:53:50,315 - __main__ - INFO -     ✓ REACHABLE 가드 재검사 통과:
+ Agent 위치 기준 범위 내 (agent 위치: x=2.000, y=0.899, z=-1.250, 객체 위치: x=3.019, y=0.796, z=-1.784, 거리=1.155m)
+2026-02-10 09:53:50,315 - __main__ - INFO -   → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...
+2026-02-10 09:53:50,315 - __main__ - INFO -   → PickupObject: 기존 수용체 'Drawer|-01.52|+00.41|+00.35'의 receptacleObjectIds에서 'Pen|+03.02|+00.80|-01.78' 제거
+2026-02-10 09:53:50,315 - __main__ - INFO -   → PickupObject: 'Pen' (nodeId: Pen|+03.02|+00.80|-01.78, type: Pen) 업데이트 완료
+2026-02-10 09:53:50,317 - __main__ - INFO -   💾 Scene Graph JSON 파일 업데이트 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,317 - __main__ - INFO -   ✓ 모든 가드 통과: 모든 가드 통과
+2026-02-10 09:53:50,317 - __main__ - INFO - Scene Graph 로드 완료: /home/junghanbee/바탕화면/Scene Graph based Physical Verification/scripts/updated_scene_graph.json
+2026-02-10 09:53:50,317 - __main__ - WARNING - ⚠️  plan 길이(21개)가 20개 초과 → 검증 중단, 나머지 액션을 최종 plan에 포함
+2026-02-10 09:53:50,317 - __main__ - INFO -
+✓ 물리적 검증 완료: 21/21 액션 통과
+2026-02-10 09:53:50,317 - __main__ - INFO -
+[Step 3] 실패한 액션들에 대한 주석 생성 중...
+2026-02-10 09:53:51,815 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-10 09:53:51,815 - __main__ - INFO -   ✓ 주석 생성 완료: CloseObject('Drawer|-01.52|+00.41|+00.35')
+2026-02-10 09:53:51,815 - __main__ - INFO -
+[Step 4] 최종 Plan 생성 중...
+2026-02-10 09:53:51,815 - __main__ - INFO - ✓ 최종 Plan 생성 완료
+
+⚠️  physical_guard.py 실행이 사용자에 의해 중단되었습니다.
+
+❌ physical_guard.py 실행이 실패했습니다. evaluate_results.py는 실행하지 않습니다.
+
+================================================================================
+로그 저장 완료: 2026-02-10 09:53:53
+================================================================================

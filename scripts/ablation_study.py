@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from collections import defaultdict
 
 # scripts 디렉터리를 path에 추가 (physical_guard, evaluate_results import)
@@ -109,25 +109,51 @@ def run_ablation_baseline_pg_recovery(
     fp_number: int,
     folder: str,
     test_file: str,
-    baseline_json_path: str,
 ) -> str:
     """
-    Baseline 플랜을 로드한 뒤, 각 task에 대해 Physical Guard + Recovery만 적용.
-    결과를 ablation_baseline_pg_recovery_result.json으로 저장하고 해당 경로 반환.
+    physical_guard와 동일: 논리적 검증(generate_program) → 물리적 검증(Physical Guard + Recovery).
+    누락 task LLM 감지/추가 생성만 하지 않음. 결과를 ablation_baseline_pg_recovery_result.json에 저장.
     """
-    from evaluate_results import load_expected_results, parse_json_plan_file
-    from physical_guard import load_scene_graph, generate_final_plan_with_physical_verification
-
-    # Baseline 플랜 로드 (원본 키 유지용 raw + normalize용)
-    with open(baseline_json_path, "r", encoding="utf-8") as f:
-        baseline_raw = json.load(f)
-    baseline_plans_norm = parse_json_plan_file(baseline_json_path)
+    from evaluate_results import load_expected_results
+    from physical_guard import (
+        load_scene_graph,
+        generate_final_plan_with_physical_verification,
+        generate_program,
+        build_prompt,
+        parse_info_txt,
+        DEFAULT_EXAMPLES,
+        AI2THOR_ACTIONS,
+        DEFAULT_FLOORPLAN1_OBJECTS,
+    )
+    from openai import OpenAI
 
     expected_results = load_expected_results(test_file)
     scene_graph_path = _script_dir / f"scene_graph_structured_FloorPlan{fp_number}.json"
     if not scene_graph_path.exists():
         print(f"⚠️  Scene Graph 없음: {scene_graph_path}")
         return ""
+
+    # physical_guard와 동일: info.txt에서 액션/객체 로드 (FP{num}_info.txt 우선)
+    info_path = _project_root / "data" / "all_plans_env0" / f"FP{fp_number}_info.txt"
+    if not info_path.exists():
+        info_path = _project_root / "data" / "all_plans_env0" / "info.txt"
+    if info_path.exists():
+        actions, objects = parse_info_txt(str(info_path))
+        if not actions:
+            actions = AI2THOR_ACTIONS
+        if not objects:
+            objects = sorted(DEFAULT_FLOORPLAN1_OBJECTS)
+        else:
+            objects = sorted(objects)
+    else:
+        actions = AI2THOR_ACTIONS
+        objects = sorted(DEFAULT_FLOORPLAN1_OBJECTS)
+    examples = dict(list(DEFAULT_EXAMPLES.items()))
+    prompt = build_prompt(objects, actions, examples, max_examples=3)
+    ollama_url = "http://localhost:11434/v1"
+    model = "llama3"
+    temperature = 0.0
+    max_tokens = 700
 
     out_dir = _project_root / ABLATION_RESULTS_BASE / folder / f"FP{fp_number}"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -156,39 +182,34 @@ def run_ablation_baseline_pg_recovery(
     except Exception as e:
         print(f"  ⚠️  Controller 초기화 실패 (NavMesh 제한): {e}")
 
-    def _norm(s: str) -> str:
-        return (s or "").strip().lower().replace(" ", "")
-
     ablation_plans = {}
     for task_def in expected_results:
         task_name = task_def.get("task", "")
-        task_key = task_name.strip().lower()
-        task_norm = _norm(task_name)
+        if not task_name:
+            continue
 
         # task마다 scene graph 초기 상태로 리셋 (독립 실행)
         shutil.copy2(str(scene_graph_path), str(updated_sg_path))
         scene_graph = load_scene_graph(str(updated_sg_path))
 
-        baseline_code = baseline_raw.get(task_name) or baseline_raw.get(task_key)
-        if not baseline_code and baseline_plans_norm:
-            baseline_code = baseline_plans_norm.get(task_key)
-            if not baseline_code:
-                for k, v in baseline_plans_norm.items():
-                    if _norm(k) == task_norm:
-                        baseline_code = v
-                        break
-        if not baseline_code:
-            print(f"  ⚠️  Baseline plan 없음: '{task_name}'")
-            continue
-
         try:
+            # physical_guard와 동일: 논리적 검증(LLM) → 물리적 검증 (누락 task LLM 단계만 생략)
+            client = OpenAI(base_url=ollama_url, api_key="ollama")
+            initial_program = generate_program(
+                client=client,
+                model=model,
+                base_prompt=prompt,
+                task=task_name,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
             final_program, _ = generate_final_plan_with_physical_verification(
                 task=task_name,
-                initial_program=baseline_code,
+                initial_program=initial_program,
                 scene_graph=scene_graph,
                 controller=controller,
-                client=None,
-                model="llama3",
+                client=client,
+                model=model,
                 scene_graph_path=str(updated_sg_path),
             )
             if final_program:
@@ -205,6 +226,18 @@ def run_ablation_baseline_pg_recovery(
     out_path = out_dir / "ablation_baseline_pg_recovery_result.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(ablation_plans, f, indent=2, ensure_ascii=False)
+
+    # Baseline과 동일 형식으로 txt 저장 (Task: ... + 구분선 + 프로그램 코드)
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    txt_path = out_dir / f"ablation_baseline_pg_recovery_result_{timestamp}.txt"
+    with open(txt_path, "w", encoding="utf-8") as f:
+        for task, program in ablation_plans.items():
+            f.write(f"Task: {task}\n")
+            f.write("=" * 80 + "\n")
+            f.write(program)
+            f.write("\n\n" + "=" * 80 + "\n\n")
+    print(f"✅ Ablation(BL+PG+Rec) plan txt 저장: {txt_path}")
+
     return str(out_path)
 
 
@@ -367,8 +400,8 @@ def save_to_excel(
     all_scene_results: Dict[str, Dict[str, Any]],
     all_run_results: Dict[str, List[Dict[str, Any]]],
     output_file: str,
-    fp_number: int | None = None,
-    task_index: int | None = None,
+    fp_number: Optional[int] = None,
+    task_index: Optional[int] = None,
 ) -> None:
     """batch_evaluation과 동일 구조. Physical Guard 컬럼 = Ablation (Baseline+PG+Recovery).
     fp_number, task_index가 모두 주어지면 시트 제목에 FP번호_Task번호 포함 (단일 task 실행 시)."""
@@ -623,13 +656,12 @@ def main():
                     print("⚠️  Baseline JSON을 찾을 수 없음")
                     continue
 
-                # 2) Baseline + Physical Guard + Recovery 적용
-                print("\n📝 Step 2: Baseline + Physical Guard + Recovery 적용 중...")
+                # 2) 논리적 검증(physical_guard generate_program) + 물리적 검증(Physical Guard + Recovery), 누락 task LLM만 생략
+                print("\n📝 Step 2: 논리적 검증 + Physical Guard + Recovery 적용 중...")
                 ablation_json = run_ablation_baseline_pg_recovery(
                     fp_number=fp_number,
                     folder=folder,
                     test_file=test_file,
-                    baseline_json_path=baseline_json,
                 )
                 if not ablation_json:
                     print("⚠️  Ablation 결과 저장 실패")

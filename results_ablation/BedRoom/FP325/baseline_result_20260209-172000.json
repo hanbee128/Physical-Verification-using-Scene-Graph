@@ -1,0 +1,3 @@
+{
+  "Put the Cellphone and pencil on the shelf": "Here is the Python-like program for the task:\n\n```\ndef put_cellphone_and_pencil_on_shelf():\n    # Step 1: Find the cellphone\n    assert('CellPhone' visible)\n        else: GoToObject('CellPhone')\n    GoToObject('CellPhone')\n    assert('close' to 'CellPhone')\n        else: GoToObject('CellPhone')\n    PickupObject('CellPhone')\n\n    # Step 2: Find the pencil\n    assert('Pencil' visible)\n        else: GoToObject('Pencil')\n    GoToObject('Pencil')\n    assert('close' to 'Pencil')\n        else: GoToObject('Pencil')\n    PickupObject('Pencil')\n\n    # Step 3: Move to the shelf and put both objects\n    GoToObject('Shelf')\n    PutObject('CellPhone', 'Shelf')\n    PutObject('Pencil', 'Shelf')\n```"
+}

@@ -3123,414 +3123,434 @@ def generate_final_plan_with_physical_verification(
     plan_actions = parse_program_to_actions(initial_program)
     logger.info(f"✓ {len(plan_actions)}개의 액션 파싱 완료")
     
-    # Step 2: 각 액션에 대해 물리적 검증 수행
-    logger.info("\n[Step 2] 물리적 검증: 각 액션 검증 중...")
+    MAX_PLAN_LENGTH = 20  # plan 길이가 이 값을 넘으면 검증 중단하고 최종 plan으로 반환
     verified_actions = []
     failed_actions = []
     
-    i = 0
-    verification_count = 0  # 검증 횟수 추적
-    max_verifications = 20  # 최대 검증 횟수
-    
-    while i < len(plan_actions):
-        # 최대 검증 횟수 확인 (같은 액션 재시도 한도 초과 시 해당 액션만 실패 처리하고 다음으로)
-        if verification_count >= max_verifications:
-            logger.warning(f"  ⚠️  최대 검증 횟수({max_verifications}회)에 도달. 해당 액션만 실패 처리하고 다음 액션 검증 계속")
-            failed_actions.append({
-                "action": plan_actions[i],
-                "reason": f"최대 검증 횟수({max_verifications}회) 초과",
-                "failed_guards": [],
-                "recovery_actions": []
-            })
-            i += 1
-            verification_count = 0  # 다음 액션부터 카운트 리셋
-            continue
-        
-        verification_count += 1
-        action = plan_actions[i]
-        logger.info(f"\n[액션 {i+1}/{len(plan_actions)}] {action.get('line', '')}")
-        
-        # Scene Graph 기반 물리적 검증
-        passed, reason, failed_guards, recovery_actions = verify_action_with_scene_graph(
-            action, scene_graph, controller
-        )
-        
-        # EXISTS 가드 실패 시 (객체가 존재하지 않음) 해당 액션만 실패 처리하고 다음 액션 검증 계속
-        if reason.startswith("OBJECT_NOT_EXISTS:"):
-            error_message = reason.replace("OBJECT_NOT_EXISTS: ", "")
-            logger.warning(f"  ✗ 검증 실패 (객체 없음): {error_message}")
-            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
-            failed_actions.append({
-                "action": action,
-                "reason": error_message,
-                "failed_guards": failed_guards,
-                "recovery_actions": []
-            })
-            i += 1
-            continue
-        
-        # REACHABLE 가드 실패 시 처리
-        # Proximity와 REACHABLE이 모두 실패했을 때는 Proximity 복구 후 REACHABLE 재검사
-        # REACHABLE만 실패한 경우에도 해당 액션만 실패 처리하고 다음 액션 검증 계속
-        has_proximity_failure = any("Proximity" in guard for guard in failed_guards)
-        has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
-        
-        if has_reachable_failure and not has_proximity_failure:
-            action_type = action.get("type", "")
-            action_args = action.get("args", {})
-            object_name = action_args.get("o") or action_args.get("r") or "알 수 없음"
-            error_message = f"액션 '{action_type}'의 대상 객체 '{object_name}'가 agent의 손이 닿지 않는 거리에 있음"
-            logger.warning(f"  ✗ 검증 실패 (REACHABLE): {error_message}")
-            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
-            failed_actions.append({
-                "action": action,
-                "reason": error_message,
-                "failed_guards": [g for g in failed_guards if 'REACHABLE' in g],
-                "recovery_actions": []
-            })
-            i += 1
-            continue
-        
-        if passed:
-            verified_actions.append(action)
-            # Scene Graph 업데이트 및 JSON 파일 저장
-            scene_graph = update_scene_graph_after_action(
-                scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+    if len(plan_actions) > MAX_PLAN_LENGTH:
+        logger.warning(f"⚠️  plan 길이({len(plan_actions)}개)가 {MAX_PLAN_LENGTH}개 초과 → 검증 중단, 최종 plan으로 반환")
+        verified_actions = list(plan_actions)
+        # while 없이 Step 3/4로 진행
+    else:
+        # Step 2: 각 액션에 대해 물리적 검증 수행
+        logger.info("\n[Step 2] 물리적 검증: 각 액션 검증 중...")
+        i = 0
+        verification_count = 0  # 검증 횟수 추적
+        max_verifications = 20  # 최대 검증 횟수
+
+        while i < len(plan_actions):
+            # 루프 중 plan이 20개를 넘어가면 검증 중단하고 나머지는 그대로 최종 plan에 포함
+            if len(plan_actions) > MAX_PLAN_LENGTH:
+                logger.warning(f"⚠️  plan 길이({len(plan_actions)}개)가 {MAX_PLAN_LENGTH}개 초과 → 검증 중단, 나머지 액션을 최종 plan에 포함")
+                verified_actions.extend(plan_actions[i:])
+                break
+            # 최대 검증 횟수 확인 (같은 액션 재시도 한도 초과 시 해당 액션만 실패 처리하고 다음으로)
+            if verification_count >= max_verifications:
+                logger.warning(f"  ⚠️  최대 검증 횟수({max_verifications}회)에 도달. 해당 액션만 실패 처리하고 다음 액션 검증 계속")
+                failed_actions.append({
+                    "action": plan_actions[i],
+                    "reason": f"최대 검증 횟수({max_verifications}회) 초과",
+                    "failed_guards": [],
+                    "recovery_actions": []
+                })
+                i += 1
+                verification_count = 0  # 다음 액션부터 카운트 리셋
+                continue
+
+            verification_count += 1
+            action = plan_actions[i]
+            logger.info(f"\n[액션 {i+1}/{len(plan_actions)}] {action.get('line', '')}")
+
+            # Scene Graph 기반 물리적 검증
+            passed, reason, failed_guards, recovery_actions = verify_action_with_scene_graph(
+                action, scene_graph, controller
             )
-            logger.info(f"  ✓ 검증 통과: {reason}")
-            
-            # 액션 실행 후 상태 요약 출력
-            action_type = action.get("type", "")
-            action_args = action.get("args", {})
-            object_name = action_args.get("o")
-            receptacle_name = action_args.get("r")
-            print_action_summary(action, scene_graph, object_name, receptacle_name)
-            
-            # PickupObject가 통과한 경우, 부모 수용체가 열려있으면 CloseObject 추가
-            if action_type == "PickupObject" and object_name:
-                # 목표 객체 찾기
-                target_obj = None
-                if scene_graph:
-                    object_nodes = scene_graph.get("nodes", {}).get("objects", [])
-                    for obj_node in object_nodes:
-                        obj_type = obj_node.get("objectType", "")
-                        obj_id = obj_node.get("nodeId", "")
-                        if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
-                            target_obj = obj_node
-                            break
-                
-                # 부모 수용체 확인
-                if target_obj:
-                    parent_receptacles = target_obj.get("parentReceptacles", [])
-                    for recp_id in parent_receptacles:
-                        # 수용체 노드 찾기
-                        recp_node = None
-                        if scene_graph:
-                            object_nodes = scene_graph.get("nodes", {}).get("objects", [])
-                            for obj_node in object_nodes:
-                                if obj_node.get("nodeId") == recp_id:
-                                    recp_node = obj_node
-                                    break
-                        
-                        # 수용체가 openable이고 열려있으면 CloseObject 추가
-                        if recp_node and recp_node.get("openable", False) and recp_node.get("isOpen", False):
-                            close_action = {
-                                "type": "CloseObject",
-                                "args": {"o": recp_id},  # nodeId 전체 사용
-                                "line": f"CloseObject('{recp_id}')",  # nodeId 전체 포함
-                                "nodeId": recp_id,  # nodeId를 별도로 저장
-                                "reason": f"부모 수용체 '{recp_id}' 닫기 (PickupObject 후)",
-                                "is_original": False,
-                                "is_recovery": True,
-                                "failed_guards": [],
-                                "recovery_reason": f"PickupObject 후 부모 수용체 '{recp_id}' 자동 닫기"
-                            }
-                            # 다음 액션 위치에 CloseObject 삽입
-                            plan_actions.insert(i + 1, close_action)
-                            logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}')")
-                            break  # 첫 번째 열린 수용체만 처리
-            
-            # PutObject가 통과한 경우, receptacle이 openable이고 열려있으면 CloseObject 추가
-            if action_type == "PutObject" and receptacle_name:
-                # 수용체 찾기
-                recp_obj = None
-                if find_target_object:
-                    matched_receptacles = find_target_object(scene_graph, receptacle_name)
-                    if matched_receptacles:
-                        matched_recp = matched_receptacles[0]
-                        matched_recp_node_id = matched_recp.get("nodeId")
-                        if scene_graph:
-                            object_nodes = scene_graph.get("nodes", {}).get("objects", [])
-                            for obj_node in object_nodes:
-                                if obj_node.get("nodeId") == matched_recp_node_id:
-                                    recp_obj = obj_node
-                                    break
-                
-                # find_target_object가 없거나 실패한 경우 직접 찾기
-                if recp_obj is None and scene_graph:
-                    receptacle_name_lower = receptacle_name.lower()
-                    object_nodes = scene_graph.get("nodes", {}).get("objects", [])
-                    for obj_node in object_nodes:
-                        obj_type = obj_node.get("objectType", "")
-                        obj_id = obj_node.get("nodeId", "")
-                        if receptacle_name_lower in obj_type.lower() or receptacle_name_lower in obj_id.lower():
-                            recp_obj = obj_node
-                            break
-                
-                # 수용체가 openable이고 열려있으면 CloseObject 추가
-                if recp_obj and recp_obj.get("openable", False) and recp_obj.get("isOpen", False):
-                    recp_id = recp_obj.get("nodeId", "")
-                    close_action = {
-                        "type": "CloseObject",
-                        "args": {"o": recp_id},  # nodeId 전체 사용
-                        "line": f"CloseObject('{recp_id}')",  # nodeId 전체 포함
-                        "nodeId": recp_id,  # nodeId를 별도로 저장
-                        "reason": f"수용체 '{recp_id}' 닫기 (PutObject 후)",
-                        "is_original": False,
-                        "is_recovery": True,
-                        "failed_guards": [],
-                        "recovery_reason": f"PutObject 후 수용체 '{recp_id}' 자동 닫기"
-                    }
-                    # 다음 액션 위치에 CloseObject 삽입
-                    plan_actions.insert(i + 1, close_action)
-                    logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}') (PutObject 후)")
-            
-            # 다음 액션 검증을 위해 업데이트된 JSON 파일 다시 로드
-            if scene_graph_path:
-                scene_graph = load_scene_graph(scene_graph_path)
-                logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
-            
-            i += 1  # 다음 액션으로 진행
-        else:
-            # PickupObject이고 ¬HOLDS(agent, *) 가드가 실패한 경우 (이미 손에 물체가 있음)
-            # 해당 액션을 건너뛰고 다음 액션으로 진행
-            action_type = action.get("type", "")
-            action_args = action.get("args", {})
-            object_name = action_args.get("o", "?")  # OpenObject/CloseObject 등에서 로그용
-            if action_type == "PickupObject" and "¬HOLDS(agent, *)" in failed_guards:
-                logger.info(f"  ⏭️  PickupObject 건너뛰기: 이미 손에 물체가 있음")
-                logger.info(f"     → 다음 액션으로 진행")
-                i += 1  # 다음 액션으로 진행
-                continue
-            
-            # OpenObject이고 ¬OPENED(object) 가드가 실패한 경우 (이미 열려있음)
-            # 해당 액션을 건너뛰고 다음 액션으로 진행
-            if action_type == "OpenObject" and "¬OPENED(object)" in failed_guards:
-                logger.info(f"  ⏭️  OpenObject 건너뛰기: 객체 '{object_name}'가 이미 열려있음")
-                logger.info(f"     → 다음 액션으로 진행")
-                i += 1  # 다음 액션으로 진행
-                continue
-            
-            # OpenObject이고 openable(object) 가드가 실패한 경우 (openable하지 않은 객체)
-            # 해당 액션을 삭제하고 다음 액션으로 진행
-            if action_type == "OpenObject" and "openable(object)" in failed_guards:
-                logger.warning(f"  ⚠️  OpenObject 삭제: 객체 '{object_name}'가 openable하지 않음")
-                logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
-                plan_actions.pop(i)  # 현재 액션 삭제
-                # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
-                continue
-            
-            # CloseObject이고 openable(object) 가드가 실패한 경우 (openable하지 않은 객체)
-            # 해당 액션을 삭제하고 다음 액션으로 진행
-            if action_type == "CloseObject" and "openable(object)" in failed_guards:
-                logger.warning(f"  ⚠️  CloseObject 삭제: 객체 '{object_name}'가 openable하지 않음")
-                logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
-                plan_actions.pop(i)  # 현재 액션 삭제
-                # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
-                continue
-            
-            # CloseObject이고 OPENED(object) 가드가 실패한 경우 (이미 닫혀있음)
-            # 해당 액션을 건너뛰고 다음 액션으로 진행
-            if action_type == "CloseObject" and "OPENED(object)" in failed_guards:
-                logger.info(f"  ⏭️  CloseObject 건너뛰기: 객체 '{object_name}'가 이미 닫혀있음")
-                logger.info(f"     → 다음 액션으로 진행")
+
+            # EXISTS 가드 실패 시 (객체가 존재하지 않음) 해당 액션만 실패 처리하고 다음 액션 검증 계속
+            if reason.startswith("OBJECT_NOT_EXISTS:"):
+                error_message = reason.replace("OBJECT_NOT_EXISTS: ", "")
+                logger.warning(f"  ✗ 검증 실패 (객체 없음): {error_message}")
+                logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
                 failed_actions.append({
                     "action": action,
-                    "reason": reason,
+                    "reason": error_message,
                     "failed_guards": failed_guards,
                     "recovery_actions": []
                 })
                 i += 1
                 continue
             
-            # 복구 액션이 있으면 원래 액션 이전에 삽입하고 다시 검증
-            if recovery_actions:
-                # Proximity와 REACHABLE이 모두 실패했을 때: Proximity 복구 후 REACHABLE 재검사
-                has_proximity_recovery = any(ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []) for ra in recovery_actions)
-                has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
+            # REACHABLE 가드 실패 시 처리
+            # Proximity와 REACHABLE이 모두 실패했을 때는 Proximity 복구 후 REACHABLE 재검사
+            # REACHABLE만 실패한 경우에도 해당 액션만 실패 처리하고 다음 액션 검증 계속
+            has_proximity_failure = any("Proximity" in guard for guard in failed_guards)
+            has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
+            
+            if has_reachable_failure and not has_proximity_failure:
+                action_type = action.get("type", "")
+                action_args = action.get("args", {})
+                object_name = action_args.get("o") or action_args.get("r") or "알 수 없음"
+                error_message = f"액션 '{action_type}'의 대상 객체 '{object_name}'가 agent의 손이 닿지 않는 거리에 있음"
+                logger.warning(f"  ✗ 검증 실패 (REACHABLE): {error_message}")
+                logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
+                failed_actions.append({
+                    "action": action,
+                    "reason": error_message,
+                    "failed_guards": [g for g in failed_guards if 'REACHABLE' in g],
+                    "recovery_actions": []
+                })
+                i += 1
+                continue
+            
+            if passed:
+                verified_actions.append(action)
+                # Scene Graph 업데이트 및 JSON 파일 저장
+                scene_graph = update_scene_graph_after_action(
+                    scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+                )
+                logger.info(f"  ✓ 검증 통과: {reason}")
                 
-                if has_proximity_recovery and has_reachable_failure:
-                    logger.info(f"  → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사")
-                    
-                    # 원래 액션에서 object_name과 receptacle_name 추출
-                    action_type = action.get("type", "")
-                    action_args = action.get("args", {})
-                    object_name = action_args.get("o")
-                    receptacle_name = action_args.get("r")
-                    
-                    # Proximity 복구 액션만 먼저 실행
-                    proximity_recovery = None
-                    other_recoveries = []
-                    for ra in recovery_actions:
-                        if ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []):
-                            proximity_recovery = ra
-                        else:
-                            other_recoveries.append(ra)
-                    
-                    if proximity_recovery:
-                        # Proximity 복구 액션을 plan에 삽입하고 실행
-                        plan_actions.insert(i, proximity_recovery)
-                        logger.info(f"    → Proximity 복구 액션 삽입: {proximity_recovery.get('line', '')}")
-                        
-                        # Proximity 복구 액션 실행 (검증 통과로 처리)
-                        verified_actions.append(proximity_recovery)
-                        scene_graph = update_scene_graph_after_action(
-                            scene_graph, proximity_recovery, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
-                        )
-                        logger.info(f"  ✓ Proximity 복구 액션 실행 완료")
-                        
-                        # Scene Graph 업데이트 후 다시 로드
-                        if scene_graph_path:
-                            scene_graph = load_scene_graph(scene_graph_path)
-                            logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
-                        
-                        # Agent 위치 업데이트 (복구 액션 실행 후)
-                        agent_position = None
-                        if scene_graph:
-                            agent_node = scene_graph.get("nodes", {}).get("agent", {})
-                            if agent_node:
-                                agent_position = agent_node.get("position", {})
-                        
-                        # scene_context 재생성 (업데이트된 scene_graph 기반)
-                        scene_context = get_relevant_scene_context(
-                            scene_graph, action_type, object_name, receptacle_name
-                        )
-                        
-                        # REACHABLE 가드만 다시 한 번 검사
-                        logger.info(f"  → REACHABLE 가드 재검사 중...")
-                        reachable_guards = [g for g in failed_guards if "REACHABLE" in g]
-                        reachable_passed = True
-                        reachable_failure_reason = ""
-                        
-                        for reachable_guard in reachable_guards:
-                            passed, reason = verify_guard_with_scene_graph(
-                                reachable_guard, scene_context, action_type, object_name, receptacle_name,
-                                controller, scene_graph, agent_position
-                            )
-                            if not passed:
-                                reachable_passed = False
-                                reachable_failure_reason = reason
-                                logger.warning(f"    ✗ REACHABLE 가드 재검사 실패: {reason}")
+                # 액션 실행 후 상태 요약 출력
+                action_type = action.get("type", "")
+                action_args = action.get("args", {})
+                object_name = action_args.get("o")
+                receptacle_name = action_args.get("r")
+                print_action_summary(action, scene_graph, object_name, receptacle_name)
+                
+                # PickupObject가 통과한 경우, 부모 수용체가 열려있으면 CloseObject 추가
+                if action_type == "PickupObject" and object_name:
+                    # 목표 객체 찾기
+                    target_obj = None
+                    if scene_graph:
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            obj_type = obj_node.get("objectType", "")
+                            obj_id = obj_node.get("nodeId", "")
+                            if object_name.lower() in obj_type.lower() or object_name.lower() in obj_id.lower():
+                                target_obj = obj_node
                                 break
-                            else:
-                                logger.info(f"    ✓ REACHABLE 가드 재검사 통과: {reason}")
-                        
-                        if reachable_passed:
-                            # REACHABLE 재검사 통과: 나머지 가드들도 다시 검사
-                            logger.info(f"  → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...")
-                            remaining_failed_guards = [g for g in failed_guards if "REACHABLE" not in g and "Proximity" not in g]
-                            
-                            all_passed = True
-                            final_reason = "모든 가드 통과"
-                            
-                            for guard in remaining_failed_guards:
-                                passed, reason = verify_guard_with_scene_graph(
-                                    guard, scene_context, action_type, object_name, receptacle_name,
-                                    controller, scene_graph, agent_position
-                                )
-                                if not passed:
-                                    all_passed = False
-                                    final_reason = reason
-                                    break
-                            
-                            if all_passed:
-                                # 모든 가드 통과: 원래 액션 통과 처리
-                                verified_actions.append(action)
-                                scene_graph = update_scene_graph_after_action(
-                                    scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
-                                )
-                                logger.info(f"  ✓ 모든 가드 통과: {final_reason}")
-                                
-                                # 나머지 복구 액션들도 처리
-                                if other_recoveries:
-                                    for other_ra in other_recoveries:
-                                        plan_actions.insert(i + 1, other_ra)
-                                        logger.info(f"    → 기타 복구 액션 삽입: {other_ra.get('line', '')}")
-                                
-                                # Scene Graph 업데이트 후 다시 로드
-                                if scene_graph_path:
-                                    scene_graph = load_scene_graph(scene_graph_path)
-                                    logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
-                                
-                                i += 1  # 다음 액션으로 진행
-                                continue
-                            else:
-                                # 나머지 가드 실패: 기존 로직으로 처리
-                                logger.warning(f"  ✗ 나머지 가드 실패: {final_reason}")
-                                failed_guards = remaining_failed_guards + [g for g in failed_guards if "REACHABLE" in g or "Proximity" in g]
-                        else:
-                            # REACHABLE 재검사 실패: 기존 로직으로 처리
-                            logger.warning(f"  ✗ REACHABLE 재검사 실패: {reachable_failure_reason}")
-                            # Proximity 복구 액션은 이미 실행했으므로 제거하지 않음
-                            # 나머지 복구 액션들과 함께 처리
-                            if other_recoveries:
-                                recovery_actions = other_recoveries
-                            else:
-                                recovery_actions = []
-                
-                # 일반적인 복구 액션 처리 (Proximity+REACHABLE 케이스가 아닌 경우)
-                if not (has_proximity_recovery and has_reachable_failure):
-                    logger.info(f"  → 복구 액션 {len(recovery_actions)}개를 원래 액션 이전에 삽입")
                     
-                    # 복구 액션 중 OpenObject가 있는지 확인하고, 있다면 원래 액션 이후에 CloseObject 추가
-                    open_object_recoveries = []
-                    for recovery_action in recovery_actions:
-                        if recovery_action.get("type") == "OpenObject":
-                            open_object_recoveries.append(recovery_action)
-                    
-                    # 복구 액션들을 plan_actions에 현재 위치에 삽입 (역순으로 삽입하여 순서 유지)
-                    for j, recovery_action in enumerate(reversed(recovery_actions)):
-                        plan_actions.insert(i, recovery_action)
-                        logger.info(f"    → 복구 액션 삽입: {recovery_action.get('line', '')}")
-                    
-                    # OpenObject 복구 액션이 있으면 원래 액션 이후에 CloseObject 추가
-                    if open_object_recoveries:
-                        # 원래 액션의 위치는 i + len(recovery_actions) (복구 액션 삽입 후)
-                        # 원래 액션 이후에 CloseObject 추가 (역순으로 삽입하여 순서 유지)
-                        for open_object_recovery in reversed(open_object_recoveries):
-                            open_obj_id = open_object_recovery.get("nodeId") or open_object_recovery.get("args", {}).get("o")
-                            if open_obj_id:
+                    # 부모 수용체 확인
+                    if target_obj:
+                        parent_receptacles = target_obj.get("parentReceptacles", [])
+                        for recp_id in parent_receptacles:
+                            # 수용체 노드 찾기
+                            recp_node = None
+                            if scene_graph:
+                                object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                                for obj_node in object_nodes:
+                                    if obj_node.get("nodeId") == recp_id:
+                                        recp_node = obj_node
+                                        break
+                            
+                            # 수용체가 openable이고 열려있으면 CloseObject 추가
+                            if recp_node and recp_node.get("openable", False) and recp_node.get("isOpen", False):
                                 close_action = {
                                     "type": "CloseObject",
-                                    "args": {"o": open_obj_id},
-                                    "line": f"CloseObject('{open_obj_id}')",
-                                    "nodeId": open_obj_id,
-                                    "reason": f"복구 액션으로 열린 수용체 '{open_obj_id}' 닫기",
+                                    "args": {"o": recp_id},  # nodeId 전체 사용
+                                    "line": f"CloseObject('{recp_id}')",  # nodeId 전체 포함
+                                    "nodeId": recp_id,  # nodeId를 별도로 저장
+                                    "reason": f"부모 수용체 '{recp_id}' 닫기 (PickupObject 후)",
                                     "is_original": False,
                                     "is_recovery": True,
                                     "failed_guards": [],
-                                    "recovery_reason": f"복구 액션 OpenObject('{open_obj_id}') 이후 자동 닫기"
+                                    "recovery_reason": f"PickupObject 후 부모 수용체 '{recp_id}' 자동 닫기"
                                 }
-                                # 원래 액션 이후 위치에 CloseObject 삽입
-                                plan_actions.insert(i + len(recovery_actions) + 1, close_action)
-                                logger.info(f"  → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('{open_obj_id}')")
+                                # 다음 액션 위치에 CloseObject 삽입
+                                plan_actions.insert(i + 1, close_action)
+                                logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}')")
+                                break  # 첫 번째 열린 수용체만 처리
+                
+                # PutObject가 통과한 경우, receptacle이 openable이고 열려있으면 CloseObject 추가
+                if action_type == "PutObject" and receptacle_name:
+                    # 수용체 찾기
+                    recp_obj = None
+                    if find_target_object:
+                        matched_receptacles = find_target_object(scene_graph, receptacle_name)
+                        if matched_receptacles:
+                            matched_recp = matched_receptacles[0]
+                            matched_recp_node_id = matched_recp.get("nodeId")
+                            if scene_graph:
+                                object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                                for obj_node in object_nodes:
+                                    if obj_node.get("nodeId") == matched_recp_node_id:
+                                        recp_obj = obj_node
+                                        break
                     
-                    # 복구 액션부터 다시 검증하도록 인덱스 유지 (i는 그대로, continue로 루프 재시작)
-                    logger.info(f"  → 복구 액션부터 다시 검증 시작")
-                    continue  # while 루프의 시작으로 돌아가서 복구 액션부터 검증
-            
-            # 복구 액션이 없는 경우: 해당 액션만 실패 처리하고 다음 액션 검증 계속 (검증 중단 없음)
-            failed_actions.append({
-                "action": action,
-                "reason": reason,
-                "failed_guards": failed_guards,
-                "recovery_actions": recovery_actions
-            })
-            logger.warning(f"  ✗ 검증 실패: {reason}")
-            logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
-            i += 1
-            continue
+                    # find_target_object가 없거나 실패한 경우 직접 찾기
+                    if recp_obj is None and scene_graph:
+                        receptacle_name_lower = receptacle_name.lower()
+                        object_nodes = scene_graph.get("nodes", {}).get("objects", [])
+                        for obj_node in object_nodes:
+                            obj_type = obj_node.get("objectType", "")
+                            obj_id = obj_node.get("nodeId", "")
+                            if receptacle_name_lower in obj_type.lower() or receptacle_name_lower in obj_id.lower():
+                                recp_obj = obj_node
+                                break
+                    
+                    # 수용체가 openable이고 열려있으면 CloseObject 추가
+                    if recp_obj and recp_obj.get("openable", False) and recp_obj.get("isOpen", False):
+                        recp_id = recp_obj.get("nodeId", "")
+                        close_action = {
+                            "type": "CloseObject",
+                            "args": {"o": recp_id},  # nodeId 전체 사용
+                            "line": f"CloseObject('{recp_id}')",  # nodeId 전체 포함
+                            "nodeId": recp_id,  # nodeId를 별도로 저장
+                            "reason": f"수용체 '{recp_id}' 닫기 (PutObject 후)",
+                            "is_original": False,
+                            "is_recovery": True,
+                            "failed_guards": [],
+                            "recovery_reason": f"PutObject 후 수용체 '{recp_id}' 자동 닫기"
+                        }
+                        # 다음 액션 위치에 CloseObject 삽입
+                        plan_actions.insert(i + 1, close_action)
+                        logger.info(f"  → CloseObject 추가: CloseObject('{recp_id}') (PutObject 후)")
+                
+                # 다음 액션 검증을 위해 업데이트된 JSON 파일 다시 로드
+                if scene_graph_path:
+                    scene_graph = load_scene_graph(scene_graph_path)
+                    logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
+                
+                i += 1  # 다음 액션으로 진행
+            else:
+                # PickupObject이고 ¬HOLDS(agent, *) 가드가 실패한 경우 (이미 손에 물체가 있음)
+                # 해당 액션을 건너뛰고 다음 액션으로 진행
+                action_type = action.get("type", "")
+                action_args = action.get("args", {})
+                object_name = action_args.get("o", "?")  # OpenObject/CloseObject 등에서 로그용
+                if action_type == "PickupObject" and "¬HOLDS(agent, *)" in failed_guards:
+                    logger.info(f"  ⏭️  PickupObject 건너뛰기: 이미 손에 물체가 있음")
+                    logger.info(f"     → 다음 액션으로 진행")
+                    i += 1  # 다음 액션으로 진행
+                    continue
     
+                # PickupObject이고 pickupable(object) 가드가 실패한 경우 (pickupable하지 않은 객체)
+                # 해당 액션을 삭제하고 다음 액션 검증으로 진행
+                if action_type == "PickupObject" and "pickupable(object)" in failed_guards:
+                    logger.warning(f"  ⚠️  PickupObject 삭제: 객체 '{object_name}'가 pickupable하지 않음")
+                    logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
+                    plan_actions.pop(i)  # 현재 액션 삭제
+                    # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
+                    continue
+                
+                # OpenObject이고 ¬OPENED(object) 가드가 실패한 경우 (이미 열려있음)
+                # 해당 액션을 건너뛰고 다음 액션으로 진행
+                if action_type == "OpenObject" and "¬OPENED(object)" in failed_guards:
+                    logger.info(f"  ⏭️  OpenObject 건너뛰기: 객체 '{object_name}'가 이미 열려있음")
+                    logger.info(f"     → 다음 액션으로 진행")
+                    i += 1  # 다음 액션으로 진행
+                    continue
+                
+                # OpenObject이고 openable(object) 가드가 실패한 경우 (openable하지 않은 객체)
+                # 해당 액션을 삭제하고 다음 액션으로 진행
+                if action_type == "OpenObject" and "openable(object)" in failed_guards:
+                    logger.warning(f"  ⚠️  OpenObject 삭제: 객체 '{object_name}'가 openable하지 않음")
+                    logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
+                    plan_actions.pop(i)  # 현재 액션 삭제
+                    # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
+                    continue
+                
+                # CloseObject이고 openable(object) 가드가 실패한 경우 (openable하지 않은 객체)
+                # 해당 액션을 삭제하고 다음 액션으로 진행
+                if action_type == "CloseObject" and "openable(object)" in failed_guards:
+                    logger.warning(f"  ⚠️  CloseObject 삭제: 객체 '{object_name}'가 openable하지 않음")
+                    logger.info(f"     → 액션 삭제 후 다음 액션으로 진행")
+                    plan_actions.pop(i)  # 현재 액션 삭제
+                    # i는 그대로 유지 (다음 액션이 현재 위치로 이동)
+                    continue
+                
+                # CloseObject이고 OPENED(object) 가드가 실패한 경우 (이미 닫혀있음)
+                # 해당 액션을 건너뛰고 다음 액션으로 진행
+                if action_type == "CloseObject" and "OPENED(object)" in failed_guards:
+                    logger.info(f"  ⏭️  CloseObject 건너뛰기: 객체 '{object_name}'가 이미 닫혀있음")
+                    logger.info(f"     → 다음 액션으로 진행")
+                    failed_actions.append({
+                        "action": action,
+                        "reason": reason,
+                        "failed_guards": failed_guards,
+                        "recovery_actions": []
+                    })
+                    i += 1
+                    continue
+                
+                # 복구 액션이 있으면 원래 액션 이전에 삽입하고 다시 검증
+                if recovery_actions:
+                    # Proximity와 REACHABLE이 모두 실패했을 때: Proximity 복구 후 REACHABLE 재검사
+                    has_proximity_recovery = any(ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []) for ra in recovery_actions)
+                    has_reachable_failure = any("REACHABLE" in guard for guard in failed_guards)
+                    
+                    if has_proximity_recovery and has_reachable_failure:
+                        logger.info(f"  → Proximity와 REACHABLE이 모두 실패: Proximity 복구 후 REACHABLE 재검사")
+                        
+                        # 원래 액션에서 object_name과 receptacle_name 추출
+                        action_type = action.get("type", "")
+                        action_args = action.get("args", {})
+                        object_name = action_args.get("o")
+                        receptacle_name = action_args.get("r")
+                        
+                        # Proximity 복구 액션만 먼저 실행
+                        proximity_recovery = None
+                        other_recoveries = []
+                        for ra in recovery_actions:
+                            if ra.get("type") == "GoToObject" and "Proximity" in ra.get("failed_guards", []):
+                                proximity_recovery = ra
+                            else:
+                                other_recoveries.append(ra)
+                        
+                        if proximity_recovery:
+                            # Proximity 복구 액션을 plan에 삽입하고 실행
+                            plan_actions.insert(i, proximity_recovery)
+                            logger.info(f"    → Proximity 복구 액션 삽입: {proximity_recovery.get('line', '')}")
+                            
+                            # Proximity 복구 액션 실행 (검증 통과로 처리)
+                            verified_actions.append(proximity_recovery)
+                            scene_graph = update_scene_graph_after_action(
+                                scene_graph, proximity_recovery, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+                            )
+                            logger.info(f"  ✓ Proximity 복구 액션 실행 완료")
+                            
+                            # Scene Graph 업데이트 후 다시 로드
+                            if scene_graph_path:
+                                scene_graph = load_scene_graph(scene_graph_path)
+                                logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
+                            
+                            # Agent 위치 업데이트 (복구 액션 실행 후)
+                            agent_position = None
+                            if scene_graph:
+                                agent_node = scene_graph.get("nodes", {}).get("agent", {})
+                                if agent_node:
+                                    agent_position = agent_node.get("position", {})
+                            
+                            # scene_context 재생성 (업데이트된 scene_graph 기반)
+                            scene_context = get_relevant_scene_context(
+                                scene_graph, action_type, object_name, receptacle_name
+                            )
+                            
+                            # REACHABLE 가드만 다시 한 번 검사
+                            logger.info(f"  → REACHABLE 가드 재검사 중...")
+                            reachable_guards = [g for g in failed_guards if "REACHABLE" in g]
+                            reachable_passed = True
+                            reachable_failure_reason = ""
+                            
+                            for reachable_guard in reachable_guards:
+                                passed, reason = verify_guard_with_scene_graph(
+                                    reachable_guard, scene_context, action_type, object_name, receptacle_name,
+                                    controller, scene_graph, agent_position
+                                )
+                                if not passed:
+                                    reachable_passed = False
+                                    reachable_failure_reason = reason
+                                    logger.warning(f"    ✗ REACHABLE 가드 재검사 실패: {reason}")
+                                    break
+                                else:
+                                    logger.info(f"    ✓ REACHABLE 가드 재검사 통과: {reason}")
+                            
+                            if reachable_passed:
+                                # REACHABLE 재검사 통과: 나머지 가드들도 다시 검사
+                                logger.info(f"  → REACHABLE 재검사 통과, 나머지 가드들 재검사 중...")
+                                remaining_failed_guards = [g for g in failed_guards if "REACHABLE" not in g and "Proximity" not in g]
+                                
+                                all_passed = True
+                                final_reason = "모든 가드 통과"
+                                
+                                for guard in remaining_failed_guards:
+                                    passed, reason = verify_guard_with_scene_graph(
+                                        guard, scene_context, action_type, object_name, receptacle_name,
+                                        controller, scene_graph, agent_position
+                                    )
+                                    if not passed:
+                                        all_passed = False
+                                        final_reason = reason
+                                        break
+                                
+                                if all_passed:
+                                    # 모든 가드 통과: 원래 액션 통과 처리
+                                    verified_actions.append(action)
+                                    scene_graph = update_scene_graph_after_action(
+                                        scene_graph, action, verification_passed=True, scene_graph_path=scene_graph_path, controller=controller
+                                    )
+                                    logger.info(f"  ✓ 모든 가드 통과: {final_reason}")
+                                    
+                                    # 나머지 복구 액션들도 처리
+                                    if other_recoveries:
+                                        for other_ra in other_recoveries:
+                                            plan_actions.insert(i + 1, other_ra)
+                                            logger.info(f"    → 기타 복구 액션 삽입: {other_ra.get('line', '')}")
+                                    
+                                    # Scene Graph 업데이트 후 다시 로드
+                                    if scene_graph_path:
+                                        scene_graph = load_scene_graph(scene_graph_path)
+                                        logger.debug(f"  🔄 업데이트된 Scene Graph 다시 로드 완료")
+                                    
+                                    i += 1  # 다음 액션으로 진행
+                                    continue
+                                else:
+                                    # 나머지 가드 실패: 기존 로직으로 처리
+                                    logger.warning(f"  ✗ 나머지 가드 실패: {final_reason}")
+                                    failed_guards = remaining_failed_guards + [g for g in failed_guards if "REACHABLE" in g or "Proximity" in g]
+                            else:
+                                # REACHABLE 재검사 실패: 기존 로직으로 처리
+                                logger.warning(f"  ✗ REACHABLE 재검사 실패: {reachable_failure_reason}")
+                                # Proximity 복구 액션은 이미 실행했으므로 제거하지 않음
+                                # 나머지 복구 액션들과 함께 처리
+                                if other_recoveries:
+                                    recovery_actions = other_recoveries
+                                else:
+                                    recovery_actions = []
+                    
+                    # 일반적인 복구 액션 처리 (Proximity+REACHABLE 케이스가 아닌 경우)
+                    if not (has_proximity_recovery and has_reachable_failure):
+                        logger.info(f"  → 복구 액션 {len(recovery_actions)}개를 원래 액션 이전에 삽입")
+                        
+                        # 복구 액션 중 OpenObject가 있는지 확인하고, 있다면 원래 액션 이후에 CloseObject 추가
+                        open_object_recoveries = []
+                        for recovery_action in recovery_actions:
+                            if recovery_action.get("type") == "OpenObject":
+                                open_object_recoveries.append(recovery_action)
+                        
+                        # 복구 액션들을 plan_actions에 현재 위치에 삽입 (역순으로 삽입하여 순서 유지)
+                        for j, recovery_action in enumerate(reversed(recovery_actions)):
+                            plan_actions.insert(i, recovery_action)
+                            logger.info(f"    → 복구 액션 삽입: {recovery_action.get('line', '')}")
+                        
+                        # OpenObject 복구 액션이 있으면 원래 액션 이후에 CloseObject 추가
+                        if open_object_recoveries:
+                            # 원래 액션의 위치는 i + len(recovery_actions) (복구 액션 삽입 후)
+                            # 원래 액션 이후에 CloseObject 추가 (역순으로 삽입하여 순서 유지)
+                            for open_object_recovery in reversed(open_object_recoveries):
+                                open_obj_id = open_object_recovery.get("nodeId") or open_object_recovery.get("args", {}).get("o")
+                                if open_obj_id:
+                                    close_action = {
+                                        "type": "CloseObject",
+                                        "args": {"o": open_obj_id},
+                                        "line": f"CloseObject('{open_obj_id}')",
+                                        "nodeId": open_obj_id,
+                                        "reason": f"복구 액션으로 열린 수용체 '{open_obj_id}' 닫기",
+                                        "is_original": False,
+                                        "is_recovery": True,
+                                        "failed_guards": [],
+                                        "recovery_reason": f"복구 액션 OpenObject('{open_obj_id}') 이후 자동 닫기"
+                                    }
+                                    # 원래 액션 이후 위치에 CloseObject 삽입
+                                    plan_actions.insert(i + len(recovery_actions) + 1, close_action)
+                                    logger.info(f"  → CloseObject 추가 (복구 액션 OpenObject 이후): CloseObject('{open_obj_id}')")
+                        
+                        # 복구 액션부터 다시 검증하도록 인덱스 유지 (i는 그대로, continue로 루프 재시작)
+                        logger.info(f"  → 복구 액션부터 다시 검증 시작")
+                        continue  # while 루프의 시작으로 돌아가서 복구 액션부터 검증
+                
+                # 복구 액션이 없는 경우: 해당 액션만 실패 처리하고 다음 액션 검증 계속 (검증 중단 없음)
+                failed_actions.append({
+                    "action": action,
+                    "reason": reason,
+                    "failed_guards": failed_guards,
+                    "recovery_actions": recovery_actions
+                })
+                logger.warning(f"  ✗ 검증 실패: {reason}")
+                logger.info(f"  ⏭️  해당 액션만 실패 처리하고 다음 액션 검증 계속")
+                i += 1
+                continue
+        
     logger.info(f"\n✓ 물리적 검증 완료: {len(verified_actions)}/{len(plan_actions)} 액션 통과")
     
     # Step 3: 실패한 액션들에 대해 LLM으로 주석 생성

@@ -1,6 +1,146 @@
 {
   "physical_guard": [
     {
+      "task": "Put Apple into the Pan",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge|-01.76|+00.60|00.00')",
+          "action": "OpenObject",
+          "target_object": "Fridge|-01.76|+00.60|00.00",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-01.76|+00.60|00.00')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-01.76|+00.60|00.00",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Pan')",
+          "action": "GoToObject",
+          "target_object": "Pan",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Apple', 'Pan')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Pan",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put Lettuce into the SinkBasin",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Lettuce')",
+          "action": "GoToObject",
+          "target_object": "Lettuce",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge|-01.76|+00.60|00.00')",
+          "action": "OpenObject",
+          "target_object": "Fridge|-01.76|+00.60|00.00",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Lettuce')",
+          "action": "PickupObject",
+          "target_object": "Lettuce",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-01.76|+00.60|00.00')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-01.76|+00.60|00.00",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Lettuce', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Lettuce",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
       "task": "Put Pot on the StoveBurner and Put Mug in the Microwave",
       "method": "Physical Guard",
       "status": "PASSED",
@@ -105,9 +245,244 @@
           "errorMessage": ""
         }
       ]
+    },
+    {
+      "task": "Put Cup in the SinkBasin",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Cup')",
+          "action": "GoToObject",
+          "target_object": "Cup",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet|+01.71|+02.02|-01.45')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|+01.71|+02.02|-01.45",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Cup')",
+          "action": "PickupObject",
+          "target_object": "Cup",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|+01.71|+02.02|-01.45')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|+01.71|+02.02|-01.45",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Cup', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Cup",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put Pot on the StoveBurner",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 4,
+      "total_generated_actions": 4,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Pot')",
+          "action": "GoToObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Pot')",
+          "action": "PickupObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Stove')",
+          "action": "GoToObject",
+          "target_object": "Stove",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Pot', 'StoveBurner')",
+          "action": "PutObject",
+          "target_object": "Pot",
+          "receptacle": "StoveBurner",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
     }
   ],
   "baseline": [
+    {
+      "task": "Put Apple into the Pan",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 40.0,
+      "executed_actions_count": 5,
+      "successful_actions_count": 2,
+      "total_generated_actions": 5,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Pan')",
+          "action": "GoToObject",
+          "target_object": "Pan",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Pan')",
+          "action": "OpenObject",
+          "target_object": "Pan",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Apple', 'Pan')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Pan",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put Lettuce into the SinkBasin",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Lettuce')",
+          "action": "GoToObject",
+          "target_object": "Lettuce",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Lettuce')",
+          "action": "PickupObject",
+          "target_object": "Lettuce",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Lettuce', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Lettuce",
+          "receptacle": "SinkBasin",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
     {
       "task": "Put Pot on the StoveBurner and Put Mug in the Microwave",
       "method": "Baseline",
@@ -193,6 +568,119 @@
           "success": false,
           "lastActionSuccess": false,
           "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put Cup in the SinkBasin",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Cup')",
+          "action": "GoToObject",
+          "target_object": "Cup",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Cup')",
+          "action": "PickupObject",
+          "target_object": "Cup",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Cup', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Cup",
+          "receptacle": "SinkBasin",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put Pot on the StoveBurner",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 100.0,
+      "exec": 80.0,
+      "executed_actions_count": 5,
+      "successful_actions_count": 4,
+      "total_generated_actions": 5,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Pot')",
+          "action": "GoToObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Pot')",
+          "action": "PickupObject",
+          "target_object": "Pot",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Stove')",
+          "action": "GoToObject",
+          "target_object": "Stove",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Stove')",
+          "action": "OpenObject",
+          "target_object": "Stove",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Pot', 'StoveBurner')",
+          "action": "PutObject",
+          "target_object": "Pot",
+          "receptacle": "StoveBurner",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
         }
       ]
     }

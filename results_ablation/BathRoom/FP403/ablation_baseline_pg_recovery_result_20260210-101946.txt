@@ -1,0 +1,192 @@
+Task: Put papertowelroll on the countertop
+================================================================================
+def put_papertowelroll_on_the_countertop():
+	# Task: Put papertowelroll on the countertop
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.909, 2.500)
+	GoToObject('PaperTowelRoll')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Cabinet|-00.34|+00.43|+02.87' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('PaperTowelRoll')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Cabinet|-00.34|+00.43|+02.87') 이후 자동 닫기
+	CloseObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.909, 2.500)
+	GoToObject('CounterTop')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('PaperTowelRoll', 'CounterTop')
+
+
+================================================================================
+
+Task: Turn on the faucet and open the toilet
+================================================================================
+def turn_on_the_faucet_and_open_the_toilet():
+	# Task: Turn on the faucet and open the toilet
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-2.000, 0.909, 2.500)
+	GoToObject('Sink')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Faucet')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.909, 0.750)
+	GoToObject('Toilet')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Toilet')
+
+
+================================================================================
+
+Task: Put ScrubBrush on the bathtub
+================================================================================
+def put_scrubbrush_on_the_bathtub():
+	# Task: Put ScrubBrush on the bathtub
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.909, 0.750)
+	GoToObject('ScrubBrush')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('ScrubBrush')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-2.250, 0.909, 1.500)
+	GoToObject('Bathtub')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('ScrubBrush', 'BathtubBasin')
+
+
+================================================================================
+
+Task: Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop
+================================================================================
+def put_plunger_in_the_cabinet_and_put_the_papertowelroll_on_the_countertop():
+	# Task: Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.909, 0.750)
+	GoToObject('Plunger')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Plunger')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.909, 2.500)
+	GoToObject('Cabinet')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Cabinet')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Plunger', 'Cabinet')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Cabinet|-01.36|+00.43|+02.87' 자동 닫기
+	CloseObject('Cabinet|-01.36|+00.43|+02.87')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.909, 2.500)
+	GoToObject('PaperTowelRoll')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Cabinet|-00.34|+00.43|+02.87' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('PaperTowelRoll')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Cabinet|-00.34|+00.43|+02.87') 이후 자동 닫기
+	CloseObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.909, 2.500)
+	GoToObject('Countertop')
+	# Step 12
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('PaperTowelRoll', 'Countertop')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Cabinet가 열려 있어 CloseObject 액션이 불가능함 (isOpen: True)
+	# CloseObject('Cabinet')
+
+
+================================================================================
+
+Task: Put the dishsponge in the sinkbasin
+================================================================================
+def put_the_dishsponge_in_the_sinkbasin():
+	# Task: Put the dishsponge in the sinkbasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.909, 2.500)
+	GoToObject('DishSponge')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Cabinet|-00.34|+00.43|+02.87' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('DishSponge')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Cabinet|-00.34|+00.43|+02.87') 이후 자동 닫기
+	CloseObject('Cabinet|-00.34|+00.43|+02.87')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-2.000, 0.909, 2.500)
+	GoToObject('Sink')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('DishSponge', 'SinkBasin')
+
+
+================================================================================
+

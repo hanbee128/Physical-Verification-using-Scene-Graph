@@ -1,0 +1,30 @@
+Task: Put the Cellphone and pencil on the shelf
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_cellphone_and_pencil_on_shelf():
+    # Step 1: Find the cellphone
+    assert('CellPhone' visible)
+        else: GoToObject('CellPhone')
+    GoToObject('CellPhone')
+    assert('close' to 'CellPhone')
+        else: GoToObject('CellPhone')
+    PickupObject('CellPhone')
+
+    # Step 2: Find the pencil
+    assert('Pencil' visible)
+        else: GoToObject('Pencil')
+    GoToObject('Pencil')
+    assert('close' to 'Pencil')
+        else: GoToObject('Pencil')
+    PickupObject('Pencil')
+
+    # Step 3: Move to the shelf and put both objects
+    GoToObject('Shelf')
+    PutObject('CellPhone', 'Shelf')
+    PutObject('Pencil', 'Shelf')
+```
+
+================================================================================
+

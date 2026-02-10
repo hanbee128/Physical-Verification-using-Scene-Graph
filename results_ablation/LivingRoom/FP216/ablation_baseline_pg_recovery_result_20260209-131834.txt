@@ -1,0 +1,318 @@
+Task: Turn on the Television
+================================================================================
+def turn_on_the_television():
+	# Task: Turn on the Television
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Television' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.500, 0.901, 0.750)
+	GoToObject('Television')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Television')
+
+
+================================================================================
+
+Task: Put the remotecontrol and creditcard and keychain in the box
+================================================================================
+def put_the_remotecontrol_and_creditcard_and_keychain_in_the_box():
+	# Task: Put the remotecontrol and creditcard and keychain in the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('RemoteControl')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Box')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 13
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain'로 이동
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain' 집기
+	PickupObject('KeyChain')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Box' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-2.750, 0.901, 0.000)
+	GoToObject('Box')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 17
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+
+
+================================================================================
+
+Task: Turn off the Desklamp and Turn on the Laptop
+================================================================================
+def turn_off_the_desklamp_and_turn_on_the_laptop():
+	# Task: Turn off the Desklamp and Turn on the Laptop
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -0.750)
+	GoToObject('DeskLamp')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -0.750)
+	GoToObject('DeskLamp')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('DeskLamp')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.500, 0.901, -0.500)
+	GoToObject('Laptop')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Laptop')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.500, 0.901, -0.500)
+	GoToObject('Laptop')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Laptop')
+
+
+================================================================================
+
+Task: Turn off the floorlamp and desklamp
+================================================================================
+def turn_off_the_floorlamp_and_desklamp():
+	# Task: Turn off the floorlamp and desklamp
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('RemoteControl')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-4.250, 0.901, -1.250)
+	GoToObject('FloorLamp')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('FloorLamp')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.500, 0.901, -0.750)
+	GoToObject('DeskLamp')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('DeskLamp')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 13
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 17
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 19
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+	# Step 20
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'CounterTop' 간 거리가 2m를 초과하여 이동 필요
+	GoToObject('CounterTop')
+
+
+================================================================================
+
+Task: Put Keychain and CreditCard into the box
+================================================================================
+def put_keychain_and_creditcard_into_the_box():
+	# Task: Put Keychain and CreditCard into the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('KeyChain')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 10
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+
+
+================================================================================
+

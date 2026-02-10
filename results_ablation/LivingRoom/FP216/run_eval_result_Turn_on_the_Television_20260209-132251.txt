@@ -1,0 +1,174 @@
+Task: Turn on the Television
+================================================================================
+Here is the Python-like program to turn on the television:
+
+```
+def turn_on_television():
+    # Step 1: Move to the TV stand
+    GoToObject('TVStand')
+    assert('close' to 'TVStand')
+        else: GoToObject('TVStand')
+    # Step 2: Turn on the television
+    ToggleObjectOn('Television')
+```
+
+This program follows the rules and guidelines provided, including structured comments, assertions for preconditions, and recovery actions.
+
+================================================================================
+
+Task: Put the remotecontrol and creditcard and keychain in the box
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_items_in_box():
+    # Step 1: Find the remote control, credit card, and keychain
+    GoToObject('RemoteControl')
+    assert('close' to 'RemoteControl')
+        else: GoToObject('RemoteControl')
+    PickupObject('RemoteControl')
+
+    GoToObject('CreditCard')
+    assert('close' to 'CreditCard')
+        else: GoToObject('CreditCard')
+    PickupObject('CreditCard')
+
+    GoToObject('KeyChain')
+    assert('close' to 'KeyChain')
+        else: GoToObject('KeyChain')
+    PickupObject('KeyChain')
+
+    # Step 2: Move to the box and open it
+    GoToObject('Box')
+    assert('close' to 'Box')
+        else: GoToObject('Box')
+    OpenObject('Box')
+
+    # Step 3: Put the items inside the box
+    PutObject('RemoteControl', 'Box')
+    PutObject('CreditCard', 'Box')
+    PutObject('KeyChain', 'Box')
+
+    # Step 4: Close the box
+    CloseObject('Box')
+```
+
+================================================================================
+
+Task: Turn off the Desklamp and Turn on the Laptop
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def turn_off_desklamp_and_turn_on_laptop():
+    # Step 1: Find and pick up the DeskLamp
+    assert('DeskLamp' visible)
+        else: GoToObject('DeskLamp')
+    GoToObject('DeskLamp')
+    assert('close' to 'DeskLamp')
+        else: GoToObject('DeskLamp')
+    PickupObject('DeskLamp')
+
+    # Step 2: Move to the DeskLamp and turn it off
+    GoToObject('DeskLamp')
+    assert('DeskLamp' is 'on')
+        else: ToggleObjectOff('DeskLamp')
+    ToggleObjectOff('DeskLamp')
+
+    # Step 3: Find and pick up the Laptop
+    assert('Laptop' visible)
+        else: GoToObject('Laptop')
+    GoToObject('Laptop')
+    assert('close' to 'Laptop')
+        else: GoToObject('Laptop')
+    PickupObject('Laptop')
+
+    # Step 4: Move to the Laptop and turn it on
+    GoToObject('Laptop')
+    assert('Laptop' is 'off')
+        else: ToggleObjectOn('Laptop')
+    ToggleObjectOn('Laptop')
+```
+
+This program follows the rules and guidelines provided, including structured comments, assertions for preconditions, and recovery actions.
+
+================================================================================
+
+Task: Turn off the floorlamp and desklamp
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def turn_off_lamps():
+    # Step 1: Find and pick up the remote control
+    GoToObject('RemoteControl')
+    assert('close' to 'RemoteControl')
+        else: GoToObject('RemoteControl')
+    PickupObject('RemoteControl')
+
+    # Step 2: Turn off the floorlamp
+    GoToObject('FloorLamp')
+    assert('FloorLamp' is 'on')
+        else: ToggleObjectOff('FloorLamp')
+    ToggleObjectOff('FloorLamp')
+
+    # Step 3: Turn off the desk lamp
+    GoToObject('DeskLamp')
+    assert('DeskLamp' is 'on')
+        else: ToggleObjectOff('DeskLamp')
+    ToggleObjectOff('DeskLamp')
+
+    # Step 4: Put down the remote control
+    PutObject('RemoteControl', 'CounterTop')
+```
+
+This program follows the rules and guidelines provided, using only the whitelisted actions and ensuring that hands are empty before picking up a new object.
+
+================================================================================
+
+Task: Put Keychain and CreditCard into the box
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_keychain_and_credit_card_into_box():
+    # Step 1: Find the keychain
+    assert('KeyChain' visible)
+        else: GoToObject('KeyChain')
+    GoToObject('KeyChain')
+    assert('close' to 'KeyChain')
+        else: GoToObject('KeyChain')
+    PickupObject('KeyChain')
+
+    # Step 2: Find the credit card
+    assert('CreditCard' visible)
+        else: GoToObject('CreditCard')
+    GoToObject('CreditCard')
+    assert('close' to 'CreditCard')
+        else: GoToObject('CreditCard')
+    PickupObject('CreditCard')
+
+    # Step 3: Move to the box and open it
+    GoToObject('Box')
+    assert('close' to 'Box')
+        else: GoToObject('Box')
+    OpenObject('Box')
+
+    # Step 4: Put the keychain into the box
+    assert('KeyChain' in 'hands')
+        else: GoToObject('KeyChain')
+        else: PickupObject('KeyChain')
+    PutObject('KeyChain', 'Box')
+
+    # Step 5: Put the credit card into the box
+    assert('CreditCard' in 'hands')
+        else: GoToObject('CreditCard')
+        else: PickupObject('CreditCard')
+    PutObject('CreditCard', 'Box')
+
+    # Step 6: Close the box
+    CloseObject('Box')
+```
+
+================================================================================
+

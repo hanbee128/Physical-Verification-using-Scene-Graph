@@ -1,0 +1,173 @@
+Task: Put egg into the bowl
+================================================================================
+Here is the Python-like program for the task "Put egg into the bowl":
+
+```
+def put_egg_into_bowl():
+    # Step 1: Find and pick up the egg
+    assert('Egg' visible)
+        else: GoToObject('Egg')
+    GoToObject('Egg')
+    assert('close' to 'Egg')
+        else: GoToObject('Egg')
+    PickupObject('Egg')
+    # Step 2: Move to the bowl and open it
+    GoToObject('Bowl')
+    assert('close' to 'Bowl')
+        else: GoToObject('Bowl')
+    OpenObject('Bowl')
+    # Step 3: Place the egg into the bowl and close the bowl
+    PutObject('Egg', 'Bowl')
+    CloseObject('Bowl')
+```
+
+This program follows the rules:
+
+1. It uses only whitelisted actions.
+2. Each action block has a structured natural-language comment before it, describing the intent of that block.
+3. Before every interaction, there is an assertion to guarantee preconditions, followed by recovery steps if the precondition does not hold.
+4. The program keeps actions grouped logically so that they can be executed sequentially without missing steps.
+
+Note: This program assumes that the egg and bowl are in the same room as the agent's starting position. If this is not the case, additional navigation steps would be needed to move the agent to the correct location before performing the task.
+
+================================================================================
+
+Task: Bring Plate to CounterTop
+================================================================================
+Here is the Python-like program for the task "Bring Plate to CounterTop":
+
+```
+def bring_plate_to_countertop():
+    # Step 1: Find and pick up the plate
+    assert('Plate' visible)
+        else: GoToObject('Plate')
+    GoToObject('Plate')
+    assert('close' to 'Plate')
+        else: GoToObject('Plate')
+    PickupObject('Plate')
+
+    # Step 2: Move to the counter top and put the plate there
+    GoToObject('CounterTop')
+    PutObject('Plate', 'CounterTop')
+```
+
+This program follows the rules:
+
+1. It uses only whitelisted actions (GoToObject, PickupObject, PutObject).
+2. Each action block is preceded by a natural-language comment that describes the intent of that block.
+3. Before every environment action, an assertion is made to check if the relevant precondition holds. If not, a recovery action is executed.
+4. The program keeps actions grouped logically so that they can be executed sequentially without missing steps.
+
+Note: This program assumes that the plate is visible and accessible in the scene FloorPlan1.
+
+================================================================================
+
+Task: Put Apple and Tomato and Potato into Fridge
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_fruits_and_vegetables_in_fridge():
+    # Step 1: Find an apple and pick it up
+    assert('Apple' visible)
+        else: GoToObject('Apple')
+    GoToObject('Apple')
+    assert('close' to 'Apple')
+        else: GoToObject('Apple')
+    PickupObject('Apple')
+
+    # Step 2: Move to the fridge and open it
+    GoToObject('Fridge')
+    assert('close' to 'Fridge')
+        else: GoToObject('Fridge')
+    assert('Fridge' is 'closed')
+        else: CloseObject('Fridge')
+    OpenObject('Fridge')
+
+    # Step 3: Place the apple inside and close the door
+    PutObject('Apple', 'Fridge')
+
+    # Step 4: Find a tomato and pick it up
+    assert('Tomato' visible)
+        else: GoToObject('Tomato')
+    GoToObject('Tomato')
+    assert('close' to 'Tomato')
+        else: GoToObject('Tomato')
+    PickupObject('Tomato')
+
+    # Step 5: Move the tomato to the fridge and place it inside
+    PutObject('Tomato', 'Fridge')
+
+    # Step 6: Find a potato and pick it up
+    assert('Potato' visible)
+        else: GoToObject('Potato')
+    GoToObject('Potato')
+    assert('close' to 'Potato')
+        else: GoToObject('Potato')
+    PickupObject('Potato')
+
+    # Step 7: Move the potato to the fridge and place it inside
+    PutObject('Potato', 'Fridge')
+```
+
+This program follows the rules and guidelines provided, ensuring that the agent can hold only one object at a time, checks for preconditions before every action, and uses the allowed high-level APIs.
+
+================================================================================
+
+Task: Slice the Bread
+================================================================================
+Here is the Python-like program for slicing the bread:
+
+```
+def slice_bread():
+    # Step 1: Retrieve the knife
+    assert('hands' is 'empty')
+        else: GoToObject('CounterTop')
+        else: PutObject(<current_object_in_hands>, 'CounterTop')
+    PickupObject('Knife')
+
+    # Step 2: Locate the bread loaf
+    GoToObject('Bread')
+
+    # Step 3: Slice the bread with precondition checks
+    assert('Knife' in 'hands')
+        else: GoToObject('Knife')
+        else: PickupObject('Knife')
+    assert('close' to 'Bread')
+        else: GoToObject('Bread')
+    SliceObject('Bread')
+
+    # Step 4: Put the knife back
+    assert('Knife' in 'hands')
+        else: GoToObject('Knife')
+        else: PickupObject('Knife')
+    PutObject('Knife', 'CounterTop')
+```
+
+This program follows the rules and guidelines provided, ensuring that the agent can hold only one object at a time and that hands are empty before picking up a new object.
+
+================================================================================
+
+Task: Put the Mug in the SinkBasin and Wash the Mug
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_mug_in_sink():
+    # Step 1: Find and pick up the mug
+    assert('Mug' visible)
+        else: GoToObject('Mug')
+    GoToObject('Mug')
+    assert('close' to 'Mug')
+        else: GoToObject('Mug')
+    PickupObject('Mug')
+
+    # Step 2: Move to the sink and put the mug in the basin
+    GoToObject('SinkBasin')
+    PutObject('Mug', 'SinkBasin')
+```
+
+This program first picks up the Mug, then moves to the SinkBasin and puts the Mug inside.
+
+================================================================================
+

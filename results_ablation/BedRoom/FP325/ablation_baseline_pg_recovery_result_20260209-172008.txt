@@ -1,0 +1,195 @@
+Task: Put the Cellphone and pencil on the shelf
+================================================================================
+def put_the_cellphone_and_pencil_on_the_shelf():
+	# Task: Put the Cellphone and pencil on the shelf
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (3.000, 0.950, -1.250)
+	GoToObject('CellPhone')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('CellPhone')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.950, 2.750)
+	GoToObject('Shelf')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CellPhone', 'Shelf')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 17
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 19
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 20
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 21
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 22
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 23
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 24
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 25
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 26
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 27
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 28
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 29
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 30
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 31
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 32
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 33
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+	# Step 34
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Shelf' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-0.250, 0.950, 2.500)
+	GoToObject('Shelf')
+	# Step 35
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pencil', 'Shelf')
+	# Step 36
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil'로 이동
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 37
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pencil' 집기
+	PickupObject('Pencil')
+
+
+================================================================================
+

@@ -64,10 +64,10 @@
         "max_trans": 0
     },
     {
-        "task": "Put CD on the chair and Open the Book",
+        "task": "Put CD in the drawer and Open the Book",
         "object_states": [
             {
-                "name": "Chair",
+                "name": "Drawer",
                 "contains": [
                     "CD"
                 ],

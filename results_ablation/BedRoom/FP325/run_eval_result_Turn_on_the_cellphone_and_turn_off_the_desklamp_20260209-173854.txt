@@ -1,0 +1,23 @@
+Task: Turn on the cellphone and turn off the desklamp
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def turn_on_cellphone_and_turn_off_desklamp():
+    # Step 1: Turn on the cellphone
+    assert('CellPhone' is 'off')
+        else: ToggleObjectOff('CellPhone')
+    ToggleObjectOn('CellPhone')
+
+    # Step 2: Turn off the desklamp
+    GoToObject('DeskLamp')
+    assert('close' to 'DeskLamp')
+        else: GoToObject('DeskLamp')
+    PutObject('DeskLamp', 'CounterTop')  # or any other nearby receptacle
+    CloseObject('DeskLamp')
+```
+
+This program follows the rules and guidelines provided, including structured comments, assertions, and recovery actions.
+
+================================================================================
+

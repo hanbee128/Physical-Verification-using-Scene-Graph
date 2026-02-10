@@ -1,0 +1,3 @@
+{
+  "Turn on the cellphone and turn off the desklamp": "Here is the Python-like program for the task:\n\n```\ndef turn_on_cellphone_and_turn_off_desklamp():\n    # Step 1: Turn on the cellphone\n    assert('CellPhone' is 'off')\n        else: ToggleObjectOff('CellPhone')\n    ToggleObjectOn('CellPhone')\n\n    # Step 2: Turn off the desklamp\n    GoToObject('DeskLamp')\n    assert('close' to 'DeskLamp')\n        else: GoToObject('DeskLamp')\n    PutObject('DeskLamp', 'CounterTop')  # or any other nearby receptacle\n    CloseObject('DeskLamp')\n```\n\nThis program follows the rules and guidelines provided, including structured comments, assertions, and recovery actions."
+}

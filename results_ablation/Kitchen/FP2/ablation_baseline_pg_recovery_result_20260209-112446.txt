@@ -1,0 +1,190 @@
+Task: Put Apple into the Pan
+================================================================================
+def put_apple_into_the_pan():
+	# Task: Put Apple into the Pan
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.000)
+	GoToObject('Apple')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Fridge|-01.76|+00.60|00.00' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Fridge|-01.76|+00.60|00.00')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Apple')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-01.76|+00.60|00.00') 이후 자동 닫기
+	CloseObject('Fridge|-01.76|+00.60|00.00')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, -0.750)
+	GoToObject('Pan')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Apple', 'Pan')
+
+
+================================================================================
+
+Task: Put Lettuce into the SinkBasin
+================================================================================
+def put_lettuce_into_the_sinkbasin():
+	# Task: Put Lettuce into the SinkBasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, -0.250)
+	GoToObject('Lettuce')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Fridge|-01.76|+00.60|00.00' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Fridge|-01.76|+00.60|00.00')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Lettuce')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-01.76|+00.60|00.00') 이후 자동 닫기
+	CloseObject('Fridge|-01.76|+00.60|00.00')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.000, 0.901, -0.750)
+	GoToObject('SinkBasin')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Lettuce', 'SinkBasin')
+
+
+================================================================================
+
+Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+================================================================================
+def put_pot_on_the_stoveburner_and_put_mug_in_the_microwave():
+	# Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pot')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('StoveBurner')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pot', 'StoveBurner')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.901, -0.750)
+	GoToObject('Mug')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Mug')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Microwave')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Microwave|+01.93|+00.90|-00.77' 열기
+	OpenObject('Microwave|+01.93|+00.90|-00.77')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Mug', 'Microwave')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Microwave|+01.93|+00.90|-00.77' 자동 닫기
+	CloseObject('Microwave|+01.93|+00.90|-00.77')
+
+
+================================================================================
+
+Task: Put Cup in the SinkBasin
+================================================================================
+def put_cup_in_the_sinkbasin():
+	# Task: Put Cup in the SinkBasin
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Cup')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Cabinet|+01.71|+02.02|-01.45' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Cabinet|+01.71|+02.02|-01.45')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Cup')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Cabinet|+01.71|+02.02|-01.45') 이후 자동 닫기
+	CloseObject('Cabinet|+01.71|+02.02|-01.45')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.000, 0.901, -0.750)
+	GoToObject('SinkBasin')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Cup', 'SinkBasin')
+
+
+================================================================================
+
+Task: Put Pot on the StoveBurner
+================================================================================
+def put_pot_on_the_stoveburner():
+	# Task: Put Pot on the StoveBurner
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pot')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('Stove')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pot', 'StoveBurner')
+
+
+================================================================================
+

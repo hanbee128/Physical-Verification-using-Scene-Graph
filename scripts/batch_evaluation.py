@@ -504,6 +504,54 @@ def run_single_evaluation(
     
     return results
 
+def run_single_evaluation_pg_only(
+    fp_number: int,
+    folder: str,
+    test_file: str,
+    run_number: int
+) -> Dict[str, Any]:
+    """
+    Physical Guard만 실행: plan 생성 → 실행 → GCR/Exec 평가 (Baseline 없음).
+    - physical_guard.py 실행
+    - evaluate_results.py 로직으로 PG만 평가 (baseline 결과는 빈 리스트)
+    """
+    print(f"\n{'='*70}")
+    print(f"🔄 Run {run_number} - FloorPlan{fp_number} (Physical Guard만)")
+    print(f"{'='*70}")
+
+    run_start_time = datetime.now()
+
+    # Step 1: physical_guard.py 실행 (plan 생성)
+    print(f"\n📝 Step 1: physical_guard.py 실행 중 (plan 생성)...")
+    pg_success = run_physical_guard_subprocess(fp_number, test_file, folder)
+    if not pg_success:
+        print(f"⚠️  physical_guard.py 실행 실패")
+        return {"physical_guard": [], "baseline": []}
+
+    # Step 2: 생성된 plan 파일 찾기
+    print(f"\n📝 Step 2: 생성된 plan 파일 찾기...")
+    import time
+    max_wait = 10
+    wait_interval = 0.5
+    waited = 0
+    physical_guard_file = None
+    baseline_file = None
+    while waited < max_wait:
+        physical_guard_file, baseline_file = find_result_files(fp_number, folder, after_time=run_start_time)
+        if physical_guard_file or waited >= max_wait - wait_interval:
+            break
+        time.sleep(wait_interval)
+        waited += wait_interval
+
+    if not physical_guard_file:
+        print(f"⚠️  Physical Guard 결과 파일을 찾을 수 없습니다. (대기: {waited:.1f}초)")
+        return {"physical_guard": [], "baseline": []}
+
+    # Step 3: evaluate_results.py 실행 (PG만 평가, baseline 없음)
+    print(f"\n📝 Step 3: evaluate_results.py 실행 중 (실행 및 GCR/Exec 평가)...")
+    results = run_evaluate_results_subprocess(fp_number, folder, test_file)
+    return results
+
 def calculate_averages(all_results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     모든 실행 결과의 평균을 계산
@@ -890,15 +938,21 @@ def main():
     parser.add_argument(
         "--mode",
         type=str,
-        choices=["full", "plan-only", "evaluate-only"],
+        choices=["full", "plan-only", "evaluate-only", "pg-only"],
         default="full",
-        help="실행 모드: full (전체), plan-only (plan 생성만), evaluate-only (평가만)"
+        help="실행 모드: full (PG+Baseline), plan-only (plan 생성만), evaluate-only (평가만), pg-only (Physical Guard만 plan→실행→평가)"
     )
     parser.add_argument(
         "--fp-number",
         type=int,
         default=None,
         help="평가할 FloorPlan 번호 (예: 1, 216, 325, 403). 지정하지 않으면 모든 FloorPlan 실행"
+    )
+    parser.add_argument(
+        "--num-runs",
+        type=int,
+        default=10,
+        help="실행 횟수 (기본 10). pg-only에서 1로 지정 시 한 번만 실행·평가"
     )
 
     script_dir = Path(__file__).parent
@@ -919,12 +973,17 @@ def main():
                     print(f"⚠️ 삭제 실패 {path}: {e}")
         print("🗑️ results/ 안의 모든 하위 폴더 내 파일 삭제 완료")
     
+    num_runs = args.num_runs
+
     print("\n" + "="*70)
     print("🔄 Batch Evaluation Script")
     if args.mode == "plan-only":
         print("   모드: Plan 생성만")
     elif args.mode == "evaluate-only":
         print("   모드: 평가만 (이미 생성된 plan 사용)")
+    elif args.mode == "pg-only":
+        print("   모드: Physical Guard만 (plan 생성 → 실행 → GCR/Exec 평가)")
+        print(f"   실행 횟수: {num_runs}")
     else:
         print("   모드: 전체 (Plan 생성 + 평가)")
     print("="*70)
@@ -951,15 +1010,16 @@ def main():
                 if task_index == 0:
                     selected_task_index = None
                     single_task_path = None
-                    print(f"   선택: 0 — 해당 FP 전체 Task {n_tasks}개 10번 실행")
+                    print(f"   선택: 0 — 해당 FP 전체 Task {n_tasks}개 {num_runs}번 실행")
                     break
                 if 1 <= task_index <= n_tasks:
                     selected_task_def = task_list[task_index - 1]
                     single_task_path = project_root / "data" / "final_test" / f"_single_task_fp{args.fp_number}_task{task_index}.json"
+                    single_task_path.parent.mkdir(parents=True, exist_ok=True)
                     with open(single_task_path, "w", encoding="utf-8") as f:
                         json.dump([selected_task_def], f, indent=2, ensure_ascii=False)
                     selected_task_index = task_index
-                    print(f"   선택: Task {task_index} — 10번 실행 후 결과 저장")
+                    print(f"   선택: Task {task_index} — {num_runs}번 실행 후 결과 저장")
                     break
             except ValueError:
                 pass
@@ -967,9 +1027,7 @@ def main():
     else:
         floor_plans = [1, 216, 325, 403]
         print(f"📋 기본 FloorPlan 목록: {floor_plans}")
-    
-    num_runs = 10
-    
+
     # 전체 작업 수 계산
     total_tasks = len(floor_plans) * num_runs
     current_task_num = 0
@@ -1000,7 +1058,7 @@ def main():
             fp_name = f"FloorPlan{fp_number}"
             all_run_results[fp_name] = []
             
-            # 10번 실행
+            # num_runs번 실행
             all_results = []
             for run_num in range(1, num_runs + 1):
                 current_task_num += 1
@@ -1038,7 +1096,20 @@ def main():
                             "result": result
                         })
                         print(f"✅ {current_task} 완료")
-                    
+                    elif args.mode == "pg-only":
+                        # Physical Guard만: plan 생성 → 실행 → 평가
+                        result = run_single_evaluation_pg_only(
+                            fp_number=fp_number,
+                            folder=folder,
+                            test_file=test_file_str,
+                            run_number=run_num
+                        )
+                        all_results.append(result)
+                        all_run_results[fp_name].append({
+                            "run_number": run_num,
+                            "result": result
+                        })
+                        print(f"✅ {current_task} 완료")
                     else:  # full
                         # Plan 생성 + 평가
                         result = run_single_evaluation(
@@ -1069,10 +1140,13 @@ def main():
                 # 평균 계산
                 avg_results = calculate_averages(all_results)
                 all_scene_results[fp_name] = avg_results
-                
+
                 print(f"\n✅ FloorPlan{fp_number} 완료 ({fp_idx}/{len(floor_plans)})")
                 print(f"   Physical Guard 평균 GCR: {avg_results['scene_avg']['physical_guard']:.2f}%")
-                print(f"   Baseline 평균 GCR: {avg_results['scene_avg']['baseline']:.2f}%")
+                if args.mode == "pg-only":
+                    print(f"   Physical Guard 평균 Exec: {avg_results['scene_avg'].get('physical_guard_exec', 0):.2f}%")
+                else:
+                    print(f"   Baseline 평균 GCR: {avg_results['scene_avg']['baseline']:.2f}%")
             elif args.mode == "plan-only":
                 print(f"\n✅ FloorPlan{fp_number} Plan 생성 완료 ({fp_idx}/{len(floor_plans)})")
         

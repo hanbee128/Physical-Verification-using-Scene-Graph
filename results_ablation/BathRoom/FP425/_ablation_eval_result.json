@@ -1,0 +1,625 @@
+{
+  "physical_guard": [
+    {
+      "task": "Put SprayBottle on the CounterTop",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('SprayBottle')",
+          "action": "GoToObject",
+          "target_object": "SprayBottle",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet|-01.19|+00.39|+03.03')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|-01.19|+00.39|+03.03",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('SprayBottle')",
+          "action": "PickupObject",
+          "target_object": "SprayBottle",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|-01.19|+00.39|+03.03')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|-01.19|+00.39|+03.03",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('SprayBottle', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "SprayBottle",
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put cloth on the Sinkbasin and toggle on the faucet",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 8,
+      "successful_actions_count": 8,
+      "total_generated_actions": 8,
+      "passed_conditions": 2,
+      "total_conditions": 2,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Cloth')",
+          "action": "GoToObject",
+          "target_object": "Cloth",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Toilet|-00.04|+00.09|+01.73')",
+          "action": "OpenObject",
+          "target_object": "Toilet|-00.04|+00.09|+01.73",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Cloth')",
+          "action": "PickupObject",
+          "target_object": "Cloth",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Toilet|-00.04|+00.09|+01.73')",
+          "action": "CloseObject",
+          "target_object": "Toilet|-00.04|+00.09|+01.73",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Sink')",
+          "action": "GoToObject",
+          "target_object": "Sink",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Cloth', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Cloth",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Faucet')",
+          "action": "GoToObject",
+          "target_object": "Faucet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "ToggleObjectOn('Faucet')",
+          "action": "ToggleObjectOn",
+          "target_object": "Faucet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Turn on the ShowerHead",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 4,
+      "total_generated_actions": 4,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Shower')",
+          "action": "GoToObject",
+          "target_object": "Shower",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('ShowerDoor|-01.63|+01.01|+01.17')",
+          "action": "OpenObject",
+          "target_object": "ShowerDoor|-01.63|+01.01|+01.17",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "ToggleObjectOn('ShowerHead')",
+          "action": "ToggleObjectOn",
+          "target_object": "ShowerHead",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('ShowerDoor|-01.63|+01.01|+01.17')",
+          "action": "CloseObject",
+          "target_object": "ShowerDoor|-01.63|+01.01|+01.17",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put ScrubBrush in the garbagecan and Open the toilet",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 2,
+      "total_conditions": 2,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('ScrubBrush')",
+          "action": "GoToObject",
+          "target_object": "ScrubBrush",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('ScrubBrush')",
+          "action": "PickupObject",
+          "target_object": "ScrubBrush",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('GarbageCan')",
+          "action": "GoToObject",
+          "target_object": "GarbageCan",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('ScrubBrush', 'GarbageCan')",
+          "action": "PutObject",
+          "target_object": "ScrubBrush",
+          "receptacle": "GarbageCan",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Toilet')",
+          "action": "GoToObject",
+          "target_object": "Toilet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Toilet')",
+          "action": "OpenObject",
+          "target_object": "Toilet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put toiletpaper on the countertop",
+      "method": "Physical Guard",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 1,
+      "total_conditions": 1,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('ToiletPaper')",
+          "action": "GoToObject",
+          "target_object": "ToiletPaper",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet|-01.19|+00.39|+02.13')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|-01.19|+00.39|+02.13",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('ToiletPaper')",
+          "action": "PickupObject",
+          "target_object": "ToiletPaper",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|-01.19|+00.39|+02.13')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|-01.19|+00.39|+02.13",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Countertop')",
+          "action": "GoToObject",
+          "target_object": "Countertop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('ToiletPaper', 'Countertop')",
+          "action": "PutObject",
+          "target_object": "ToiletPaper",
+          "receptacle": "Countertop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ],
+  "baseline": [
+    {
+      "task": "Put SprayBottle on the CounterTop",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('SprayBottle')",
+          "action": "GoToObject",
+          "target_object": "SprayBottle",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('SprayBottle')",
+          "action": "PickupObject",
+          "target_object": "SprayBottle",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('CounterTop')",
+          "action": "GoToObject",
+          "target_object": "CounterTop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('SprayBottle', 'CounterTop')",
+          "action": "PutObject",
+          "target_object": "SprayBottle",
+          "receptacle": "CounterTop",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put cloth on the Sinkbasin and toggle on the faucet",
+      "method": "Baseline",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 6,
+      "successful_actions_count": 6,
+      "total_generated_actions": 6,
+      "passed_conditions": 2,
+      "total_conditions": 2,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Cloth')",
+          "action": "GoToObject",
+          "target_object": "Cloth",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Cloth')",
+          "action": "PickupObject",
+          "target_object": "Cloth",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('SinkBasin')",
+          "action": "GoToObject",
+          "target_object": "SinkBasin",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Cloth', 'SinkBasin')",
+          "action": "PutObject",
+          "target_object": "Cloth",
+          "receptacle": "SinkBasin",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Faucet')",
+          "action": "GoToObject",
+          "target_object": "Faucet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "ToggleObjectOn('Faucet')",
+          "action": "ToggleObjectOn",
+          "target_object": "Faucet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Turn on the ShowerHead",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 2,
+      "successful_actions_count": 1,
+      "total_generated_actions": 2,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Shower')",
+          "action": "GoToObject",
+          "target_object": "Shower",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "ToggleObjectOn('ShowerHead')",
+          "action": "ToggleObjectOn",
+          "target_object": "ShowerHead",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    },
+    {
+      "task": "Put ScrubBrush in the garbagecan and Open the toilet",
+      "method": "Baseline",
+      "status": "PASSED",
+      "gcr": 100.0,
+      "exec": 100.0,
+      "executed_actions_count": 5,
+      "successful_actions_count": 5,
+      "total_generated_actions": 5,
+      "passed_conditions": 2,
+      "total_conditions": 2,
+      "verification_passed": true,
+      "execution_clean": true,
+      "executed_actions": [
+        {
+          "line": "GoToObject('ScrubBrush')",
+          "action": "GoToObject",
+          "target_object": "ScrubBrush",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('ScrubBrush')",
+          "action": "PickupObject",
+          "target_object": "ScrubBrush",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('GarbageCan')",
+          "action": "GoToObject",
+          "target_object": "GarbageCan",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('ScrubBrush', 'GarbageCan')",
+          "action": "PutObject",
+          "target_object": "ScrubBrush",
+          "receptacle": "GarbageCan",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Toilet')",
+          "action": "OpenObject",
+          "target_object": "Toilet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "task": "Put toiletpaper on the countertop",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 0.0,
+      "exec": 50.0,
+      "executed_actions_count": 4,
+      "successful_actions_count": 2,
+      "total_generated_actions": 4,
+      "passed_conditions": 0,
+      "total_conditions": 1,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('ToiletPaper')",
+          "action": "GoToObject",
+          "target_object": "ToiletPaper",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('ToiletPaper')",
+          "action": "PickupObject",
+          "target_object": "ToiletPaper",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Countertop')",
+          "action": "GoToObject",
+          "target_object": "Countertop",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('ToiletPaper', 'Countertop')",
+          "action": "PutObject",
+          "target_object": "ToiletPaper",
+          "receptacle": "Countertop",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    }
+  ]
+}
