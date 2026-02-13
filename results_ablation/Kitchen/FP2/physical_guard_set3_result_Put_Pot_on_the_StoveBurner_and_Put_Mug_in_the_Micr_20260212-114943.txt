@@ -1,0 +1,106 @@
+Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+================================================================================
+def put_pot_on_the_stoveburner_and_put_mug_in_the_microwave():
+	# Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pot')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('StoveBurner')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pot', 'StoveBurner')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.901, -0.750)
+	GoToObject('Mug')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Mug')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Microwave')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Microwave|+01.93|+00.90|-00.77' 열기
+	OpenObject('Microwave|+01.93|+00.90|-00.77')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Mug', 'Microwave')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Microwave|+01.93|+00.90|-00.77' 자동 닫기
+	CloseObject('Microwave|+01.93|+00.90|-00.77')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Target object 'Microwave|+01.93|+00.90|-00.77'는 OPENED 상태여서 접근 불가
+	# CloseObject('Microwave|+01.93|+00.90|-00.77')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put Pot on the StoveBurner
+	# Task: Put Pot on the StoveBurner
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('Stove')
+	# Step 3
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pot'로 이동
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Pot' 집기
+	PickupObject('Pot')
+	# Step 5
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'StoveBurner' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('StoveBurner')
+	# Step 6
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('Pot', 'StoveBurner')
+
+
+Physical Verification Summary:
+  Total Actions: 11
+  Passed Actions: 10
+  Failed Actions: 1
+
+Failed Actions:
+  - CloseObject('Microwave|+01.93|+00.90|-00.77'): FAIL: 1개 가드 실패: OPENED(object)
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put Pot on the StoveBurner
+  Reasoning: The plan does not include the action 'Put Pot on the StoveBurner' which is required by the natural language goal. This task should be added before Step 3.
+
+================================================================================
+

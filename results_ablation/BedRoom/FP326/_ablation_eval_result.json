@@ -1,406 +1,18 @@
 {
-  "physical_guard": [
+  "baseline": [
     {
-      "task": "Put Pen in the drawer",
-      "method": "Physical Guard",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 0.0,
-      "exec": 75.0,
-      "executed_actions_count": 8,
-      "successful_actions_count": 6,
-      "total_generated_actions": 8,
-      "passed_conditions": 0,
-      "total_conditions": 1,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Desk')",
-          "action": "GoToObject",
-          "target_object": "Desk",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "PutObject('Pen', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "Pen",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "CloseObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn on the Desktop and Laptop",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Desktop')",
-          "action": "GoToObject",
-          "target_object": "Desktop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Desktop')",
-          "action": "ToggleObjectOn",
-          "target_object": "Desktop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Laptop')",
-          "action": "ToggleObjectOn",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Open the book",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 3,
-      "successful_actions_count": 3,
-      "total_generated_actions": 3,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Book')",
-          "action": "GoToObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Book')",
-          "action": "PickupObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Book')",
-          "action": "OpenObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put pen and creditcard in the drawer and put the pen on the desk",
-      "method": "Physical Guard",
+      "task": "Put CD in the drawer and Open the Book",
+      "method": "Baseline",
       "status": "FAILED (Execution Errors)",
       "gcr": 50.0,
-      "exec": 80.95,
-      "executed_actions_count": 21,
-      "successful_actions_count": 17,
-      "total_generated_actions": 21,
+      "exec": 62.5,
+      "executed_actions_count": 8,
+      "successful_actions_count": 5,
+      "total_generated_actions": 8,
       "passed_conditions": 1,
       "total_conditions": 2,
       "verification_passed": false,
       "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "PutObject('Pen', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "Pen",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "CloseObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CreditCard')",
-          "action": "GoToObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CreditCard')",
-          "action": "PickupObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "OpenObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CreditCard', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "CreditCard",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "CloseObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "GoToObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "OpenObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
-          "action": "CloseObject",
-          "target_object": "Drawer|-01.52|+00.41|+00.35",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Desk')",
-          "action": "GoToObject",
-          "target_object": "Desk",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Pen', 'Desk')",
-          "action": "PutObject",
-          "target_object": "Pen",
-          "receptacle": "Desk",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put CD on the chair and Open the Book",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 7,
-      "successful_actions_count": 7,
-      "total_generated_actions": 7,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
       "executed_actions": [
         {
           "line": "GoToObject('CD')",
@@ -421,22 +33,31 @@
           "errorMessage": ""
         },
         {
-          "line": "GoToObject('Chair')",
+          "line": "GoToObject('Drawer')",
           "action": "GoToObject",
-          "target_object": "Chair",
+          "target_object": "Drawer",
           "receptacle": null,
-          "success": true,
+          "success": false,
           "lastActionSuccess": true,
-          "errorMessage": ""
+          "errorMessage": "Action method returned False"
         },
         {
-          "line": "PutObject('CD', 'Chair')",
+          "line": "OpenObject('Drawer')",
+          "action": "OpenObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('CD', 'Drawer')",
           "action": "PutObject",
           "target_object": "CD",
-          "receptacle": "Chair",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
+          "receptacle": "Drawer",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
         },
         {
           "line": "GoToObject('Book')",
@@ -452,9 +73,9 @@
           "action": "PickupObject",
           "target_object": "Book",
           "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
         },
         {
           "line": "OpenObject('Book')",
@@ -468,296 +89,16 @@
       ]
     }
   ],
-  "baseline": [
+  "ablation": [
     {
-      "task": "Put Pen in the drawer",
-      "method": "Baseline",
+      "task": "Put CD in the drawer and Open the Book",
+      "method": "Ablation",
       "status": "FAILED (Execution Errors)",
-      "gcr": 0.0,
+      "gcr": 50.0,
       "exec": 66.67,
-      "executed_actions_count": 6,
-      "successful_actions_count": 4,
-      "total_generated_actions": 6,
-      "passed_conditions": 0,
-      "total_conditions": 1,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "PutObject('Pen', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "Pen",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Drawer')",
-          "action": "CloseObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn on the Desktop and Laptop",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 83.33,
-      "executed_actions_count": 6,
-      "successful_actions_count": 5,
-      "total_generated_actions": 6,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Laptop')",
-          "action": "PickupObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Desktop')",
-          "action": "GoToObject",
-          "target_object": "Desktop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Desktop')",
-          "action": "OpenObject",
-          "target_object": "Desktop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "ToggleObjectOn('Desktop')",
-          "action": "ToggleObjectOn",
-          "target_object": "Desktop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Laptop', 'CounterTop')",
-          "action": "PutObject",
-          "target_object": "Laptop",
-          "receptacle": "CounterTop",
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Open the book",
-      "method": "Baseline",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Book')",
-          "action": "GoToObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Book')",
-          "action": "PickupObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Book')",
-          "action": "GoToObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Book')",
-          "action": "OpenObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put pen and creditcard in the drawer and put the pen on the desk",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 87.5,
-      "executed_actions_count": 8,
-      "successful_actions_count": 7,
-      "total_generated_actions": 8,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Pen')",
-          "action": "GoToObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Pen')",
-          "action": "PickupObject",
-          "target_object": "Pen",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Desk')",
-          "action": "GoToObject",
-          "target_object": "Desk",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Pen', 'Desk')",
-          "action": "PutObject",
-          "target_object": "Pen",
-          "receptacle": "Desk",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CreditCard')",
-          "action": "GoToObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CreditCard')",
-          "action": "PickupObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "PutObject('CreditCard', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "CreditCard",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Put CD on the chair and Open the Book",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 85.71,
-      "executed_actions_count": 7,
+      "executed_actions_count": 9,
       "successful_actions_count": 6,
-      "total_generated_actions": 7,
+      "total_generated_actions": 9,
       "passed_conditions": 1,
       "total_conditions": 2,
       "verification_passed": false,
@@ -782,22 +123,139 @@
           "errorMessage": ""
         },
         {
-          "line": "GoToObject('ArmChair')",
+          "line": "GoToObject('Drawer')",
           "action": "GoToObject",
-          "target_object": "ArmChair",
+          "target_object": "Drawer",
           "receptacle": null,
           "success": false,
           "lastActionSuccess": true,
           "errorMessage": "Action method returned False"
         },
         {
-          "line": "PutObject('CD', 'ArmChair')",
+          "line": "OpenObject('Drawer')",
+          "action": "OpenObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('CD', 'Drawer')",
           "action": "PutObject",
           "target_object": "CD",
-          "receptacle": "ArmChair",
+          "receptacle": "Drawer",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
+          "action": "CloseObject",
+          "target_object": "Drawer|-01.52|+00.41|+00.35",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Book')",
+          "action": "GoToObject",
+          "target_object": "Book",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Book')",
+          "action": "PickupObject",
+          "target_object": "Book",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Book')",
+          "action": "OpenObject",
+          "target_object": "Book",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ],
+  "physical_guard": [
+    {
+      "task": "Put CD in the drawer and Open the Book",
+      "method": "Physical Guard",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 50.0,
+      "exec": 66.67,
+      "executed_actions_count": 9,
+      "successful_actions_count": 6,
+      "total_generated_actions": 9,
+      "passed_conditions": 1,
+      "total_conditions": 2,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('CD')",
+          "action": "GoToObject",
+          "target_object": "CD",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('CD')",
+          "action": "PickupObject",
+          "target_object": "CD",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer')",
+          "action": "GoToObject",
+          "target_object": "Drawer",
+          "receptacle": null,
           "success": false,
           "lastActionSuccess": true,
           "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Drawer')",
+          "action": "OpenObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('CD', 'Drawer')",
+          "action": "PutObject",
+          "target_object": "CD",
+          "receptacle": "Drawer",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Drawer|-01.52|+00.41|+00.35')",
+          "action": "CloseObject",
+          "target_object": "Drawer|-01.52|+00.41|+00.35",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
         },
         {
           "line": "GoToObject('Book')",

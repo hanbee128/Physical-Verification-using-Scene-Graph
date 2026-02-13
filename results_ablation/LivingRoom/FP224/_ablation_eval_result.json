@@ -1,835 +1,5 @@
 {
-  "physical_guard": [
-    {
-      "task": "Turn on the Television and open the book",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Television')",
-          "action": "GoToObject",
-          "target_object": "Television",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Television')",
-          "action": "ToggleObjectOn",
-          "target_object": "Television",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Book')",
-          "action": "GoToObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Book')",
-          "action": "OpenObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put the laptop on the sofa",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Laptop')",
-          "action": "PickupObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Sofa')",
-          "action": "GoToObject",
-          "target_object": "Sofa",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Laptop', 'Sofa')",
-          "action": "PutObject",
-          "target_object": "Laptop",
-          "receptacle": "Sofa",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn off the FloorLamp and put newspaper into the drawer",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 8,
-      "successful_actions_count": 8,
-      "total_generated_actions": 8,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('FloorLamp')",
-          "action": "GoToObject",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('FloorLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Newspaper')",
-          "action": "GoToObject",
-          "target_object": "Newspaper",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Newspaper')",
-          "action": "PickupObject",
-          "target_object": "Newspaper",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "OpenObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Newspaper', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "Newspaper",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put cellphone and keychain in the drawer",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 13,
-      "successful_actions_count": 13,
-      "total_generated_actions": 13,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('CellPhone')",
-          "action": "GoToObject",
-          "target_object": "CellPhone",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CellPhone')",
-          "action": "PickupObject",
-          "target_object": "CellPhone",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CellPhone', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "CellPhone",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "GoToObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "OpenObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('KeyChain', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "KeyChain",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put keychain and creditcard in the drawer and put keychain on the chair",
-      "method": "Physical Guard",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 96.15,
-      "executed_actions_count": 26,
-      "successful_actions_count": 25,
-      "total_generated_actions": 26,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('KeyChain', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "KeyChain",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CreditCard')",
-          "action": "GoToObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CreditCard')",
-          "action": "PickupObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "OpenObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CreditCard', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "CreditCard",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Chair')",
-          "action": "GoToObject",
-          "target_object": "Chair",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "GoToObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "OpenObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "GoToObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "OpenObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "GoToObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
-          "action": "CloseObject",
-          "target_object": "Drawer|+03.10|+00.42|+00.37",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Chair')",
-          "action": "GoToObject",
-          "target_object": "Chair",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('KeyChain', 'Chair')",
-          "action": "PutObject",
-          "target_object": "KeyChain",
-          "receptacle": "Chair",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    }
-  ],
   "baseline": [
-    {
-      "task": "Turn on the Television and open the book",
-      "method": "Baseline",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 3,
-      "successful_actions_count": 3,
-      "total_generated_actions": 3,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "ToggleObjectOn('Television')",
-          "action": "ToggleObjectOn",
-          "target_object": "Television",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Book')",
-          "action": "GoToObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Book')",
-          "action": "OpenObject",
-          "target_object": "Book",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put the laptop on the sofa",
-      "method": "Baseline",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Laptop')",
-          "action": "PickupObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Sofa')",
-          "action": "GoToObject",
-          "target_object": "Sofa",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Laptop', 'Sofa')",
-          "action": "PutObject",
-          "target_object": "Laptop",
-          "receptacle": "Sofa",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn off the FloorLamp and put newspaper into the drawer",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 80.0,
-      "executed_actions_count": 5,
-      "successful_actions_count": 4,
-      "total_generated_actions": 5,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "ToggleObjectOff('FloorLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Newspaper')",
-          "action": "GoToObject",
-          "target_object": "Newspaper",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Newspaper')",
-          "action": "PickupObject",
-          "target_object": "Newspaper",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('Newspaper', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "Newspaper",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Put cellphone and keychain in the drawer",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 77.78,
-      "executed_actions_count": 9,
-      "successful_actions_count": 7,
-      "total_generated_actions": 9,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('CellPhone')",
-          "action": "GoToObject",
-          "target_object": "CellPhone",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CellPhone')",
-          "action": "PickupObject",
-          "target_object": "CellPhone",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('Drawer')",
-          "action": "GoToObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Drawer')",
-          "action": "OpenObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CellPhone', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "CellPhone",
-          "receptacle": "Drawer",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('KeyChain', 'Drawer')",
-          "action": "PutObject",
-          "target_object": "KeyChain",
-          "receptacle": "Drawer",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Drawer')",
-          "action": "CloseObject",
-          "target_object": "Drawer",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
     {
       "task": "Put keychain and creditcard in the drawer and put keychain on the chair",
       "method": "Baseline",
@@ -915,6 +85,438 @@
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Chair')",
+          "action": "GoToObject",
+          "target_object": "Chair",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Chair')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Chair",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    }
+  ],
+  "ablation": [
+    {
+      "task": "Put keychain and creditcard in the drawer and put keychain on the chair",
+      "method": "Ablation",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 50.0,
+      "exec": 95.0,
+      "executed_actions_count": 20,
+      "successful_actions_count": 19,
+      "total_generated_actions": 20,
+      "passed_conditions": 1,
+      "total_conditions": 2,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer')",
+          "action": "GoToObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer')",
+          "action": "OpenObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Drawer')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Drawer",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CreditCard')",
+          "action": "GoToObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('CreditCard')",
+          "action": "PickupObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer')",
+          "action": "GoToObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('CreditCard', 'Drawer')",
+          "action": "PutObject",
+          "target_object": "CreditCard",
+          "receptacle": "Drawer",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Chair')",
+          "action": "GoToObject",
+          "target_object": "Chair",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "GoToObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Chair')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Chair",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    }
+  ],
+  "physical_guard": [
+    {
+      "task": "Put keychain and creditcard in the drawer and put keychain on the chair",
+      "method": "Physical Guard",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 50.0,
+      "exec": 87.5,
+      "executed_actions_count": 24,
+      "successful_actions_count": 21,
+      "total_generated_actions": 24,
+      "passed_conditions": 1,
+      "total_conditions": 2,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer')",
+          "action": "GoToObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer')",
+          "action": "OpenObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Drawer')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Drawer",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CreditCard')",
+          "action": "GoToObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('CreditCard')",
+          "action": "PickupObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer')",
+          "action": "GoToObject",
+          "target_object": "Drawer",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('CreditCard', 'Drawer')",
+          "action": "PutObject",
+          "target_object": "CreditCard",
+          "receptacle": "Drawer",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Chair')",
+          "action": "GoToObject",
+          "target_object": "Chair",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "GoToObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "OpenObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Drawer|+03.10|+00.42|+00.37')",
+          "action": "CloseObject",
+          "target_object": "Drawer|+03.10|+00.42|+00.37",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Chair')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Chair",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
         },
         {
           "line": "GoToObject('Chair')",

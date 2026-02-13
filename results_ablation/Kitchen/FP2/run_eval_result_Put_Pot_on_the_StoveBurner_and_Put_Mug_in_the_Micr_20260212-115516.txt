@@ -1,0 +1,37 @@
+Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_pot_on_stoveburner_and_mug_in_microwave():
+    # Step 1: Find the pot
+    assert('Pot' visible)
+        else: GoToObject('Pot')
+    GoToObject('Pot')
+    assert('close' to 'Pot')
+        else: GoToObject('Pot')
+    PickupObject('Pot')
+
+    # Step 2: Move to the stove and put the pot on the burner
+    GoToObject('StoveBurner')
+    assert('close' to 'StoveBurner')
+        else: GoToObject('StoveBurner')
+    PutObject('Pot', 'StoveBurner')
+
+    # Step 3: Find the mug
+    assert('Mug' visible)
+        else: GoToObject('Mug')
+    GoToObject('Mug')
+    assert('close' to 'Mug')
+        else: GoToObject('Mug')
+    PickupObject('Mug')
+
+    # Step 4: Move to the microwave and put the mug inside
+    GoToObject('Microwave')
+    assert('close' to 'Microwave')
+        else: GoToObject('Microwave')
+    PutObject('Mug', 'Microwave')
+```
+
+================================================================================
+

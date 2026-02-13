@@ -76,6 +76,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
+          "KeyChain|-01.62|+00.51|-01.08",
           "Pillow|-01.83|+00.58|-01.24"
         ],
         "mass": 28.299999237060547,
@@ -116,7 +117,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "KeyChain|-01.62|+00.51|-01.08",
+          "RemoteControl|-00.64|+00.53|-01.24",
           "CreditCard|-03.66|+01.06|+00.06"
         ],
         "mass": 0.30000001192092896,
@@ -660,7 +661,7 @@
           "z": 0.6215574145317078
         },
         "parentReceptacles": [
-          "Box|-03.78|+01.30|+00.46"
+          "ArmChair|-01.83|+00.01|-01.35"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -920,7 +921,7 @@
           "z": 359.993408203125
         },
         "parentReceptacles": [
-          "Sofa|+00.06|00.00|-01.39"
+          "Box|-03.78|+01.30|+00.46"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1129,8 +1130,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "Laptop|+00.43|+00.53|-01.19",
-          "RemoteControl|-00.64|+00.53|-01.24"
+          "Laptop|+00.43|+00.53|-01.19"
         ],
         "mass": 103.99999237060547,
         "sliceable": false,
@@ -1585,6 +1585,15 @@
     },
     {
       "edgeType": "ON",
+      "source": "KeyChain|-01.62|+00.51|-01.08",
+      "target": "ArmChair|-01.83|+00.01|-01.35",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "KeyChain",
+      "targetObjectType": "ArmChair"
+    },
+    {
+      "edgeType": "ON",
       "source": "Laptop|+00.43|+00.53|-01.19",
       "target": "Sofa|+00.06|00.00|-01.39",
       "sourceType": "Object",
@@ -1609,15 +1618,6 @@
       "targetType": "Object",
       "sourceObjectType": "Pillow",
       "targetObjectType": "ArmChair"
-    },
-    {
-      "edgeType": "ON",
-      "source": "RemoteControl|-00.64|+00.53|-01.24",
-      "target": "Sofa|+00.06|00.00|-01.39",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "RemoteControl",
-      "targetObjectType": "Sofa"
     },
     {
       "edgeType": "ON",
@@ -1756,20 +1756,20 @@
     },
     {
       "edgeType": "IN",
-      "source": "KeyChain|-01.62|+00.51|-01.08",
+      "source": "RemoteControl|-00.64|+00.53|-01.24",
       "target": "Box|-03.78|+01.30|+00.46",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "KeyChain",
+      "sourceObjectType": "RemoteControl",
       "targetObjectType": "Box"
     },
     {
       "edgeType": "ON",
-      "source": "KeyChain|-01.62|+00.51|-01.08",
+      "source": "RemoteControl|-00.64|+00.53|-01.24",
       "target": "Box|-03.78|+01.30|+00.46",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "KeyChain",
+      "sourceObjectType": "RemoteControl",
       "targetObjectType": "Box"
     },
     {

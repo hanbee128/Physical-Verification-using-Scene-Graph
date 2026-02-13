@@ -1,0 +1,143 @@
+Task: Put keychain and creditcard in the drawer and put keychain on the chair
+================================================================================
+def put_keychain_and_creditcard_in_the_drawer_and_put_keychain_on_the_chair():
+	# Task: Put keychain and creditcard in the drawer and put keychain on the chair
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.928, 2.250)
+	GoToObject('KeyChain')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('KeyChain')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.750, 0.928, 0.250)
+	GoToObject('Drawer')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Drawer')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Drawer')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Drawer|+03.10|+00.42|+00.37' 자동 닫기
+	CloseObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (0.000, 0.928, 0.500)
+	GoToObject('CreditCard')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('CreditCard')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.750, 0.928, 0.250)
+	GoToObject('Drawer')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Drawer|+03.10|+00.42|+00.37' 열기
+	OpenObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Drawer')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Drawer|+03.10|+00.42|+00.37' 자동 닫기
+	CloseObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.250, 0.928, 2.000)
+	GoToObject('Chair')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain'로 이동
+	# 이동할 좌표: (-0.750, 0.928, 2.250)
+	GoToObject('KeyChain')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer|+03.10|+00.42|+00.37' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (2.750, 0.928, 0.500)
+	GoToObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Drawer|+03.10|+00.42|+00.37' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 17
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Drawer|+03.10|+00.42|+00.37' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain' 집기
+	PickupObject('KeyChain')
+	# Step 19
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Drawer|+03.10|+00.42|+00.37') 이후 자동 닫기
+	CloseObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 20
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Chair')
+	# Step 21
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer가 이미 열려 있으므로 CloseObject 액션 수행 불가 (targetObjectId: Drawer|+03.10|+00.42|+00.37)
+	# CloseObject('Drawer|+03.10|+00.42|+00.37')
+	# Step 22
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer 객체가 OPENED 상태여서 CloseObject 액션이 불가능함 (guard: OPENED(object))
+# Let me know if you'd like me to generate more! 😊
+	# CloseObject('Drawer')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put keychain on the chair
+	# Task: Put keychain on the chair
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-0.750, 0.928, 2.250)
+	GoToObject('KeyChain')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('KeyChain')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (1.250, 0.928, 2.000)
+	GoToObject('Chair')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('KeyChain', 'Chair')
+
+
+Physical Verification Summary:
+  Total Actions: 21
+  Passed Actions: 20
+  Failed Actions: 2
+
+Failed Actions:
+  - CloseObject('Drawer|+03.10|+00.42|+00.37'): FAIL: 1개 가드 실패: OPENED(object)
+  - CloseObject('Drawer'): FAIL: 1개 가드 실패: OPENED(object)
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put keychain on the chair
+  Reasoning: The original goal requires putting the keychain on the chair, but this step is missing from the generated plan. The reason for this omission is that the plan focuses more on moving objects to the drawer and chair, rather than explicitly stating the action of placing the keychain on the chair.
+
+================================================================================
+

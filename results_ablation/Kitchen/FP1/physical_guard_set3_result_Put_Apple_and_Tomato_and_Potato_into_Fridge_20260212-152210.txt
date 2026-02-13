@@ -1,0 +1,134 @@
+Task: Put Apple and Tomato and Potato into Fridge
+================================================================================
+def put_apple_and_tomato_and_potato_into_fridge():
+	# Task: Put Apple and Tomato and Potato into Fridge
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.500)
+	GoToObject('Apple')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Apple')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Fridge')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Apple', 'Fridge')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Tomato')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 10
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Fridge')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Tomato', 'Fridge')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.750)
+	GoToObject('Potato')
+	# Step 14
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Potato')
+	# Step 15
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 16
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Fridge')
+	# Step 17
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Potato', 'Fridge')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 19
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	CloseObject('Fridge')
+	# Step 20
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Fridge가 열려 있어 CloseObject 액션 수행 불가 (opened status)
+	# CloseObject('Fridge')
+	# Step 21
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Fridge는 열려 있어야 하는데 OPENED(object) 가드에 의해 실패함
+	# CloseObject('Fridge')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put Potato into Fridge
+	# Task: Put Potato into Fridge
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.750)
+	GoToObject('Potato')
+	# Step 2
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('Potato')
+	# Step 3
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 4
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('Potato', 'Fridge')
+	# Step 5
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 6
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Fridge가 이미 열려 있으므로 CloseObject 액션을 수행할 수 없음 (OPENED(object) guard failure)
+	# CloseObject('Fridge')
+
+
+Physical Verification Summary:
+  Total Actions: 21
+  Passed Actions: 19
+  Failed Actions: 2
+
+Failed Actions:
+  - CloseObject('Fridge'): FAIL: 1개 가드 실패: OPENED(object)
+  - CloseObject('Fridge'): FAIL: 1개 가드 실패: OPENED(object)
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put Potato into Fridge
+  Reasoning: The plan does not include the task 'Put Potato into Fridge' which is required by the natural language goal. The plan only includes putting Apple and Tomato into the fridge, but not Potato.
+
+================================================================================
+

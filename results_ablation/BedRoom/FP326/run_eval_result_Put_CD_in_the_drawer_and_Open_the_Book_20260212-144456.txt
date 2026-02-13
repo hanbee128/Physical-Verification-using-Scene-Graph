@@ -1,0 +1,40 @@
+Task: Put CD in the drawer and Open the Book
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_cd_in_drawer_and_open_book():
+    # Step 1: Find the CD
+    assert('CD' visible)
+        else: GoToObject('CD')
+    GoToObject('CD')
+    assert('close' to 'CD')
+        else: GoToObject('CD')
+    PickupObject('CD')
+
+    # Step 2: Move to the drawer and open it
+    GoToObject('Drawer')
+    assert('close' to 'Drawer')
+        else: GoToObject('Drawer')
+    OpenObject('Drawer')
+
+    # Step 3: Put the CD in the drawer
+    assert('CD' in 'hands')
+        else: GoToObject('CD')
+        else: PickupObject('CD')
+    PutObject('CD', 'Drawer')
+
+    # Step 4: Find and pick up the Book
+    GoToObject('Book')
+    assert('close' to 'Book')
+        else: GoToObject('Book')
+    PickupObject('Book')
+
+    # Step 5: Open the Book
+    OpenObject('Book')
+```
+
+This program follows the rules and guidelines provided, ensuring that each step is executed in a logical and sequential manner.
+
+================================================================================
+

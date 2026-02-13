@@ -1,0 +1,52 @@
+Task: Put Apple and Tomato and Potato into Fridge
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_fruits_and_vegetables_in_fridge():
+    # Step 1: Find an apple and pick it up
+    assert('Apple' visible)
+        else: GoToObject('Apple')
+    GoToObject('Apple')
+    assert('close' to 'Apple')
+        else: GoToObject('Apple')
+    PickupObject('Apple')
+
+    # Step 2: Move to the fridge and open it
+    GoToObject('Fridge')
+    assert('close' to 'Fridge')
+        else: GoToObject('Fridge')
+    assert('Fridge' is 'closed')
+        else: CloseObject('Fridge')
+    OpenObject('Fridge')
+
+    # Step 3: Place the apple inside and close the door
+    PutObject('Apple', 'Fridge')
+
+    # Step 4: Find a tomato and pick it up
+    assert('Tomato' visible)
+        else: GoToObject('Tomato')
+    GoToObject('Tomato')
+    assert('close' to 'Tomato')
+        else: GoToObject('Tomato')
+    PickupObject('Tomato')
+
+    # Step 5: Move the tomato to the fridge and place it inside
+    PutObject('Tomato', 'Fridge')
+
+    # Step 6: Find a potato and pick it up
+    assert('Potato' visible)
+        else: GoToObject('Potato')
+    GoToObject('Potato')
+    assert('close' to 'Potato')
+        else: GoToObject('Potato')
+    PickupObject('Potato')
+
+    # Step 7: Move the potato to the fridge and place it inside
+    PutObject('Potato', 'Fridge')
+```
+
+This program follows the rules and guidelines provided, ensuring that each step is executed in a logical and sequential manner.
+
+================================================================================
+

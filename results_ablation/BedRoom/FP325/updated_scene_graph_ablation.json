@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": 0.75,
+        "x": -0.25,
         "y": 0.9497443437576294,
-        "z": 1.25
+        "z": 0.25
       },
       "rotation": {
         "x": -0.0,
@@ -1534,7 +1534,7 @@
         "receptacle": false,
         "toggleable": true,
         "isOpen": false,
-        "isToggled": false,
+        "isToggled": true,
         "visible": false,
         "distance": 1.7422583103179932,
         "position": {

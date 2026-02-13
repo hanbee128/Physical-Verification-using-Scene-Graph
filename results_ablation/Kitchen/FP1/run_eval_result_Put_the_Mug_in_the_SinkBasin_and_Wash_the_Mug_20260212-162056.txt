@@ -1,0 +1,23 @@
+Task: Put the Mug in the SinkBasin and Wash the Mug
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_mug_in_sink():
+    # Step 1: Find and pick up the mug
+    assert('Mug' visible)
+        else: GoToObject('Mug')
+    GoToObject('Mug')
+    assert('close' to 'Mug')
+        else: GoToObject('Mug')
+    PickupObject('Mug')
+
+    # Step 2: Move to the sink and put the mug in the basin
+    GoToObject('SinkBasin')
+    PutObject('Mug', 'SinkBasin')
+```
+
+This program first picks up the Mug, then moves to the SinkBasin and puts the Mug inside.
+
+================================================================================
+

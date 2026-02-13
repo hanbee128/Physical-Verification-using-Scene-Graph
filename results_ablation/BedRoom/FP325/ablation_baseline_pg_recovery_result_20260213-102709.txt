@@ -1,0 +1,26 @@
+Task: Put the Pencil and the pen and the Book on the Dresser
+================================================================================
+def put_the_pencil_and_the_pen_and_the_book_on_the_dresser():
+	# Task: Put the Pencil and the pen and the Book on the Dresser
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.950, -1.250)
+	GoToObject('Pencil')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.250, 0.950, -1.250)
+	GoToObject('Pen')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.950, 0.250)
+	GoToObject('Book')
+
+
+================================================================================
+

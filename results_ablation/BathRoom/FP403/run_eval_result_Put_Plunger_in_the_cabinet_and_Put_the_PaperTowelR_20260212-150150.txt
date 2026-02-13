@@ -1,0 +1,42 @@
+Task: Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_plunger_and_papertowello_roll():
+    # Step 1: Find the Plunger
+    assert('Plunger' visible)
+        else: GoToObject('Plunger')
+    GoToObject('Plunger')
+    assert('close' to 'Plunger')
+        else: GoToObject('Plunger')
+    PickupObject('Plunger')
+
+    # Step 2: Move to the cabinet and open it
+    GoToObject('Cabinet')
+    assert('close' to 'Cabinet')
+        else: GoToObject('Cabinet')
+    OpenObject('Cabinet')
+
+    # Step 3: Put the Plunger inside the cabinet
+    assert('Plunger' in 'hands')
+        else: GoToObject('Plunger')
+        else: PickupObject('Plunger')
+    PutObject('Plunger', 'Cabinet')
+    CloseObject('Cabinet')
+
+    # Step 4: Find the PaperTowelRoll
+    assert('PaperTowelRoll' visible)
+        else: GoToObject('PaperTowelRoll')
+    GoToObject('PaperTowelRoll')
+    assert('close' to 'PaperTowelRoll')
+        else: GoToObject('PaperTowelRoll')
+
+    # Step 5: Put the PaperTowelRoll on the countertop
+    PickupObject('PaperTowelRoll')
+    GoToObject('CounterTop')
+    PutObject('PaperTowelRoll', 'CounterTop')
+```
+
+================================================================================
+

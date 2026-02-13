@@ -12,7 +12,7 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": -2.0,
+        "x": -1.25,
         "y": 0.9093819856643677,
         "z": 2.5
       },
@@ -151,7 +151,9 @@
         "parentReceptacles": null,
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [],
+        "receptacleObjectIds": [
+          "Plunger|-00.22|+00.01|+00.49"
+        ],
         "mass": 0.0,
         "sliceable": false,
         "isSliced": false,
@@ -224,7 +226,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
-          "PaperTowelRoll|-00.49|+00.15|+03.20"
+          "DishSponge|-00.67|+00.05|+03.17"
         ],
         "mass": 0.0,
         "sliceable": false,
@@ -381,7 +383,8 @@
           "Faucet|-00.85|+01.09|+03.37",
           "Faucet|-01.94|+01.09|+03.37",
           "Sink|-00.85|+00.95|+03.14",
-          "Sink|-01.94|+00.95|+03.14"
+          "Sink|-01.94|+00.95|+03.14",
+          "PaperTowelRoll|-00.49|+00.15|+03.20"
         ],
         "mass": 0.0,
         "sliceable": false,
@@ -416,7 +419,7 @@
           "z": 0.0002998423879034817
         },
         "parentReceptacles": [
-          "Sink|-01.94|+00.95|+03.14|SinkBasin"
+          "Cabinet|-00.34|+00.43|+02.87"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -573,7 +576,6 @@
         "receptacleObjectIds": [
           "GarbageCan|00.01|00.50|+03.13",
           "ToiletPaper|-00.10|+00.04|+03.14",
-          "Plunger|-00.22|+00.01|+00.49",
           "ShowerDoor|-02.48|+01.77|+02.39",
           "Bathtub|-02.23|+00.29|+00.72",
           "ScrubBrush|-00.35|+00.01|+00.35",
@@ -802,7 +804,7 @@
           "z": -0.0011788980336859822
         },
         "parentReceptacles": [
-          "Cabinet|-00.34|+00.43|+02.87"
+          "CounterTop|-01.36|+01.09|+03.15"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -840,7 +842,7 @@
           "z": -1.2923030226374976e-05
         },
         "parentReceptacles": [
-          "Floor|+00.00|+00.00|+00.00"
+          "Cabinet|-01.36|+00.43|+02.87"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -1146,9 +1148,7 @@
         "parentReceptacles": null,
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [
-          "DishSponge|-00.67|+00.05|+03.17"
-        ],
+        "receptacleObjectIds": [],
         "mass": 0.0,
         "sliceable": false,
         "isSliced": false,
@@ -1677,6 +1677,15 @@
       "targetObjectType": "Bathtub"
     },
     {
+      "edgeType": "IN",
+      "source": "DishSponge|-00.67|+00.05|+03.17",
+      "target": "Cabinet|-00.34|+00.43|+02.87",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "DishSponge",
+      "targetObjectType": "Cabinet"
+    },
+    {
       "edgeType": "ON",
       "source": "Faucet|-00.85|+01.09|+03.37",
       "target": "CounterTop|-01.36|+01.09|+03.15",
@@ -1729,24 +1738,6 @@
       "targetType": "Object",
       "sourceObjectType": "Mirror",
       "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "IN",
-      "source": "PaperTowelRoll|-00.49|+00.15|+03.20",
-      "target": "Cabinet|-00.34|+00.43|+02.87",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "PaperTowelRoll",
-      "targetObjectType": "Cabinet"
-    },
-    {
-      "edgeType": "ON",
-      "source": "Plunger|-00.22|+00.01|+00.49",
-      "target": "Floor|+00.00|+00.00|+00.00",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Plunger",
-      "targetObjectType": "Floor"
     },
     {
       "edgeType": "ON",
@@ -1876,21 +1867,39 @@
     },
     {
       "edgeType": "IN",
-      "source": "DishSponge|-00.67|+00.05|+03.17",
-      "target": "Sink|-01.94|+00.95|+03.14|SinkBasin",
+      "source": "Plunger|-00.22|+00.01|+00.49",
+      "target": "Cabinet|-01.36|+00.43|+02.87",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "DishSponge",
-      "targetObjectType": "SinkBasin"
+      "sourceObjectType": "Plunger",
+      "targetObjectType": "Cabinet"
     },
     {
       "edgeType": "ON",
-      "source": "DishSponge|-00.67|+00.05|+03.17",
-      "target": "Sink|-01.94|+00.95|+03.14|SinkBasin",
+      "source": "Plunger|-00.22|+00.01|+00.49",
+      "target": "Cabinet|-01.36|+00.43|+02.87",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "DishSponge",
-      "targetObjectType": "SinkBasin"
+      "sourceObjectType": "Plunger",
+      "targetObjectType": "Cabinet"
+    },
+    {
+      "edgeType": "IN",
+      "source": "PaperTowelRoll|-00.49|+00.15|+03.20",
+      "target": "CounterTop|-01.36|+01.09|+03.15",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "PaperTowelRoll",
+      "targetObjectType": "CounterTop"
+    },
+    {
+      "edgeType": "ON",
+      "source": "PaperTowelRoll|-00.49|+00.15|+03.20",
+      "target": "CounterTop|-01.36|+01.09|+03.15",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "PaperTowelRoll",
+      "targetObjectType": "CounterTop"
     }
   ]
 }

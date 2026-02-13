@@ -1,19 +1,73 @@
 {
-  "physical_guard": [
+  "baseline": [
     {
-      "task": "Put papertowelroll on the countertop",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 6,
-      "successful_actions_count": 6,
-      "total_generated_actions": 6,
+      "task": "Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 50.0,
+      "exec": 80.0,
+      "executed_actions_count": 10,
+      "successful_actions_count": 8,
+      "total_generated_actions": 10,
       "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
+      "total_conditions": 2,
+      "verification_passed": false,
+      "execution_clean": false,
       "executed_actions": [
+        {
+          "line": "GoToObject('Plunger')",
+          "action": "GoToObject",
+          "target_object": "Plunger",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Plunger')",
+          "action": "PickupObject",
+          "target_object": "Plunger",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Cabinet')",
+          "action": "GoToObject",
+          "target_object": "Cabinet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet')",
+          "action": "OpenObject",
+          "target_object": "Cabinet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Plunger', 'Cabinet')",
+          "action": "PutObject",
+          "target_object": "Plunger",
+          "receptacle": "Cabinet",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet')",
+          "action": "CloseObject",
+          "target_object": "Cabinet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
         {
           "line": "GoToObject('PaperTowelRoll')",
           "action": "GoToObject",
@@ -24,31 +78,13 @@
           "errorMessage": ""
         },
         {
-          "line": "OpenObject('Cabinet|-00.34|+00.43|+02.87')",
-          "action": "OpenObject",
-          "target_object": "Cabinet|-00.34|+00.43|+02.87",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
           "line": "PickupObject('PaperTowelRoll')",
           "action": "PickupObject",
           "target_object": "PaperTowelRoll",
           "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Cabinet|-00.34|+00.43|+02.87')",
-          "action": "CloseObject",
-          "target_object": "Cabinet|-00.34|+00.43|+02.87",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
         },
         {
           "line": "GoToObject('CounterTop')",
@@ -64,119 +100,17 @@
           "action": "PutObject",
           "target_object": "PaperTowelRoll",
           "receptacle": "CounterTop",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
         }
       ]
-    },
-    {
-      "task": "Turn on the faucet and open the toilet",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Sink')",
-          "action": "GoToObject",
-          "target_object": "Sink",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Faucet')",
-          "action": "ToggleObjectOn",
-          "target_object": "Faucet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Toilet')",
-          "action": "GoToObject",
-          "target_object": "Toilet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Toilet')",
-          "action": "OpenObject",
-          "target_object": "Toilet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put ScrubBrush on the bathtub",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('ScrubBrush')",
-          "action": "GoToObject",
-          "target_object": "ScrubBrush",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('ScrubBrush')",
-          "action": "PickupObject",
-          "target_object": "ScrubBrush",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Bathtub')",
-          "action": "GoToObject",
-          "target_object": "Bathtub",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('ScrubBrush', 'BathtubBasin')",
-          "action": "PutObject",
-          "target_object": "ScrubBrush",
-          "receptacle": "BathtubBasin",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
+    }
+  ],
+  "ablation": [
     {
       "task": "Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop",
-      "method": "Physical Guard",
+      "method": "Ablation",
       "status": "PASSED",
       "gcr": 100.0,
       "exec": 100.0,
@@ -297,239 +231,22 @@
           "errorMessage": ""
         }
       ]
-    },
+    }
+  ],
+  "physical_guard": [
     {
-      "task": "Put the dishsponge in the sinkbasin",
+      "task": "Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop",
       "method": "Physical Guard",
       "status": "PASSED",
       "gcr": 100.0,
       "exec": 100.0,
-      "executed_actions_count": 6,
-      "successful_actions_count": 6,
-      "total_generated_actions": 6,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('DishSponge')",
-          "action": "GoToObject",
-          "target_object": "DishSponge",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Cabinet|-00.34|+00.43|+02.87')",
-          "action": "OpenObject",
-          "target_object": "Cabinet|-00.34|+00.43|+02.87",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('DishSponge')",
-          "action": "PickupObject",
-          "target_object": "DishSponge",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "CloseObject('Cabinet|-00.34|+00.43|+02.87')",
-          "action": "CloseObject",
-          "target_object": "Cabinet|-00.34|+00.43|+02.87",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Sink')",
-          "action": "GoToObject",
-          "target_object": "Sink",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('DishSponge', 'SinkBasin')",
-          "action": "PutObject",
-          "target_object": "DishSponge",
-          "receptacle": "SinkBasin",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    }
-  ],
-  "baseline": [
-    {
-      "task": "Put papertowelroll on the countertop",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 0.0,
-      "exec": 50.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 2,
-      "total_generated_actions": 4,
-      "passed_conditions": 0,
-      "total_conditions": 1,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('PapertowelRoll')",
-          "action": "GoToObject",
-          "target_object": "PapertowelRoll",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('PapertowelRoll')",
-          "action": "PickupObject",
-          "target_object": "PapertowelRoll",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('PapertowelRoll', 'CounterTop')",
-          "action": "PutObject",
-          "target_object": "PapertowelRoll",
-          "receptacle": "CounterTop",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Turn on the faucet and open the toilet",
-      "method": "Baseline",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 3,
-      "successful_actions_count": 3,
-      "total_generated_actions": 3,
+      "executed_actions_count": 22,
+      "successful_actions_count": 22,
+      "total_generated_actions": 22,
       "passed_conditions": 2,
       "total_conditions": 2,
       "verification_passed": true,
       "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('Toilet')",
-          "action": "GoToObject",
-          "target_object": "Toilet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Faucet')",
-          "action": "ToggleObjectOn",
-          "target_object": "Faucet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "OpenObject('Toilet')",
-          "action": "OpenObject",
-          "target_object": "Toilet",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put ScrubBrush on the bathtub",
-      "method": "Baseline",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 4,
-      "total_generated_actions": 4,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('ScrubBrush')",
-          "action": "GoToObject",
-          "target_object": "ScrubBrush",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('ScrubBrush')",
-          "action": "PickupObject",
-          "target_object": "ScrubBrush",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('BathtubBasin')",
-          "action": "GoToObject",
-          "target_object": "BathtubBasin",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('ScrubBrush', 'BathtubBasin')",
-          "action": "PutObject",
-          "target_object": "ScrubBrush",
-          "receptacle": "BathtubBasin",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put Plunger in the cabinet and Put the PaperTowelRoll on the countertop",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 80.0,
-      "executed_actions_count": 10,
-      "successful_actions_count": 8,
-      "total_generated_actions": 10,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
       "executed_actions": [
         {
           "line": "GoToObject('Plunger')",
@@ -577,9 +294,9 @@
           "errorMessage": ""
         },
         {
-          "line": "CloseObject('Cabinet')",
+          "line": "CloseObject('Cabinet|-01.36|+00.43|+02.87')",
           "action": "CloseObject",
-          "target_object": "Cabinet",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
@@ -595,83 +312,139 @@
           "errorMessage": ""
         },
         {
+          "line": "OpenObject('Cabinet|-00.34|+00.43|+02.87')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|-00.34|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
           "line": "PickupObject('PaperTowelRoll')",
           "action": "PickupObject",
           "target_object": "PaperTowelRoll",
           "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
         },
         {
-          "line": "GoToObject('Countertop')",
-          "action": "GoToObject",
-          "target_object": "Countertop",
+          "line": "CloseObject('Cabinet|-00.34|+00.43|+02.87')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|-00.34|+00.43|+02.87",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
         {
-          "line": "PutObject('PaperTowelRoll', 'Countertop')",
+          "line": "PutObject('PaperTowelRoll', 'CounterTop')",
           "action": "PutObject",
           "target_object": "PaperTowelRoll",
-          "receptacle": "Countertop",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Put the dishsponge in the sinkbasin",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 0.0,
-      "exec": 50.0,
-      "executed_actions_count": 4,
-      "successful_actions_count": 2,
-      "total_generated_actions": 4,
-      "passed_conditions": 0,
-      "total_conditions": 1,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
+          "receptacle": "CounterTop",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
         {
-          "line": "GoToObject('DishSponge')",
+          "line": "GoToObject('Plunger')",
           "action": "GoToObject",
-          "target_object": "DishSponge",
+          "target_object": "Plunger",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
         {
-          "line": "PickupObject('DishSponge')",
+          "line": "GoToObject('Cabinet|-01.36|+00.43|+02.87')",
+          "action": "GoToObject",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet|-01.36|+00.43|+02.87')",
+          "action": "OpenObject",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Plunger')",
+          "action": "GoToObject",
+          "target_object": "Plunger",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Plunger')",
           "action": "PickupObject",
-          "target_object": "DishSponge",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('SinkBasin')",
-          "action": "GoToObject",
-          "target_object": "SinkBasin",
+          "target_object": "Plunger",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
         {
-          "line": "PutObject('DishSponge', 'SinkBasin')",
+          "line": "GoToObject('Cabinet|-01.36|+00.43|+02.87')",
+          "action": "GoToObject",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|-01.36|+00.43|+02.87')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Cabinet')",
+          "action": "GoToObject",
+          "target_object": "Cabinet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Cabinet')",
+          "action": "OpenObject",
+          "target_object": "Cabinet",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Plunger', 'Cabinet')",
           "action": "PutObject",
-          "target_object": "DishSponge",
-          "receptacle": "SinkBasin",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
+          "target_object": "Plunger",
+          "receptacle": "Cabinet",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Cabinet|-01.36|+00.43|+02.87')",
+          "action": "CloseObject",
+          "target_object": "Cabinet|-01.36|+00.43|+02.87",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
         }
       ]
     }

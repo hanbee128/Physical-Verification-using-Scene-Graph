@@ -1,0 +1,49 @@
+Task: Put the Mug in the SinkBasin and Wash the Mug
+================================================================================
+def put_the_mug_in_the_sinkbasin_and_wash_the_mug():
+	# Task: Put the Mug in the SinkBasin and Wash the Mug
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -0.500)
+	GoToObject('Mug')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Mug')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('SinkBasin')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Mug', 'SinkBasin')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('Faucet')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOn('Faucet')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -0.500)
+	GoToObject('Mug')
+	# Step 8
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	CleanObject('Mug')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.500)
+	GoToObject('Faucet')
+	# Step 10
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	ToggleObjectOff('Faucet')
+
+
+================================================================================
+

@@ -1,0 +1,160 @@
+Task: Put pen and creditcard in the drawer and put the pen on the desk
+================================================================================
+def put_pen_and_creditcard_in_the_drawer_and_put_the_pen_on_the_desk():
+	# Task: Put pen and creditcard in the drawer and put the pen on the desk
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Pen')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pen')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('CreditCard')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.899, 0.000)
+	GoToObject('Drawer')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Drawer')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pen', 'Drawer')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Drawer|-01.52|+00.41|+00.35' 자동 닫기
+	CloseObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('CreditCard')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer|-01.52|+00.41|+00.35' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.250, 0.899, -0.500)
+	GoToObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Drawer|-01.52|+00.41|+00.35' 열기
+	OpenObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-1.500, 0.899, 0.000)
+	GoToObject('Drawer')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Drawer')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Drawer|-01.52|+00.41|+00.35' 자동 닫기
+	CloseObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 15
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Desk')
+	# Step 16
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer 객체가 열려 있어 CloseObject 액션을 수행할 수 없음 (guard: OPENED(object))
+	# CloseObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 17
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer 객체가 열려 있어 CloseObject('Drawer') 액션이 불가능함 (guard: OPENED(object))
+	# CloseObject('Drawer')
+	# Step 18
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 최대 검증 횟수(20회) 초과 (exceeded maximum verification attempts)
+	# PutObject('Pen', 'Desk')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put the pen on the desk
+	# Task: Put the pen on the desk
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Pen')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer|-01.52|+00.41|+00.35' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.250, 0.899, -0.500)
+	GoToObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 3
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Drawer|-01.52|+00.41|+00.35' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Pen' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (2.000, 0.899, -1.250)
+	GoToObject('Pen')
+	# Step 5
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('Pen')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Drawer|-01.52|+00.41|+00.35' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (0.250, 0.899, -0.500)
+	GoToObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Drawer|-01.52|+00.41|+00.35') 이후 자동 닫기
+	CloseObject('Drawer|-01.52|+00.41|+00.35')
+	# Step 8
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (2.500, 0.899, -1.750)
+	GoToObject('Desk')
+	# Step 9
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('Pen', 'Desk')
+	# Step 10
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Drawer对象 '-01.52|+00.41|+00.35'는 열려있지 않음 (OPENED(object) guard failed)
+	# CloseObject('Drawer|-01.52|+00.41|+00.35')
+
+
+Physical Verification Summary:
+  Total Actions: 19
+  Passed Actions: 15
+  Failed Actions: 3
+
+Failed Actions:
+  - CloseObject('Drawer|-01.52|+00.41|+00.35'): FAIL: 1개 가드 실패: OPENED(object)
+  - CloseObject('Drawer'): FAIL: 1개 가드 실패: OPENED(object)
+  - PutObject('Pen', 'Desk'): 최대 검증 횟수(20회) 초과
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put the pen on the desk
+  Reasoning: The original goal requires putting the pen on the desk, but this task is missing from the generated plan. The plan only puts the pen in the drawer and then tries to put it on the desk, but fails due to the drawer being open.
+
+================================================================================
+

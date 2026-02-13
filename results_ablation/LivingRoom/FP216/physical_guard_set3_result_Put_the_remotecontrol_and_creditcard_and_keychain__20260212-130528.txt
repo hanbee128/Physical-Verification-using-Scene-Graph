@@ -1,0 +1,203 @@
+Task: Put the remotecontrol and creditcard and keychain in the box
+================================================================================
+def put_the_remotecontrol_and_creditcard_and_keychain_in_the_box():
+	# Task: Put the remotecontrol and creditcard and keychain in the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('RemoteControl')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('RemoteControl', 'Box')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 13
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain'로 이동
+	GoToObject('KeyChain')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'KeyChain' 집기
+	PickupObject('KeyChain')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 16
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 17
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Box|-03.78|+01.30|+00.46') 이후 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 18
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	CloseObject('Box')
+	# Step 19
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Target object 'Box|-03.78|+01.30|+00.46' is not in an open state (OPENED(object) guard failure)
+	# CloseObject('Box|-03.78|+01.30|+00.46')
+
+	# [LLM 생성 - 누락 Task 보완] Additional task: Put the remotecontrol and creditcard and keychain in the box
+	# Task: Put the remotecontrol and creditcard and keychain in the box
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 누락 Task 보완] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-0.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 2
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Box|-03.78|+01.30|+00.46' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-3.000, 0.901, 0.250)
+	GoToObject('Box|-03.78|+01.30|+00.46')
+	# Step 3
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: ¬IN(object, closed_receptacle)
+	# 이유: 닫힌 수용체 'Box|-03.78|+01.30|+00.46' 내부 객체 접근을 위해 수용체 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 4
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'RemoteControl' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-1.750, 0.901, -0.500)
+	GoToObject('RemoteControl')
+	# Step 5
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PickupObject('RemoteControl')
+	# Step 6
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Box|-03.78|+01.30|+00.46' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-2.750, 0.901, 0.000)
+	GoToObject('Box|-03.78|+01.30|+00.46')
+	# Step 7
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Box|-03.78|+01.30|+00.46') 이후 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 8
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.250, 0.901, -0.250)
+	GoToObject('CreditCard')
+	# Step 9
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-1.500, 0.901, -0.500)
+	GoToObject('KeyChain')
+	# Step 10
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	# 이동할 좌표: (-3.750, 0.901, 1.000)
+	GoToObject('Box')
+	# Step 11
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	OpenObject('Box')
+	# Step 12
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('RemoteControl', 'Box')
+	# Step 13
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Box|-03.78|+01.30|+00.46' 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard'로 이동
+	GoToObject('CreditCard')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'CreditCard' 집기
+	PickupObject('CreditCard')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Box|-03.78|+01.30|+00.46' 열기
+	OpenObject('Box|-03.78|+01.30|+00.46')
+	# Step 17
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('CreditCard', 'Box')
+	# Step 18
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Box|-03.78|+01.30|+00.46') 이후 자동 닫기
+	CloseObject('Box|-03.78|+01.30|+00.46')
+	# Step 19
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	PutObject('KeyChain', 'Box')
+	# Step 20
+	# [LLM 생성 - 누락 Task 보완] 원본 액션
+	CloseObject('Box')
+	# Step 21
+	# [LLM 생성 - 누락 Task 보완] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: 객체 'Box|-03.78|+01.30|+00.46'가 열려있지 않음 (OPENED(object) guard failure)
+	# CloseObject('Box|-03.78|+01.30|+00.46')
+
+
+Physical Verification Summary:
+  Total Actions: 22
+  Passed Actions: 18
+  Failed Actions: 1
+
+Failed Actions:
+  - CloseObject('Box|-03.78|+01.30|+00.46'): FAIL: 1개 가드 실패: OPENED(object)
+
+Task Completion Verification:
+  ⚠️  All tasks completed: No
+  Missing Tasks (1):
+    1. Put the remotecontrol and creditcard and keychain in the box
+  Reasoning: The original goal is to put all three objects (remote control, credit card, and key chain) into the box. However, the generated plan only puts each object separately into the box without considering the original goal. To complete the task, we need to add an action that combines all three objects into the box.
+
+================================================================================
+

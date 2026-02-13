@@ -1,0 +1,55 @@
+Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+================================================================================
+def put_pot_on_the_stoveburner_and_put_mug_in_the_microwave():
+	# Task: Put Pot on the StoveBurner and Put Mug in the Microwave
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Pot')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Pot')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.250, 0.901, 0.500)
+	GoToObject('StoveBurner')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Pot', 'StoveBurner')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.250, 0.901, -0.750)
+	GoToObject('Mug')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Mug')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (1.000, 0.901, -0.750)
+	GoToObject('Microwave')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Microwave|+01.93|+00.90|-00.77' 열기
+	OpenObject('Microwave|+01.93|+00.90|-00.77')
+	# Step 9
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Mug', 'Microwave')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Microwave|+01.93|+00.90|-00.77' 자동 닫기
+	CloseObject('Microwave|+01.93|+00.90|-00.77')
+	# Step 11
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Target object 'Microwave|+01.93|+00.90|-00.77' is not in an open state (OPENED(object))
+	# CloseObject('Microwave|+01.93|+00.90|-00.77')
+
+
+================================================================================
+

@@ -1,0 +1,49 @@
+Task: Put keychain and creditcard in the drawer and put keychain on the chair
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_keychain_credit_card_in_drawer_and_on_chair():
+    # Step 1: Find the keychain
+    assert('KeyChain' visible)
+        else: GoToObject('KeyChain')
+    GoToObject('KeyChain')
+    assert('close' to 'KeyChain')
+        else: GoToObject('KeyChain')
+    PickupObject('KeyChain')
+
+    # Step 2: Move to the drawer and open it
+    GoToObject('Drawer')
+    assert('close' to 'Drawer')
+        else: GoToObject('Drawer')
+    OpenObject('Drawer')
+
+    # Step 3: Put keychain in the drawer
+    assert('KeyChain' in 'hands')
+        else: GoToObject('KeyChain')
+        else: PickupObject('KeyChain')
+    PutObject('KeyChain', 'Drawer')
+
+    # Step 4: Find the credit card
+    assert('CreditCard' visible)
+        else: GoToObject('CreditCard')
+    GoToObject('CreditCard')
+    assert('close' to 'CreditCard')
+        else: GoToObject('CreditCard')
+    PickupObject('CreditCard')
+
+    # Step 5: Put credit card in the drawer
+    assert('CreditCard' in 'hands')
+        else: GoToObject('CreditCard')
+        else: PickupObject('CreditCard')
+    PutObject('CreditCard', 'Drawer')
+
+    # Step 6: Move to the chair and put keychain on it
+    GoToObject('Chair')
+    PutObject('KeyChain', 'Chair')
+```
+
+This program follows the rules and guidelines provided, ensuring that the agent can hold only one object at a time and that hands are empty before picking up a new object. It also includes assertions to check preconditions and recovery steps in case those preconditions do not hold.
+
+================================================================================
+

@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": 1.25,
+        "x": 1.0,
         "y": 0.9009992480278015,
-        "z": 0.5
+        "z": -0.75
       },
       "rotation": {
         "x": 0.0,
@@ -727,8 +727,7 @@
           "CellPhone|-00.31|+00.92|+01.29",
           "Bread|+00.26|+00.99|-00.08",
           "Egg|+00.13|+00.95|-00.17",
-          "Tomato|+00.17|+00.97|-00.28",
-          "Mug|-00.24|+00.92|-00.26"
+          "Tomato|+00.17|+00.97|-00.28"
         ],
         "mass": 0.0,
         "sliceable": false,
@@ -1733,7 +1732,9 @@
         ],
         "controlledObjects": [],
         "isPickedUp": false,
-        "receptacleObjectIds": [],
+        "receptacleObjectIds": [
+          "Mug|-00.24|+00.92|-00.26"
+        ],
         "mass": 6.999999523162842,
         "sliceable": false,
         "isSliced": false,
@@ -1767,7 +1768,7 @@
           "z": 0.0004456129972822964
         },
         "parentReceptacles": [
-          "CounterTop|-00.02|+00.96|+00.51"
+          "Microwave|+01.93|+00.90|-00.77"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -3044,15 +3045,6 @@
     },
     {
       "edgeType": "IN",
-      "source": "Mug|-00.24|+00.92|-00.26",
-      "target": "CounterTop|-00.02|+00.96|+00.51",
-      "sourceType": "Object",
-      "targetType": "Object",
-      "sourceObjectType": "Mug",
-      "targetObjectType": "CounterTop"
-    },
-    {
-      "edgeType": "IN",
       "source": "Pan|-01.29|+00.90|-01.35",
       "target": "CounterTop|+00.00|+00.95|-01.51",
       "sourceType": "Object",
@@ -3176,6 +3168,24 @@
       "targetType": "Object",
       "sourceObjectType": "Pot",
       "targetObjectType": "StoveBurner"
+    },
+    {
+      "edgeType": "IN",
+      "source": "Mug|-00.24|+00.92|-00.26",
+      "target": "Microwave|+01.93|+00.90|-00.77",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Mug",
+      "targetObjectType": "Microwave"
+    },
+    {
+      "edgeType": "ON",
+      "source": "Mug|-00.24|+00.92|-00.26",
+      "target": "Microwave|+01.93|+00.90|-00.77",
+      "sourceType": "Object",
+      "targetType": "Object",
+      "sourceObjectType": "Mug",
+      "targetObjectType": "Microwave"
     }
   ],
   "edgeStatistics": {

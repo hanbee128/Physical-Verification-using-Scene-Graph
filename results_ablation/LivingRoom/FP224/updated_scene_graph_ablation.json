@@ -12,9 +12,9 @@
       "nodeType": "Agent",
       "nodeId": "agent_0",
       "position": {
-        "x": 1.25,
+        "x": 2.75,
         "y": 0.9283229112625122,
-        "z": 2.0
+        "z": 0.5
       },
       "rotation": {
         "x": -0.0,
@@ -267,9 +267,7 @@
         ],
         "controlledObjects": null,
         "isPickedUp": false,
-        "receptacleObjectIds": [
-          "KeyChain|-00.24|+00.92|+02.34"
-        ],
+        "receptacleObjectIds": [],
         "mass": 10.0,
         "sliceable": false,
         "isSliced": false,
@@ -478,7 +476,7 @@
         "openable": true,
         "receptacle": true,
         "toggleable": false,
-        "isOpen": false,
+        "isOpen": true,
         "isToggled": false,
         "visible": false,
         "distance": 5.168503284454346,
@@ -498,6 +496,7 @@
         "controlledObjects": null,
         "isPickedUp": false,
         "receptacleObjectIds": [
+          "KeyChain|-00.24|+00.92|+02.34",
           "CreditCard|-00.06|+00.92|+00.88"
         ],
         "mass": 0.0,
@@ -508,7 +507,7 @@
         "cookable": false,
         "isCooked": false,
         "temperature": "RoomTemp",
-        "openness": 0.0
+        "openness": 1.0
       },
       {
         "nodeType": "Object",
@@ -1497,7 +1496,7 @@
           "z": 359.0312805175781
         },
         "parentReceptacles": [
-          "Chair|+01.63|+00.03|+02.21"
+          "Drawer|+03.10|+00.42|+00.37"
         ],
         "controlledObjects": null,
         "isPickedUp": false,
@@ -2840,39 +2839,39 @@
     },
     {
       "edgeType": "IN",
-      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "source": "KeyChain|-00.24|+00.92|+02.34",
       "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "CreditCard",
+      "sourceObjectType": "KeyChain",
       "targetObjectType": "Drawer"
     },
     {
       "edgeType": "ON",
-      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "source": "KeyChain|-00.24|+00.92|+02.34",
       "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "CreditCard",
+      "sourceObjectType": "KeyChain",
       "targetObjectType": "Drawer"
     },
     {
       "edgeType": "IN",
-      "source": "KeyChain|-00.24|+00.92|+02.34",
-      "target": "Chair|+01.63|+00.03|+02.21",
+      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "KeyChain",
-      "targetObjectType": "Chair"
+      "sourceObjectType": "CreditCard",
+      "targetObjectType": "Drawer"
     },
     {
       "edgeType": "ON",
-      "source": "KeyChain|-00.24|+00.92|+02.34",
-      "target": "Chair|+01.63|+00.03|+02.21",
+      "source": "CreditCard|-00.06|+00.92|+00.88",
+      "target": "Drawer|+03.10|+00.42|+00.37",
       "sourceType": "Object",
       "targetType": "Object",
-      "sourceObjectType": "KeyChain",
-      "targetObjectType": "Chair"
+      "sourceObjectType": "CreditCard",
+      "targetObjectType": "Drawer"
     }
   ]
 }

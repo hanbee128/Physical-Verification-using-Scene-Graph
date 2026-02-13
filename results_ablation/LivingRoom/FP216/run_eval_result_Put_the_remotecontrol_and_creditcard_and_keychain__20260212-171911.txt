@@ -1,0 +1,39 @@
+Task: Put the remotecontrol and creditcard and keychain in the box
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_items_in_box():
+    # Step 1: Find the remote control, credit card, and keychain
+    GoToObject('RemoteControl')
+    assert('close' to 'RemoteControl')
+        else: GoToObject('RemoteControl')
+    PickupObject('RemoteControl')
+
+    GoToObject('CreditCard')
+    assert('close' to 'CreditCard')
+        else: GoToObject('CreditCard')
+    PickupObject('CreditCard')
+
+    GoToObject('KeyChain')
+    assert('close' to 'KeyChain')
+        else: GoToObject('KeyChain')
+    PickupObject('KeyChain')
+
+    # Step 2: Move to the box and open it
+    GoToObject('Box')
+    assert('close' to 'Box')
+        else: GoToObject('Box')
+    OpenObject('Box')
+
+    # Step 3: Put the items inside the box
+    PutObject('RemoteControl', 'Box')
+    PutObject('CreditCard', 'Box')
+    PutObject('KeyChain', 'Box')
+
+    # Step 4: Close the box
+    CloseObject('Box')
+```
+
+================================================================================
+

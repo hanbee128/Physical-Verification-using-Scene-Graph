@@ -1,0 +1,33 @@
+Task: Put the Pencil and the pen and the Book on the Dresser
+================================================================================
+Here is the Python-like program for the task:
+
+```
+def put_pencil_pen_book_on_dresser():
+    # Step 1: Find the pencil, pick it up, and place it on the dresser
+    assert('Pencil' visible)
+        else: GoToObject('Pencil')
+    PickupObject('Pencil')
+    assert('hands' is 'empty')
+        else: GoToObject('Dresser')
+        else: PutObject('Pencil', 'Dresser')
+
+    # Step 2: Find the pen, pick it up, and place it on the dresser
+    assert('Pen' visible)
+        else: GoToObject('Pen')
+    PickupObject('Pen')
+    assert('hands' is 'empty')
+        else: GoToObject('Dresser')
+        else: PutObject('Pen', 'Dresser')
+
+    # Step 3: Find the Book, pick it up, and place it on the dresser
+    assert('Book' visible)
+        else: GoToObject('Book')
+    PickupObject('Book')
+    assert('hands' is 'empty')
+        else: GoToObject('Dresser')
+        else: PutObject('Book', 'Dresser')
+```
+
+================================================================================
+

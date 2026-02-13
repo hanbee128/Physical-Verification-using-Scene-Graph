@@ -1,42 +1,134 @@
 {
-  "physical_guard": [
+  "baseline": [
     {
-      "task": "Turn on the Television",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 2,
-      "successful_actions_count": 2,
-      "total_generated_actions": 2,
+      "task": "Put the remotecontrol and creditcard and keychain in the box",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 33.33,
+      "exec": 66.67,
+      "executed_actions_count": 12,
+      "successful_actions_count": 8,
+      "total_generated_actions": 12,
       "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": true,
+      "total_conditions": 3,
+      "verification_passed": false,
+      "execution_clean": false,
       "executed_actions": [
         {
-          "line": "GoToObject('Television')",
+          "line": "GoToObject('RemoteControl')",
           "action": "GoToObject",
-          "target_object": "Television",
+          "target_object": "RemoteControl",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
         {
-          "line": "ToggleObjectOn('Television')",
-          "action": "ToggleObjectOn",
-          "target_object": "Television",
+          "line": "PickupObject('RemoteControl')",
+          "action": "PickupObject",
+          "target_object": "RemoteControl",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CreditCard')",
+          "action": "GoToObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('CreditCard')",
+          "action": "PickupObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('KeyChain')",
+          "action": "PickupObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Box')",
+          "action": "GoToObject",
+          "target_object": "Box",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Box')",
+          "action": "OpenObject",
+          "target_object": "Box",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('RemoteControl', 'Box')",
+          "action": "PutObject",
+          "target_object": "RemoteControl",
+          "receptacle": "Box",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('CreditCard', 'Box')",
+          "action": "PutObject",
+          "target_object": "CreditCard",
+          "receptacle": "Box",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('KeyChain', 'Box')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Box",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Box')",
+          "action": "CloseObject",
+          "target_object": "Box",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         }
       ]
-    },
+    }
+  ],
+  "ablation": [
     {
       "task": "Put the remotecontrol and creditcard and keychain in the box",
-      "method": "Physical Guard",
+      "method": "Ablation",
       "status": "PASSED",
       "gcr": 100.0,
       "exec": 100.0,
@@ -175,15 +267,6 @@
           "errorMessage": ""
         },
         {
-          "line": "GoToObject('Box')",
-          "action": "GoToObject",
-          "target_object": "Box",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
           "line": "OpenObject('Box|-03.78|+01.30|+00.46')",
           "action": "OpenObject",
           "target_object": "Box|-03.78|+01.30|+00.46",
@@ -209,99 +292,31 @@
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn off the Desklamp and Turn on the Laptop",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 7,
-      "successful_actions_count": 7,
-      "total_generated_actions": 7,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
-        {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
         },
         {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('DeskLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Laptop')",
-          "action": "PickupObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Laptop')",
-          "action": "ToggleObjectOn",
-          "target_object": "Laptop",
+          "line": "CloseObject('Box')",
+          "action": "CloseObject",
+          "target_object": "Box",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         }
       ]
-    },
+    }
+  ],
+  "physical_guard": [
     {
-      "task": "Turn off the floorlamp and desklamp",
+      "task": "Put the remotecontrol and creditcard and keychain in the box",
       "method": "Physical Guard",
       "status": "FAILED (Execution Errors)",
       "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 20,
-      "successful_actions_count": 20,
-      "total_generated_actions": 20,
-      "passed_conditions": 2,
-      "total_conditions": 2,
+      "exec": 86.84,
+      "executed_actions_count": 38,
+      "successful_actions_count": 33,
+      "total_generated_actions": 38,
+      "passed_conditions": 3,
+      "total_conditions": 3,
       "verification_passed": true,
       "execution_clean": false,
       "executed_actions": [
@@ -324,205 +339,18 @@
           "errorMessage": ""
         },
         {
-          "line": "GoToObject('FloorLamp')",
+          "line": "GoToObject('CreditCard')",
           "action": "GoToObject",
-          "target_object": "FloorLamp",
+          "target_object": "CreditCard",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
-        {
-          "line": "ToggleObjectOff('FloorLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('DeskLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('CounterTop')",
-          "action": "GoToObject",
-          "target_object": "CounterTop",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Put Keychain and CreditCard into the box",
-      "method": "Physical Guard",
-      "status": "PASSED",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 11,
-      "successful_actions_count": 11,
-      "total_generated_actions": 11,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": true,
-      "executed_actions": [
         {
           "line": "GoToObject('KeyChain')",
           "action": "GoToObject",
           "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CreditCard')",
-          "action": "GoToObject",
-          "target_object": "CreditCard",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
@@ -538,9 +366,9 @@
           "errorMessage": ""
         },
         {
-          "line": "PutObject('KeyChain', 'Box')",
+          "line": "PutObject('RemoteControl', 'Box')",
           "action": "PutObject",
-          "target_object": "KeyChain",
+          "target_object": "RemoteControl",
           "receptacle": "Box",
           "success": true,
           "lastActionSuccess": true,
@@ -599,94 +427,6 @@
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
-        }
-      ]
-    }
-  ],
-  "baseline": [
-    {
-      "task": "Turn on the Television",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 2,
-      "successful_actions_count": 2,
-      "total_generated_actions": 2,
-      "passed_conditions": 1,
-      "total_conditions": 1,
-      "verification_passed": true,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('TVStand')",
-          "action": "GoToObject",
-          "target_object": "TVStand",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "ToggleObjectOn('Television')",
-          "action": "ToggleObjectOn",
-          "target_object": "Television",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Put the remotecontrol and creditcard and keychain in the box",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 33.33,
-      "exec": 66.67,
-      "executed_actions_count": 12,
-      "successful_actions_count": 8,
-      "total_generated_actions": 12,
-      "passed_conditions": 1,
-      "total_conditions": 3,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('RemoteControl')",
-          "action": "GoToObject",
-          "target_object": "RemoteControl",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('RemoteControl')",
-          "action": "PickupObject",
-          "target_object": "RemoteControl",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('CreditCard')",
-          "action": "GoToObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('CreditCard')",
-          "action": "PickupObject",
-          "target_object": "CreditCard",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
         },
         {
           "line": "GoToObject('KeyChain')",
@@ -702,9 +442,126 @@
           "action": "PickupObject",
           "target_object": "KeyChain",
           "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Box|-03.78|+01.30|+00.46')",
+          "action": "OpenObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('KeyChain', 'Box')",
+          "action": "PutObject",
+          "target_object": "KeyChain",
+          "receptacle": "Box",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Box|-03.78|+01.30|+00.46')",
+          "action": "CloseObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Box')",
+          "action": "CloseObject",
+          "target_object": "Box",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('RemoteControl')",
+          "action": "GoToObject",
+          "target_object": "RemoteControl",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Box|-03.78|+01.30|+00.46')",
+          "action": "GoToObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Box|-03.78|+01.30|+00.46')",
+          "action": "OpenObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('RemoteControl')",
+          "action": "GoToObject",
+          "target_object": "RemoteControl",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('RemoteControl')",
+          "action": "PickupObject",
+          "target_object": "RemoteControl",
+          "receptacle": null,
           "success": false,
           "lastActionSuccess": false,
           "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Box|-03.78|+01.30|+00.46')",
+          "action": "GoToObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Box|-03.78|+01.30|+00.46')",
+          "action": "CloseObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('CreditCard')",
+          "action": "GoToObject",
+          "target_object": "CreditCard",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('KeyChain')",
+          "action": "GoToObject",
+          "target_object": "KeyChain",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
         },
         {
           "line": "GoToObject('Box')",
@@ -729,233 +586,14 @@
           "action": "PutObject",
           "target_object": "RemoteControl",
           "receptacle": "Box",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CreditCard', 'Box')",
-          "action": "PutObject",
-          "target_object": "CreditCard",
-          "receptacle": "Box",
           "success": false,
           "lastActionSuccess": false,
           "errorMessage": "Action method returned False"
         },
         {
-          "line": "PutObject('KeyChain', 'Box')",
-          "action": "PutObject",
-          "target_object": "KeyChain",
-          "receptacle": "Box",
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "CloseObject('Box')",
+          "line": "CloseObject('Box|-03.78|+01.30|+00.46')",
           "action": "CloseObject",
-          "target_object": "Box",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn off the Desklamp and Turn on the Laptop",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 100.0,
-      "exec": 87.5,
-      "executed_actions_count": 8,
-      "successful_actions_count": 7,
-      "total_generated_actions": 8,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('DeskLamp')",
-          "action": "PickupObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": false,
-          "lastActionSuccess": false,
-          "errorMessage": "Action method returned False"
-        },
-        {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('DeskLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('Laptop')",
-          "action": "PickupObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('Laptop')",
-          "action": "GoToObject",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOn('Laptop')",
-          "action": "ToggleObjectOn",
-          "target_object": "Laptop",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        }
-      ]
-    },
-    {
-      "task": "Turn off the floorlamp and desklamp",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 100.0,
-      "exec": 100.0,
-      "executed_actions_count": 7,
-      "successful_actions_count": 7,
-      "total_generated_actions": 7,
-      "passed_conditions": 2,
-      "total_conditions": 2,
-      "verification_passed": true,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('RemoteControl')",
-          "action": "GoToObject",
-          "target_object": "RemoteControl",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('RemoteControl')",
-          "action": "PickupObject",
-          "target_object": "RemoteControl",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('FloorLamp')",
-          "action": "GoToObject",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('FloorLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "FloorLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "GoToObject('DeskLamp')",
-          "action": "GoToObject",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "ToggleObjectOff('DeskLamp')",
-          "action": "ToggleObjectOff",
-          "target_object": "DeskLamp",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('RemoteControl', 'CounterTop')",
-          "action": "PutObject",
-          "target_object": "RemoteControl",
-          "receptacle": "CounterTop",
-          "success": false,
-          "lastActionSuccess": true,
-          "errorMessage": "Action method returned False"
-        }
-      ]
-    },
-    {
-      "task": "Put Keychain and CreditCard into the box",
-      "method": "Baseline",
-      "status": "FAILED (Execution Errors)",
-      "gcr": 50.0,
-      "exec": 77.78,
-      "executed_actions_count": 9,
-      "successful_actions_count": 7,
-      "total_generated_actions": 9,
-      "passed_conditions": 1,
-      "total_conditions": 2,
-      "verification_passed": false,
-      "execution_clean": false,
-      "executed_actions": [
-        {
-          "line": "GoToObject('KeyChain')",
-          "action": "GoToObject",
-          "target_object": "KeyChain",
-          "receptacle": null,
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PickupObject('KeyChain')",
-          "action": "PickupObject",
-          "target_object": "KeyChain",
+          "target_object": "Box|-03.78|+01.30|+00.46",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
@@ -980,18 +618,27 @@
           "errorMessage": "Action method returned False"
         },
         {
-          "line": "GoToObject('Box')",
-          "action": "GoToObject",
-          "target_object": "Box",
+          "line": "OpenObject('Box|-03.78|+01.30|+00.46')",
+          "action": "OpenObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
           "errorMessage": ""
         },
         {
-          "line": "OpenObject('Box')",
-          "action": "OpenObject",
-          "target_object": "Box",
+          "line": "PutObject('CreditCard', 'Box')",
+          "action": "PutObject",
+          "target_object": "CreditCard",
+          "receptacle": "Box",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Box|-03.78|+01.30|+00.46')",
+          "action": "CloseObject",
+          "target_object": "Box|-03.78|+01.30|+00.46",
           "receptacle": null,
           "success": true,
           "lastActionSuccess": true,
@@ -1001,15 +648,6 @@
           "line": "PutObject('KeyChain', 'Box')",
           "action": "PutObject",
           "target_object": "KeyChain",
-          "receptacle": "Box",
-          "success": true,
-          "lastActionSuccess": true,
-          "errorMessage": ""
-        },
-        {
-          "line": "PutObject('CreditCard', 'Box')",
-          "action": "PutObject",
-          "target_object": "CreditCard",
           "receptacle": "Box",
           "success": false,
           "lastActionSuccess": false,

@@ -1,0 +1,101 @@
+Task: Put Apple and Tomato and Potato into Fridge
+================================================================================
+def put_apple_and_tomato_and_potato_into_fridge():
+	# Task: Put Apple and Tomato and Potato into Fridge
+	# Generated plan with logical and physical verification
+	# 
+	# [LLM 생성 - 논리적 검증] = LLM이 논리적 검증 단계에서 생성한 원본 액션
+	# [LLM 생성 - 누락 Task 보완] = LLM이 물리적 검증 후 누락된 task를 위해 추가로 생성한 액션
+	# [시스템 생성] = 시스템이 물리적 검증 단계에서 자동으로 생성한 복구 액션
+	# [LLM 주석] = LLM이 실패한 액션에 대해 생성한 설명 주석
+	# Step 1
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.000, 0.901, 0.500)
+	GoToObject('Apple')
+	# Step 2
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PickupObject('Apple')
+	# Step 3
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 4
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, -1.750)
+	GoToObject('Potato')
+	# Step 5
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	# 이동할 좌표: (-1.250, 0.901, 1.000)
+	GoToObject('Fridge')
+	# Step 6
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	OpenObject('Fridge')
+	# Step 7
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Apple', 'Fridge')
+	# Step 8
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 9
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Tomato'로 이동
+	# 이동할 좌표: (-0.500, 0.901, -1.250)
+	GoToObject('Tomato')
+	# Step 10
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Tomato' 집기
+	PickupObject('Tomato')
+	# Step 11
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: Proximity
+	# 이유: Agent와 객체 'Fridge|-02.10|+00.50|+01.07' 간 거리가 2m를 초과하여 이동 필요
+	# 이동할 좌표: (-1.250, 0.901, 0.000)
+	GoToObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 12
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Fridge|-02.10|+00.50|+01.07' 열기
+	OpenObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 13
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Tomato', 'Fridge')
+	# Step 14
+	# [시스템 생성] 복구 액션
+	# 이유: PutObject 후 수용체 'Fridge|-02.10|+00.50|+01.07' 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 15
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Potato'로 이동
+	GoToObject('Potato')
+	# Step 16
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: HOLDS(agent, object)
+	# 이유: PutObject를 위해 객체 'Potato' 집기
+	PickupObject('Potato')
+	# Step 17
+	# [시스템 생성] 복구 액션
+	# 위반한 가드: OPENED(receptacle)
+	# 이유: PutObject를 위해 수용체 'Fridge|-02.10|+00.50|+01.07' 열기
+	OpenObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 18
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	PutObject('Potato', 'Fridge')
+	# Step 19
+	# [시스템 생성] 복구 액션
+	# 이유: 복구 액션 OpenObject('Fridge|-02.10|+00.50|+01.07') 이후 자동 닫기
+	CloseObject('Fridge|-02.10|+00.50|+01.07')
+	# Step 20
+	# [LLM 생성 - 논리적 검증] 원본 액션
+	CloseObject('Fridge')
+	# Step 21
+	# [LLM 생성 - 논리적 검증] 원본 액션 - 검증 실패
+	# [LLM 주석] # 물리적 검증 실패: Fridge object is already opened, so it cannot be closed
+	# CloseObject('Fridge|-02.10|+00.50|+01.07')
+
+
+================================================================================
+
