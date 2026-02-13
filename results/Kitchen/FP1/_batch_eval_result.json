@@ -1,0 +1,353 @@
+{
+  "physical_guard": [
+    {
+      "task": "Put Apple and Tomato and Potato into Fridge",
+      "method": "Physical Guard",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 100.0,
+      "exec": 91.67,
+      "executed_actions_count": 24,
+      "successful_actions_count": 22,
+      "total_generated_actions": 24,
+      "passed_conditions": 3,
+      "total_conditions": 3,
+      "verification_passed": true,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Apple', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Tomato')",
+          "action": "GoToObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Tomato')",
+          "action": "PickupObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Tomato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Tomato",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Potato')",
+          "action": "GoToObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Potato')",
+          "action": "PickupObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Potato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Potato",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "CloseObject('Fridge')",
+          "action": "CloseObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Potato')",
+          "action": "GoToObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Potato')",
+          "action": "PickupObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Potato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Potato",
+          "receptacle": "Fridge",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "CloseObject('Fridge|-02.10|+00.50|+01.07')",
+          "action": "CloseObject",
+          "target_object": "Fridge|-02.10|+00.50|+01.07",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        }
+      ]
+    }
+  ],
+  "baseline": [
+    {
+      "task": "Put Apple and Tomato and Potato into Fridge",
+      "method": "Baseline",
+      "status": "FAILED (Execution Errors)",
+      "gcr": 33.33,
+      "exec": 63.64,
+      "executed_actions_count": 11,
+      "successful_actions_count": 7,
+      "total_generated_actions": 11,
+      "passed_conditions": 1,
+      "total_conditions": 3,
+      "verification_passed": false,
+      "execution_clean": false,
+      "executed_actions": [
+        {
+          "line": "GoToObject('Apple')",
+          "action": "GoToObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PickupObject('Apple')",
+          "action": "PickupObject",
+          "target_object": "Apple",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Fridge')",
+          "action": "GoToObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "OpenObject('Fridge')",
+          "action": "OpenObject",
+          "target_object": "Fridge",
+          "receptacle": null,
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "PutObject('Apple', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Apple",
+          "receptacle": "Fridge",
+          "success": true,
+          "lastActionSuccess": true,
+          "errorMessage": ""
+        },
+        {
+          "line": "GoToObject('Tomato')",
+          "action": "GoToObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PickupObject('Tomato')",
+          "action": "PickupObject",
+          "target_object": "Tomato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Tomato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Tomato",
+          "receptacle": "Fridge",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "GoToObject('Potato')",
+          "action": "GoToObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": true,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PickupObject('Potato')",
+          "action": "PickupObject",
+          "target_object": "Potato",
+          "receptacle": null,
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        },
+        {
+          "line": "PutObject('Potato', 'Fridge')",
+          "action": "PutObject",
+          "target_object": "Potato",
+          "receptacle": "Fridge",
+          "success": false,
+          "lastActionSuccess": false,
+          "errorMessage": "Action method returned False"
+        }
+      ]
+    }
+  ]
+}
